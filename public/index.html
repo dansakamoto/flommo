@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <main>
+      <canvas id="out1" width="720" height="400" style="border: 0px solid black"></canvas>
+
+      <div id="d1"></div>
+      <div id="d2"></div>
+
+    </main>
+    <script src="bounce.js"></script>
+    <script src="morph.js"></script>
+
+    <script>
+
+      function mixem() {
+        var out1 = document.getElementById("out1");
+        var ctxo1 = out1.getContext('2d');
+
+        var src1 = document.getElementById("d1").firstChild;
+        var src2 = document.getElementById("d2").firstChild;
+
+        ctxo1.clearRect(0, 0, out1.width, out1.height);
+
+        ctxo1.drawImage(src1, 0, 0, src1.offsetWidth, src1.offsetHeight);
+        ctxo1.drawImage(src2, 0, 0, src2.offsetWidth, src2.offsetHeight);
+        ctxo1.globalCompositeOperation = "screen";
+    }
+
+    var t=setInterval(mixem,16);
+
+    </script>
+
+  </body>
+</html>
