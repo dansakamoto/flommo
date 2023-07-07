@@ -9,42 +9,52 @@
     <!-- import hydra synth -->
     <script src="https://unpkg.com/hydra-synth"></script>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8" />
   </head>
 
   <body>
-    <main>
+    <main style="width:1440px; margin:0 auto;">
       <canvas id="out1" width="720" height="400" style="margin:0 auto; border: 0px solid black; background:#000; float:left; clear:both"></canvas>
 
-      <div id="controls">
-        <input type="checkbox" id="on1" name="on1" value="on1">
-        <label for="on1">Send 1</label><br>
-        <input type="range" min="0" max="100" value="100" class="slider" id="alpha1"><br>
-        <br>
-        <input type="checkbox" id="on2" name="on2" value="on2">
-        <label for="on2">Send 2</label><br>
-        <input type="range" min="0" max="100" value="100" class="slider" id="alpha2"><br>
-        <br>
-        <input type="checkbox" id="on3" name="on3" value="on3">
-        <label for="on3">Send 3</label><br>
-        <input type="range" min="0" max="100" value="100" class="slider" id="alpha3"><br>
-        <br>
-        <input type="checkbox" id="on4" name="on4" value="on4">
-        <label for="on4">Send 4</label><br>
-        <input type="range" min="0" max="100" value="100" class="slider" id="alpha4"><br>
-        <br>
-        <input type="checkbox" id="on5" name="on5" value="on5">
-        <label for="on5">Send 5</label><br>
-        <input type="range" min="0" max="100" value="100" class="slider" id="alpha5"><br>
-        <br>
-        <input type="checkbox" id="on6" name="on6" value="on6">
-        <label for="on6">Send 6</label><br>
-        <input type="range" min="0" max="100" value="100" class="slider" id="alpha6"><br>
-        <br>
-        Blend mode: <input type="text" id="blendInput" value="screen"> <input id="blendBtn" type="button" value="change">
+      <div id="controls" style="margin-left:20px;margin-top:20px;display:block;float:left;">
+        <div style="display:block;float:left;">
+          <input type="checkbox" id="on1" name="on1" value="on1">
+          <label for="on1">Send 1</label><br>
+          <input type="range" min="0" max="100" value="100" class="slider" id="alpha1"><br>
+          <br>
+          <input type="checkbox" id="on2" name="on2" value="on2">
+          <label for="on2">Send 2</label><br>
+          <input type="range" min="0" max="100" value="100" class="slider" id="alpha2"><br>
+          <br>
+          <input type="checkbox" id="on3" name="on3" value="on3">
+          <label for="on3">Send 3</label><br>
+          <input type="range" min="0" max="100" value="100" class="slider" id="alpha3">
+        </div>
+        <div style="display:block;float:left;">
+          <input type="checkbox" id="on4" name="on4" value="on4">
+          <label for="on4">Send 4</label><br>
+          <input type="range" min="0" max="100" value="100" class="slider" id="alpha4"><br>
+          <br>
+          <input type="checkbox" id="on5" name="on5" value="on5">
+          <label for="on5">Send 5</label><br>
+          <input type="range" min="0" max="100" value="100" class="slider" id="alpha5"><br>
+          <br>
+          <input type="checkbox" id="on6" name="on6" value="on6">
+          <label for="on6">Send 6</label><br>
+          <input type="range" min="0" max="100" value="100" class="slider" id="alpha6"><br>
+        </div>
+        <div style="display:block;float:left;clear:left;margin-top:20px;">
+         Blend mode: <input type="text" id="blendInput" value="screen"> <input id="blendBtn" type="button" value="change">
+        </div>
 
       </div>
+
+      <div style="width:100%;display:block;float:left;clear:both;background:#000;color:#fff;padding:5px 0;margin:5px 0;text-align:center;">Sources:</div>
 
       <div id="d1" class="inputCanvas" style="float:left;clear:left;"></div>
       <div id="d2" class="inputCanvas" style="float:left;"></div>
