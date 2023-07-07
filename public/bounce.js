@@ -5,7 +5,7 @@
  * @description  based on code from Keith Peters. Multiple-object collision..
  */
 
-const s1 = ( sketch ) => {
+const p5bounce = ( sketch ) => {
 
   let numBalls = 13;
   let spring = 0.05;
@@ -106,10 +106,3 @@ const s1 = ( sketch ) => {
 
 
 }
-
-
-
-
-
-
-let myp5a = new p5(s1, "d1");

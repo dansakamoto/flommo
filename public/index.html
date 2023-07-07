@@ -1,41 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+
+    <!-- import p5js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
+
+    <!-- import hydra synth -->
+    <script src="https://unpkg.com/hydra-synth"></script>
+
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8" />
   </head>
+
   <body>
     <main>
-      <canvas id="out1" width="720" height="400" style="border: 0px solid black"></canvas>
+      <canvas id="out1" width="720" height="400" style="margin:0 auto; border: 0px solid black; float:left; clear:both"></canvas>
 
-      <div id="d1"></div>
-      <div id="d2"></div>
+      <div id="d1" class="inputCanvas" style="float:left;clear:left;"></div>
+      <div id="d2" class="inputCanvas" style="float:left;"></div>
+
+      <canvas id="hydraCanvas" width="720" height="400" style="width:720px;height:400px; float:left;"></canvas>
+      <canvas id="hydraCanvas2" width="720" height="400" style="width:720px;height:400px; float:left;"></canvas>
 
     </main>
-    <script src="bounce.js"></script>
+
+ <script src="bounce.js"></script>
     <script src="morph.js"></script>
 
     <script>
 
+      // create a new hydra-synth instance
+      var hydra = new Hydra({
+        makeGlobal: false,
+        canvas: document.getElementById("hydraCanvas"),
+        detectAudio: false,
+        autoLoop: false
+      }).synth
+
+      var hydra2 = new Hydra({
+        makeGlobal: false,
+        canvas: document.getElementById("hydraCanvas2"),
+        detectAudio: false,
+        autoLoop: false
+      }).synth
+
+      //hydra.osc(10, 0.1, 0.8).rotate(0, 0.1).kaleid().color(-1, 1).out()
+      hydra.osc(() => -hydra.mouse.x / 10, 0.5, 0.8).rotate(0, 0.1).kaleid().color(-1, 1).out()
+
+      hydra2.osc(40,0.2,1).modulateScale(hydra2.osc(40,0,1).kaleid(8)).repeat(2,4).modulate(hydra2.o0,0.05).modulateKaleid(hydra2.shape(4,0.1,1)).out()
+
+      let myp5a = new p5(p5bounce, "d1");
+      let myp5b = new p5(p5morph, "d2");
+
+      //var out1 = document.getElementById("out1");
+      //var ctxo1 = out1.getContext('2d');
+
+      //ctxo1.drawImage(gl.canvas, 0, 0);
+
+
+
+/*
+        var image = new Image();
+        image.src = document.getElementById("hydraCanvas").toDataURL('image/png');
+        window.document.body.appendChild(image);
+        */
+
+        //var img = new Image();
+        //window.document.body.appendChild(img);
+
       function mixem() {
+
+        hydra.tick(16);
+        hydra2.tick(16);
+
         var out1 = document.getElementById("out1");
         var ctxo1 = out1.getContext('2d');
 
         var src1 = document.getElementById("d1").firstChild;
         var src2 = document.getElementById("d2").firstChild;
 
-        ctxo1.clearRect(0, 0, out1.width, out1.height);
+        var src3 = document.getElementById("hydraCanvas");
+        var src4 = document.getElementById("hydraCanvas2");
 
-        ctxo1.drawImage(src1, 0, 0, src1.offsetWidth, src1.offsetHeight);
-        ctxo1.drawImage(src2, 0, 0, src2.offsetWidth, src2.offsetHeight);
+
+        var img = new Image();
+        img.onload=function(){
+          ctxo1.clearRect(0, 0, out1.width, out1.height);
+          ctxo1.drawImage(img,0,0, src3.offsetWidth, src3.offsetHeight);
+          ctxo1.drawImage(img2,0,0, src4.offsetWidth, src4.offsetHeight);
+          ctxo1.drawImage(src1, 0, 0, src1.offsetWidth, src1.offsetHeight);
+          ctxo1.drawImage(src2, 0, 0, src2.offsetWidth, src2.offsetHeight);
+        }
+        img.src = src3.toDataURL('image/jpeg');
+
+        var img2 = new Image();
+        img2.onload=function(){
+          //ctxo1.clearRect(0, 0, out1.width, out1.height);
+          //ctxo1.drawImage(img2,0,0, src4.offsetWidth, src4.offsetHeight);
+        }
+        img2.src = src4.toDataURL('image/jpeg');
+
+        ctxo1.globalAlpha = 1;
+        //ctxo1.drawImage(src1, 0, 0, src1.offsetWidth, src1.offsetHeight);
+        //ctxo1.drawImage(src2, 0, 0, src2.offsetWidth, src2.offsetHeight);
+        ctxo1.globalAlpha = 1.0;
         ctxo1.globalCompositeOperation = "screen";
+
     }
 
-    var t=setInterval(mixem,16);
+   var t=setInterval(mixem,16);
 
     </script>
+
 
   </body>
 </html>

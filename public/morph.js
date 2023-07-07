@@ -5,7 +5,7 @@
  * @description Changing one shape into another by interpolating vertices from one to another.
  */
 
-const s2 = ( sketch ) => {
+const p5morph = ( sketch ) => {
 
   // Two ArrayLists to store the vertices for two shapes
   // This example assumes that each shape will have the same
@@ -97,6 +97,3 @@ const s2 = ( sketch ) => {
   }
 
 }
-
-
-let myp5b = new p5(s2, "d2");
