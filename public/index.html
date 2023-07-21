@@ -25,7 +25,13 @@
 
       <div id="interface">
 
-        <div id="nocursor" style="width:100%;cursor:none;"></div>
+        <div id="nocursor" style="width:100%;cursor:none;">
+          <div id="welcome" style="display:block;padding-left:20px;">
+            <span style="font-size:8em;">flommo</span><span style="font-size:1em"> v 0.002</span>
+            <br><br>
+            <span>Select a source using number keys, or scroll down for the gui</span>
+          </div>
+        </div>
 
         <div id="controls" style="margin-left:20px;margin-top:20px;display:block;float:left;clear:both;">
           <div style="display:block;float:left;">
@@ -60,7 +66,7 @@
           </div>
           <div style="display:block;float:left;clear:left;margin-top:20px;">
           <!-- Blend mode: <input type="text" id="blendInput" value="screen"> <input id="blendBtn" type="button" value="change"> -->
-          <input type="radio" id="screen" name="blendInput" value="screen" checked="true" onchange="toggleBlend('screen')"> <label for="screen">screen</label> <input type="radio" id="multiply" name="blendInput" value="multiply" onchange="toggleBlend('multiply')"> <label for="multiply">multiply</label> <input type="radio" id="difference" name="blendInput" value="difference" onchange="toggleBlend('difference')"> <label for="difference">difference</label>
+          <input type="radio" id="screen" name="blendInput" value="screen" checked="true" onchange="toggleBlend('screen')"> <label for="screen">(q) screen</label> <input type="radio" id="multiply" name="blendInput" value="multiply" onchange="toggleBlend('multiply')"> <label for="multiply">(w) multiply</label> <input type="radio" id="difference" name="blendInput" value="difference" onchange="toggleBlend('difference')"> <label for="difference">(e) difference</label>
           </div>
         </div>
 
@@ -120,6 +126,7 @@
       // UI listeners
       function toggleSrc(s){
         outOn[s-1] = (document.querySelector(`#on${s}`).checked) ? true : false;
+        document.querySelector("#welcome").style = "display:none;";
       }
 
       function toggleBlend(b){
@@ -131,6 +138,7 @@
         if(event.key >= 1 && event.key <=  6){
           outOn[event.key-1] = !(outOn[event.key-1]);
           document.querySelector(`#on${event.key}`).checked = outOn[event.key-1];
+          document.querySelector("#welcome").style = "display:none;";
         }
         else if(event.key == 'q'){
           blendMode = "screen"
