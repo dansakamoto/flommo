@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <!-- import p5js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
+
+    <!-- import hydra synth -->
+    <script src="https://unpkg.com/hydra-synth"></script>
+
+    <!-- import fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+  </head>
+
+  <body>
+    <main style="width:1440px; margin:0 auto;">
+      <canvas id="out1" width="720" height="400" style="margin:0 auto; border: 0px solid black; background:#000; float:left; clear:both"></canvas>
+
+      <div id="controls" style="margin-left:20px;margin-top:20px;display:block;float:left;">
+        <div style="display:block;float:left;">
+          <input type="checkbox" id="on1" name="on1" value="on1">
+          <label for="on1">Send 1</label><br>
+          <input type="range" min="0" max="100" value="100" class="slider" id="alpha1"><br>
+          <br>
+          <input type="checkbox" id="on2" name="on2" value="on2">
+          <label for="on2">Send 2</label><br>
+          <input type="range" min="0" max="100" value="100" class="slider" id="alpha2"><br>
+          <br>
+          <input type="checkbox" id="on3" name="on3" value="on3">
+          <label for="on3">Send 3</label><br>
+          <input type="range" min="0" max="100" value="100" class="slider" id="alpha3">
+        </div>
+        <div style="display:block;float:left;">
+          <input type="checkbox" id="on4" name="on4" value="on4">
+          <label for="on4">Send 4</label><br>
+          <input type="range" min="0" max="100" value="100" class="slider" id="alpha4"><br>
+          <br>
+          <input type="checkbox" id="on5" name="on5" value="on5">
+          <label for="on5">Send 5</label><br>
+          <input type="range" min="0" max="100" value="100" class="slider" id="alpha5"><br>
+          <br>
+          <input type="checkbox" id="on6" name="on6" value="on6">
+          <label for="on6">Send 6</label><br>
+          <input type="range" min="0" max="100" value="100" class="slider" id="alpha6"><br>
+        </div>
+        <div style="display:block;float:left;clear:left;margin-top:20px;">
+         Blend mode: <input type="text" id="blendInput" value="screen"> <input id="blendBtn" type="button" value="change">
+        </div>
+      </div>
+
+      <div style="width:100%;display:block;float:left;clear:both;background:#000;color:#fff;padding:5px 0;margin:5px 0;text-align:center;">~ SOURCES ~</div>
+
+      <div id="d1" class="inputCanvas" style="float:left;clear:left;"></div>
+      <div id="d2" class="inputCanvas" style="float:left;"></div>
+
+      <canvas id="hydraCanvas" width="720" height="400" style="width:720px;height:400px; float:left;"></canvas>
+      <canvas id="hydraCanvas2" width="720" height="400" style="width:720px;height:400px; float:left;"></canvas>
+
+      <!-- INIT VIDEO SOURCES -->
+      <video id="video1" src="https://dl.dropboxusercontent.com/s/779cy34fiem6fz4/flowers.mp4?dl=0" width="720" height="400" loop autoplay muted style="object-fit:cover;display:block;float:left; "></video>
+      <video id="video2" src="https://dl.dropboxusercontent.com/s/n7y86joln4uj4t7/trees.mov?dl=0" width="720" height="400" loop autoplay muted style="object-fit:cover;display:block;float:left;"></video>
+
+    </main>
+
+    <!-- INIT P5 SOURCES -->
+    <script src="bounce.js"></script>
+    <script src="morph.js"></script>
+
+    <script>
+
+      // INIT HYDRA SOURCES
+      var hydra = new Hydra({
+        makeGlobal: false,
+        canvas: document.getElementById("hydraCanvas"),
+        detectAudio: false,
+        autoLoop: false
+      }).synth
+      hydra.osc(() => -hydra.mouse.x / 10, 0.5, 0.8).rotate(0, 0.1).kaleid().color(-1, 1).out()
+
+      var hydra2 = new Hydra({
+        makeGlobal: false,
+        canvas: document.getElementById("hydraCanvas2"),
+        detectAudio: false,
+        autoLoop: false
+      }).synth
+      hydra2.osc(40,0.2,1).modulateScale(hydra2.osc(40,0,1).kaleid(8)).repeat(2,4).modulate(hydra2.o0,0.05).modulateKaleid(hydra2.shape(4,0.1,1)).out()
+
+      let myp5a = new p5(p5bounce, "d1");
+      let myp5b = new p5(p5morph, "d2");
+
+      // INIT MIXER SETTINGS
+      const outOn = Array(6).fill(false);
+      const outAlpha = Array(6).fill(1);
+      var blendMode = "screen";
+
+      function changeBlend() {
+        blendMode = document.querySelector("#blendInput").value;
+      }
+      const blendBtn = document.getElementById("blendBtn");
+      blendBtn.addEventListener("click",changeBlend);
+
+      function mixem() {
+
+        hydra.tick(16);
+        hydra2.tick(16);
+
+        for(let i=0; i<6; i++) outOn[i] = (document.querySelector(`#on${i+1}`).checked) ? true : false;
+        for(let i=0; i<6; i++) outAlpha[i] = document.querySelector(`#alpha${i+1}`).value/100;
+
+        var out1 = document.getElementById("out1");
+        var ctxo1 = out1.getContext('2d');
+
+        var src1 = document.getElementById("d1").firstChild;
+        var src2 = document.getElementById("d2").firstChild;
+        var src3 = document.getElementById("hydraCanvas");
+        var src4 = document.getElementById("hydraCanvas2");
+        var src5 = document.getElementById("video1");
+        src5.play();
+        var src6 = document.getElementById("video2");
+        src6.play();
+
+        var img = new Image();
+        img.onload=function(){
+          ctxo1.clearRect(0, 0, out1.width, out1.height);
+
+          if(outOn[0]){
+            ctxo1.globalAlpha = outAlpha[0];
+            ctxo1.drawImage(src1, 0, 0, src1.offsetWidth, src1.offsetHeight);
+          }
+          if(outOn[1]){
+            ctxo1.globalAlpha = outAlpha[1];
+            ctxo1.drawImage(src2, 0, 0, src2.offsetWidth, src2.offsetHeight);
+          }
+          if(outOn[2]){
+            ctxo1.globalAlpha = outAlpha[2];
+            ctxo1.drawImage(img,0,0, src3.offsetWidth, src3.offsetHeight);
+          }
+          if(outOn[3]){
+            ctxo1.globalAlpha = outAlpha[3];
+            ctxo1.drawImage(img2,0,0, src4.offsetWidth, src4.offsetHeight);
+          }
+          if(outOn[4]){
+            ctxo1.globalAlpha = outAlpha[4];
+            ctxo1.drawImage(src5,0,0, src5.offsetWidth, src5.offsetHeight);
+          }
+          if(outOn[5]){
+            ctxo1.globalAlpha = outAlpha[5];
+            ctxo1.drawImage(src6,0,0, src6.offsetWidth, src6.offsetHeight);
+          }
+        }
+        img.src = src3.toDataURL('image/jpeg');
+
+        var img2 = new Image();
+        img2.src = src4.toDataURL('image/jpeg');
+
+        /*
+        img2.onload=function(){
+        }]*/
+
+        ctxo1.globalCompositeOperation = blendMode;
+
+    }
+
+   var t=setInterval(mixem,16);
+
+    </script>
+
+  </body>
+</html>

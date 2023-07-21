@@ -20,53 +20,63 @@
   </head>
 
   <body>
-    <main style="width:1440px; margin:0 auto;">
-      <canvas id="out1" width="720" height="400" style="margin:0 auto; border: 0px solid black; background:#000; float:left; clear:both"></canvas>
+    <main style="width:100%; margin:0 auto;">
+      <canvas id="out1" style="margin:0 auto; border: 0px solid black; background:#000; float:left; clear:both; position:fixed;z-index:-5;"></canvas>
 
-      <div id="controls" style="margin-left:20px;margin-top:20px;display:block;float:left;">
-        <div style="display:block;float:left;">
-          <input type="checkbox" id="on1" name="on1" value="on1">
-          <label for="on1">Send 1</label><br>
-          <input type="range" min="0" max="100" value="100" class="slider" id="alpha1"><br>
-          <br>
-          <input type="checkbox" id="on2" name="on2" value="on2">
-          <label for="on2">Send 2</label><br>
-          <input type="range" min="0" max="100" value="100" class="slider" id="alpha2"><br>
-          <br>
-          <input type="checkbox" id="on3" name="on3" value="on3">
-          <label for="on3">Send 3</label><br>
-          <input type="range" min="0" max="100" value="100" class="slider" id="alpha3">
+      <div id="interface">
+
+        <div id="nocursor" style="width:100%;cursor:none;"></div>
+
+        <div id="controls" style="margin-left:20px;margin-top:20px;display:block;float:left;clear:both;">
+          <div style="display:block;float:left;">
+            <input type="checkbox" id="on1" name="on1" value="on1" onchange="toggleSrc(1)">
+            <label for="on1">Send 1</label><br>
+            <input type="range" min="0" max="100" value="100" class="slider" id="alpha1"><br>
+          </div>
+          <div style="display:block;float:left;">
+            <input type="checkbox" id="on2" name="on2" value="on2" onchange="toggleSrc(2)">
+            <label for="on2">Send 2</label><br>
+            <input type="range" min="0" max="100" value="100" class="slider" id="alpha2"><br>
+          </div>
+          <div style="display:block;float:left;">
+            <input type="checkbox" id="on3" name="on3" value="on3" onchange="toggleSrc(3)">
+            <label for="on3">Send 3</label><br>
+            <input type="range" min="0" max="100" value="100" class="slider" id="alpha3">
+          </div>
+          <div style="display:block;float:left;">
+            <input type="checkbox" id="on4" name="on4" value="on4" onchange="toggleSrc(4)">
+            <label for="on4">Send 4</label><br>
+            <input type="range" min="0" max="100" value="100" class="slider" id="alpha4"><br>
+          </div>
+          <div style="display:block;float:left;">
+            <input type="checkbox" id="on5" name="on5" value="on5" onchange="toggleSrc(5)">
+            <label for="on5">Send 5</label><br>
+            <input type="range" min="0" max="100" value="100" class="slider" id="alpha5"><br>
+          </div>
+          <div style="display:block;float:left;">
+            <input type="checkbox" id="on6" name="on6" value="on6" onchange="toggleSrc(6)">
+            <label for="on6">Send 6</label><br>
+            <input type="range" min="0" max="100" value="100" class="slider" id="alpha6"><br>
+          </div>
+          <div style="display:block;float:left;clear:left;margin-top:20px;">
+          <!-- Blend mode: <input type="text" id="blendInput" value="screen"> <input id="blendBtn" type="button" value="change"> -->
+          <input type="radio" id="screen" name="blendInput" value="screen" checked="true" onchange="toggleBlend('screen')"> <label for="screen">screen</label> <input type="radio" id="multiply" name="blendInput" value="multiply" onchange="toggleBlend('multiply')"> <label for="multiply">multiply</label> <input type="radio" id="difference" name="blendInput" value="difference" onchange="toggleBlend('difference')"> <label for="difference">difference</label>
+          </div>
         </div>
-        <div style="display:block;float:left;">
-          <input type="checkbox" id="on4" name="on4" value="on4">
-          <label for="on4">Send 4</label><br>
-          <input type="range" min="0" max="100" value="100" class="slider" id="alpha4"><br>
-          <br>
-          <input type="checkbox" id="on5" name="on5" value="on5">
-          <label for="on5">Send 5</label><br>
-          <input type="range" min="0" max="100" value="100" class="slider" id="alpha5"><br>
-          <br>
-          <input type="checkbox" id="on6" name="on6" value="on6">
-          <label for="on6">Send 6</label><br>
-          <input type="range" min="0" max="100" value="100" class="slider" id="alpha6"><br>
-        </div>
-        <div style="display:block;float:left;clear:left;margin-top:20px;">
-         Blend mode: <input type="text" id="blendInput" value="screen"> <input id="blendBtn" type="button" value="change">
-        </div>
+
+        <div style="width:100%;display:block;float:left;clear:both;background:#000;color:#fff;padding:5px 0;margin:5px 0;text-align:center;">~ SOURCES ~</div>
+
+        <div id="d1" class="inputCanvas" style="float:left;clear:left;"></div>
+        <div id="d2" class="inputCanvas" style="float:left;"></div>
+
+        <canvas id="hydraCanvas" width="720" height="400" style="width:720px;height:400px; float:left;"></canvas>
+        <canvas id="hydraCanvas2" width="720" height="400" style="width:720px;height:400px; float:left;"></canvas>
+
+        <!-- INIT VIDEO SOURCES -->
+        <video id="video1" src="https://dl.dropboxusercontent.com/s/779cy34fiem6fz4/flowers.mp4?dl=0" width="720" height="400" loop autoplay muted style="object-fit:cover;display:block;float:left; "></video>
+        <video id="video2" src="https://dl.dropboxusercontent.com/s/n7y86joln4uj4t7/trees.mov?dl=0" width="720" height="400" loop autoplay muted style="object-fit:cover;display:block;float:left;"></video>
+
       </div>
-
-      <div style="width:100%;display:block;float:left;clear:both;background:#000;color:#fff;padding:5px 0;margin:5px 0;text-align:center;">~ SOURCES ~</div>
-
-      <div id="d1" class="inputCanvas" style="float:left;clear:left;"></div>
-      <div id="d2" class="inputCanvas" style="float:left;"></div>
-
-      <canvas id="hydraCanvas" width="720" height="400" style="width:720px;height:400px; float:left;"></canvas>
-      <canvas id="hydraCanvas2" width="720" height="400" style="width:720px;height:400px; float:left;"></canvas>
-
-      <!-- INIT VIDEO SOURCES -->
-      <video id="video1" src="https://dl.dropboxusercontent.com/s/779cy34fiem6fz4/flowers.mp4?dl=0" width="720" height="400" loop autoplay muted style="object-fit:cover;display:block;float:left; "></video>
-      <video id="video2" src="https://dl.dropboxusercontent.com/s/n7y86joln4uj4t7/trees.mov?dl=0" width="720" height="400" loop autoplay muted style="object-fit:cover;display:block;float:left;"></video>
-
     </main>
 
     <!-- INIT P5 SOURCES -->
@@ -103,15 +113,57 @@
       function changeBlend() {
         blendMode = document.querySelector("#blendInput").value;
       }
-      const blendBtn = document.getElementById("blendBtn");
-      blendBtn.addEventListener("click",changeBlend);
+      //const blendBtn = document.getElementById("blendBtn");
+      //blendBtn.addEventListener("click",changeBlend);
+
+
+      // UI listeners
+      function toggleSrc(s){
+        outOn[s-1] = (document.querySelector(`#on${s}`).checked) ? true : false;
+      }
+
+      function toggleBlend(b){
+        blendMode = b;
+      }
+
+      // Keyboard listeners
+      document.addEventListener('keydown', (event) => {
+        if(event.key >= 1 && event.key <=  6){
+          outOn[event.key-1] = !(outOn[event.key-1]);
+          document.querySelector(`#on${event.key}`).checked = outOn[event.key-1];
+        }
+        else if(event.key == 'q'){
+          blendMode = "screen"
+          document.getElementById("screen").checked = true;
+        }
+        else if(event.key == 'w'){
+          blendMode = "multiply"
+          document.getElementById("multiply").checked = true;
+        }
+        else if(event.key == 'e'){
+          blendMode = "difference"
+          document.getElementById("difference").checked = true;
+        } else if(event.key == 'h'){
+
+        }
+      }, false);
+
+      function resizeMain() {
+        document.getElementById("out1").width = window.innerWidth;
+        document.getElementById("out1").height = window.innerHeight;
+        document.getElementById("nocursor").style = "cursor:none;width:100%;height:" + window.innerHeight + "px";
+      }
+
+      resizeMain();
+
+      window.addEventListener('resize', resizeMain);
 
       function mixem() {
 
         hydra.tick(16);
         hydra2.tick(16);
 
-        for(let i=0; i<6; i++) outOn[i] = (document.querySelector(`#on${i+1}`).checked) ? true : false;
+        //for(let i=0; i<6; i++) outOn[i] = (document.querySelector(`#on${i+1}`).checked) ? true : false;
         for(let i=0; i<6; i++) outAlpha[i] = document.querySelector(`#alpha${i+1}`).value/100;
 
         var out1 = document.getElementById("out1");
@@ -132,27 +184,27 @@
 
           if(outOn[0]){
             ctxo1.globalAlpha = outAlpha[0];
-            ctxo1.drawImage(src1, 0, 0, src1.offsetWidth, src1.offsetHeight);
+            ctxo1.drawImage(src1, 0, 0, out1.offsetWidth, out1.offsetHeight);
           }
           if(outOn[1]){
             ctxo1.globalAlpha = outAlpha[1];
-            ctxo1.drawImage(src2, 0, 0, src2.offsetWidth, src2.offsetHeight);
+            ctxo1.drawImage(src2, 0, 0, out1.offsetWidth, out1.offsetHeight);
           }
           if(outOn[2]){
             ctxo1.globalAlpha = outAlpha[2];
-            ctxo1.drawImage(img,0,0, src3.offsetWidth, src3.offsetHeight);
+            ctxo1.drawImage(img,0,0, out1.offsetWidth, out1.offsetHeight);
           }
           if(outOn[3]){
             ctxo1.globalAlpha = outAlpha[3];
-            ctxo1.drawImage(img2,0,0, src4.offsetWidth, src4.offsetHeight);
+            ctxo1.drawImage(img2,0,0, out1.offsetWidth, out1.offsetHeight);
           }
           if(outOn[4]){
             ctxo1.globalAlpha = outAlpha[4];
-            ctxo1.drawImage(src5,0,0, src5.offsetWidth, src5.offsetHeight);
+            ctxo1.drawImage(src5,0,0, out1.offsetWidth, out1.offsetHeight);
           }
           if(outOn[5]){
             ctxo1.globalAlpha = outAlpha[5];
-            ctxo1.drawImage(src6,0,0, src6.offsetWidth, src6.offsetHeight);
+            ctxo1.drawImage(src6,0,0, out1.offsetWidth, out1.offsetHeight);
           }
         }
         img.src = src3.toDataURL('image/jpeg');
