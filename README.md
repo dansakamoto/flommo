@@ -1,5 +1,7 @@
 # flommo
 
-A browser-based **M**ixed **M**edia **FLO**w machine prototype.
+A browser-based mixed media flow machine.
 
-[working demo on glitch](https://bubble-bow-newsstand.glitch.me/) - google chrome required
+Searching for a space between VJ toolkit and livecode ethos.
+
+https://bubble-bow-newsstand.glitch.me/
