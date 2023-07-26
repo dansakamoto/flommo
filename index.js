@@ -7,3 +7,11 @@ app.listen(port, () => {
 });
 
 app.use(express.static('public'));
+
+const fs = require('fs');
+const mediaPath = "./public/media";
+const movs = fs.readdirSync(mediaPath);
+
+app.get('/movlist', (req, res) => {
+    res.send(movs);
+});
