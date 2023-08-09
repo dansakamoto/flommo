@@ -169,8 +169,8 @@ route("/srclist");
     else if(event.key == 'e'){
       blendMode = "difference"
       document.getElementById("difference").checked = true;
-    } else if(event.key == 'h'){
-
+    } else if(event.key == 'b'){
+      document.querySelector("#welcome").style = "display:none;";
     }
   }, false);
 
