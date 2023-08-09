@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <!-- import p5js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
+
+    <!-- import hydra synth -->
+    <script src="https://unpkg.com/hydra-synth"></script>
+
+    <!-- import fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <meta charset="utf-8" />
+  </head>
+
+  <body>
+    <main>
+      <canvas id="out1"></canvas>
+
+      <div id="interface">
+
+        <div id="nocursor">
+
+          <div id="welcome">
+            <span style="font-size:8em;">flo<span style="letter-spacing:-.18em;">m</span>mo</span><span style="font-size:1em"> <span style="font-family:'Courier New', Courier, monospace">static source proof of concept 0.002</span></span>
+            <br>
+            <span>experimental / in-development - may only behave in Chrome for now</span>
+            <br><br>
+            <span>Select a source using a number key, or scroll down for the gui</span>
+
+          </div>
+
+        </div>
+
+        <div id="controls">
+          <div class="panel">
+            <input type="checkbox" id="on1" name="on1" value="on1" onchange="toggleSrc(1)">
+            <label for="on1">Send 1</label><br>
+            <input type="range" min="0" max="100" value="100" class="slider" id="alpha1"><br>
+          </div>
+          <div class="panel">
+            <input type="checkbox" id="on2" name="on2" value="on2" onchange="toggleSrc(2)">
+            <label for="on2">Send 2</label><br>
+            <input type="range" min="0" max="100" value="100" class="slider" id="alpha2"><br>
+          </div>
+          <div class="panel">
+            <input type="checkbox" id="on3" name="on3" value="on3" onchange="toggleSrc(3)">
+            <label for="on3">Send 3</label><br>
+            <input type="range" min="0" max="100" value="100" class="slider" id="alpha3">
+          </div>
+          <div class="panel">
+            <input type="checkbox" id="on4" name="on4" value="on4" onchange="toggleSrc(4)">
+            <label for="on4">Send 4</label><br>
+            <input type="range" min="0" max="100" value="100" class="slider" id="alpha4"><br>
+          </div>
+          <div class="panel">
+            <input type="checkbox" id="on5" name="on5" value="on5" onchange="toggleSrc(5)">
+            <label for="on5">Send 5</label><br>
+            <input type="range" min="0" max="100" value="100" class="slider" id="alpha5"><br>
+          </div>
+          <div class="panel">
+            <input type="checkbox" id="on6" name="on6" value="on6" onchange="toggleSrc(6)">
+            <label for="on6">Send 6</label><br>
+            <input type="range" min="0" max="100" value="100" class="slider" id="alpha6"><br>
+          </div>
+
+          <div id="blends">
+            <input type="radio" id="screen" name="blendInput" value="screen" checked="true" onchange="toggleBlend('screen')">
+              <label for="screen">(q) screen</label>
+            <input type="radio" id="multiply" name="blendInput" value="multiply" onchange="toggleBlend('multiply')">
+              <label for="multiply">(w) multiply</label>
+            <input type="radio" id="difference" name="blendInput" value="difference" onchange="toggleBlend('difference')">
+              <label for="difference">(e) difference</label>
+          </div>
+
+        </div>
+
+        <div id="srcHeader">~ SOURCES ~</div>
+
+        <!-- p5 CONTAINERS -->
+        <div id="d1" class="inputSrc"></div>
+        <div id="d2" class="inputSrc"></div>
+
+        <!-- INIT HYDRA SOURCES -->
+        <canvas id="hydraCanvas" class="inputSrc" width="720" height="400"></canvas>
+        <canvas id="hydraCanvas2" class="inputSrc" width="720" height="400"></canvas>
+
+        <!-- INIT VIDEO SOURCES -->
+        <video id="video1" class="inputSrc" src="https://dl.dropboxusercontent.com/s/779cy34fiem6fz4/flowers.mp4?dl=0" width="720" height="400" loop autoplay muted></video>
+        <video id="video2" class="inputSrc" src="https://dl.dropboxusercontent.com/s/n7y86joln4uj4t7/trees.mov?dl=0" width="720" height="400" loop autoplay muted></video>
+
+      </div>
+    </main>
+
+    <!-- LOAD P5 SKETCHES -->
+    <script src="P5bounce.js"></script>
+    <script src="P5morph.js"></script>
+
+    <!-- INIT HYDRA INSTANCES -->
+    <script>
+      var hydra = new Hydra({
+        makeGlobal: false,
+        canvas: document.getElementById("hydraCanvas"),
+        detectAudio: false,
+        autoLoop: false
+      }).synth
+      hydra.osc(() => -hydra.mouse.x / 10, 0.5, 0.8).rotate(0, 0.1).kaleid().color(-1, 1).out()
+
+      var hydra2 = new Hydra({
+        makeGlobal: false,
+        canvas: document.getElementById("hydraCanvas2"),
+        detectAudio: false,
+        autoLoop: false
+      }).synth
+      hydra2.osc(40,0.2,1).modulateScale(hydra2.osc(40,0,1).kaleid(8)).repeat(2,4).modulate(hydra2.o0,0.05).modulateKaleid(hydra2.shape(4,0.1,1)).out()
+    </script>
+
+    <!-- INIT P5 INSTANCES -->
+    <script>
+      let myp5a = new p5(p5bounce, "d1");
+      let myp5b = new p5(p5morph, "d2");
+    </script>
+
+    <script>
+
+      // INIT MIXER SETTINGS
+      const outOn = Array(6).fill(false);
+      const outAlpha = Array(6).fill(1);
+      var blendMode = "screen";
+
+      function changeBlend() {
+        blendMode = document.querySelector("#blendInput").value;
+      }
+
+      function toggleBlend(b){
+        blendMode = b;
+      }
+
+      // GUI listeners
+      function toggleSrc(s){
+        outOn[s-1] = (document.querySelector(`#on${s}`).checked) ? true : false;
+        document.querySelector("#welcome").style = "display:none;";
+      }
+
+      // Keyboard listeners
+      document.addEventListener('keydown', (event) => {
+        if(event.key >= 1 && event.key <=  6){
+          outOn[event.key-1] = !(outOn[event.key-1]);
+          document.querySelector(`#on${event.key}`).checked = outOn[event.key-1];
+          document.querySelector("#welcome").style = "display:none;";
+        }
+        else if(event.key == 'q'){
+          blendMode = "screen"
+          document.getElementById("screen").checked = true;
+        }
+        else if(event.key == 'w'){
+          blendMode = "multiply"
+          document.getElementById("multiply").checked = true;
+        }
+        else if(event.key == 'e'){
+          blendMode = "difference"
+          document.getElementById("difference").checked = true;
+        } else if(event.key == 'h'){
+
+        }
+      }, false);
+
+      // keep output size = to window size
+      function resizeMain() {
+        document.getElementById("out1").width = window.innerWidth;
+        document.getElementById("out1").height = window.innerHeight;
+        document.getElementById("nocursor").style = "cursor:none;width:100%;height:" + window.innerHeight + "px";
+      }
+      resizeMain();
+      window.addEventListener('resize', resizeMain);
+
+      // main update function to run every frame
+      function mixem() {
+
+        var out1 = document.getElementById("out1");
+        var ctxo1 = out1.getContext('2d');
+        var src1 = document.getElementById("d1").firstChild;
+        var src2 = document.getElementById("d2").firstChild;
+        var src3 = document.getElementById("hydraCanvas");
+        var src4 = document.getElementById("hydraCanvas2");
+        var src5 = document.getElementById("video1");
+        var src6 = document.getElementById("video2");
+
+        // update hydras
+        hydra.tick(16);
+        hydra2.tick(16);
+
+        // update videos (even if offscreen)
+        src5.play();
+        src6.play();
+
+        // update alphas
+        for(let i=0; i<6; i++) outAlpha[i] = document.querySelector(`#alpha${i+1}`).value/100;
+
+        // render 3d hydra canvas to a 2d canvas
+        // all other canvas updates are tethered to this to keep them in sync
+        var img = new Image();
+        img.onload=function(){
+          ctxo1.clearRect(0, 0, out1.width, out1.height);
+
+          if(outOn[0]){
+            ctxo1.globalAlpha = outAlpha[0];
+            ctxo1.drawImage(src1, 0, 0, out1.offsetWidth, out1.offsetHeight);
+          }
+          if(outOn[1]){
+            ctxo1.globalAlpha = outAlpha[1];
+            ctxo1.drawImage(src2, 0, 0, out1.offsetWidth, out1.offsetHeight);
+          }
+          if(outOn[2]){
+            ctxo1.globalAlpha = outAlpha[2];
+            ctxo1.drawImage(img,0,0, out1.offsetWidth, out1.offsetHeight);
+          }
+          if(outOn[3]){
+            ctxo1.globalAlpha = outAlpha[3];
+            ctxo1.drawImage(img2,0,0, out1.offsetWidth, out1.offsetHeight);
+          }
+          if(outOn[4]){
+            ctxo1.globalAlpha = outAlpha[4];
+            ctxo1.drawImage(src5,0,0, out1.offsetWidth, out1.offsetHeight);
+          }
+          if(outOn[5]){
+            ctxo1.globalAlpha = outAlpha[5];
+            ctxo1.drawImage(src6,0,0, out1.offsetWidth, out1.offsetHeight);
+          }
+        }
+        img.src = src3.toDataURL('image/jpeg');
+
+        var img2 = new Image();
+        img2.src = src4.toDataURL('image/jpeg');
+
+        ctxo1.globalCompositeOperation = blendMode;
+
+    }
+    var t=setInterval(mixem,16);
+
+    </script>
+
+  </body>
+</html>
