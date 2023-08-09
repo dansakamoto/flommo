@@ -1,39 +1,133 @@
 const vids = {};
+const hydras = {};
+const p5s = {};
 
-function initVids(vidSrcs){
+const p5Instances = [];
 
-    const wrapper = document.getElementById("loadedVids")
+const hydraFnctns = [];
+const hydraInstances = [];
 
-    let i=0;
-    for(v of vidSrcs){
-        const vElement = document.createElement("video");
+var numSources = 0;
 
-        vElement.src = window.location.origin + "/media/" + v;
-        vElement.class = "inputSrc";
-        vElement.id = "video"+i;
-        vElement.width = 720;
-        vElement.height = 400;
-        vElement.loop = true;
-        vElement.autoplay = true;
-        vElement.muted = true;
+function initSources(sourceList){
 
-        wrapper.appendChild(vElement);
+  const vidWrapper = document.getElementById("loadedVids");
+  const p5Wrapper = document.getElementById("loadedP5s");
+  const hydraWrapper = document.getElementById("loadedHydras");
+  const togglePanel = document.getElementById("sourceToggles");
 
-        vids["video"+i] = v;
-        i++;
+  var i=0;
+  for(v of sourceList["vids"]){
+    const vElement = document.createElement("video");
+
+    vElement.src = window.location.origin + "/sources/vids/" + v;
+    vElement.classList.add("inputSrc");
+    vElement.id = "video"+i;
+    vElement.width = 720;
+    vElement.height = 400;
+    vElement.loop = true;
+    vElement.autoplay = true;
+    vElement.muted = true;
+
+    vidWrapper.appendChild(vElement);
+
+    vids["video"+i] = v;
+    i++;
+    numSources++;
+  }
+
+  var i=0;
+  for(h of sourceList["hydras"]){
+
+    const scriptElement = document.createElement("script");
+    scriptElement.src = "sources/hydra/" + h;
+    scriptElement.async = true;
+
+    scriptElement.h = h;
+    scriptElement.i = i;
+
+    scriptElement.onload = function() {
+      var loc = this.h.substring(0,this.h.lastIndexOf('.'));
+      var canvasID = "hydraCanvas"+this.i;
+
+      console.log(window[loc]);
+
+      hydraInstances.push(new Hydra({
+        makeGlobal: false,
+        canvas: document.getElementById(canvasID),
+        detectAudio: false,
+        autoLoop: false
+      }).synth);
+
+      window[loc](hydraInstances[this.i]);
 
     }
-     console.log(vids);
+    document.body.appendChild(scriptElement);
+
+    const hydraCanv = document.createElement("canvas");
+    hydraCanv.id = "hydraCanvas"+i;
+    hydraCanv.classList.add("inputSrc");
+    hydraCanv.width = 720;
+    hydraCanv.height = 400;
+
+    hydraWrapper.appendChild(hydraCanv);
+
+    hydras["hydraCanvas"+i] = h;
+    i++;
+    numSources++;
+  }
+
+  var i=0;
+  for(p of sourceList["p5s"]){
+
+    const scriptElement = document.createElement("script");
+    scriptElement.src = "sources/p5/" + p;
+    scriptElement.async = true;
+
+    scriptElement.p = p;
+    scriptElement.i = i;
+
+    scriptElement.onload = function() {
+      var loc = this.p.substring(0,this.p.lastIndexOf('.'));
+      var canvasID = "p5Canvas"+this.i;
+      p5Instances.push(new p5(window[loc], canvasID ));
+    }
+    document.body.appendChild(scriptElement);
+
+    const p5Div = document.createElement("div");
+    p5Div.id = "p5Canvas"+i;
+    p5Div.classList.add("inputSrc");
+
+    p5Wrapper.appendChild(p5Div);
+
+    //let tmp1 = window.location.origin + "/sources/p5/" + p;
+    //p5Instances.push(new p5(tmp1, p5Div.id ));
+
+    //var loc = this.p.substring(0,this.p.lastIndexOf('.'));
+    //var canvasID = "p5Canvas"+this.i;
+
+    p5s["p5Canvas"+i] = p;
+    i++;
+    numSources++;
+  }
+
+  for(let j=0; j<numSources; j++){
+    const panelDiv = document.createElement("div");
+    panelDiv.classList.add("panel");
+    panelDiv.innerHTML = `<input type="checkbox" id="on${j+1}" name="on${j+1}" value="on${j+1}" onchange="toggleSrc(${j+1})"><label for="on${j+1}">Send ${j+1}</label><br><input type="range" min="0" max="100" value="100" class="slider" id="alpha${j+1}"><br></br>`;
+
+    togglePanel.appendChild(panelDiv);
+
+  }
 
 }
 
 async function route(url){
     const response = await fetch(url);
     var data = await response.json();
-    initVids(data);
+    initSources(data);
 }
-
-route("/movlist");
+route("/srclist");
 
 
 // <video id="video2" class="inputSrc" src="https://dl.dropboxusercontent.com/s/n7y86joln4uj4t7/trees.mov?dl=0" width="720" height="400" loop autoplay muted></video>
@@ -59,7 +153,7 @@ route("/movlist");
 
   // Keyboard listeners
   document.addEventListener('keydown', (event) => {
-    if(event.key >= 1 && event.key <=  6){
+    if(event.key >= 0 && event.key <=  9){
       outOn[event.key-1] = !(outOn[event.key-1]);
       document.querySelector(`#on${event.key}`).checked = outOn[event.key-1];
       document.querySelector("#welcome").style = "display:none;";
@@ -114,7 +208,7 @@ route("/movlist");
     for(let k in vids) document.getElementById(k).play();
 
     // update alphas
-    for(let i=0; i<6; i++) outAlpha[i] = document.querySelector(`#alpha${i+1}`).value/100;
+    for(let i=0; i<numSources; i++) outAlpha[i] = document.querySelector(`#alpha${i+1}`).value/100;
 
     // render 3d hydra canvas to a 2d canvas
     // all other canvas updates are tethered to this to keep them in sync
@@ -156,7 +250,28 @@ route("/movlist");
 
     ctxo1.clearRect(0, 0, out1.width, out1.height);
 
+    //hydra.tick(16);
+    for(hi of hydraInstances){
+      hi.tick(16);
+    }
+
     let i = 0;
+    for(let k in p5s){
+      if(outOn[i]){
+        ctxo1.globalAlpha = outAlpha[i];
+        ctxo1.drawImage(document.getElementById(k).firstChild,0,0, out1.offsetWidth, out1.offsetHeight);
+      }
+      i++;
+    }
+
+    for(let k in hydras){
+      if(outOn[i]){
+        ctxo1.globalAlpha = outAlpha[i];
+        ctxo1.drawImage(document.getElementById(k),0,0, out1.offsetWidth, out1.offsetHeight);
+      }
+      i++;
+    }
+
     for(let k in vids){
       if(outOn[i]){
         ctxo1.globalAlpha = outAlpha[i];

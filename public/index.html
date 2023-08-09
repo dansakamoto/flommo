@@ -28,7 +28,7 @@
         <div id="nocursor">
 
           <div id="welcome">
-            <span style="font-size:8em;">flo<span style="letter-spacing:-.18em;">m</span>mo</span><span style="font-size:1em"> <span style="font-family:'Courier New', Courier, monospace">static source proof of concept 0.002</span></span>
+            <span style="font-size:8em;">flo<span style="letter-spacing:-.18em;">m</span>mo</span><span style="font-size:1em"> <span style="font-family:'Courier New', Courier, monospace">0.003</span></span>
             <br>
             <span>experimental / in-development - may only behave in Chrome for now</span>
             <br><br>
@@ -39,35 +39,39 @@
         </div>
 
         <div id="controls">
-          <div class="panel">
-            <input type="checkbox" id="on1" name="on1" value="on1" onchange="toggleSrc(1)">
-            <label for="on1">Send 1</label><br>
-            <input type="range" min="0" max="100" value="100" class="slider" id="alpha1"><br>
-          </div>
-          <div class="panel">
-            <input type="checkbox" id="on2" name="on2" value="on2" onchange="toggleSrc(2)">
-            <label for="on2">Send 2</label><br>
-            <input type="range" min="0" max="100" value="100" class="slider" id="alpha2"><br>
-          </div>
-          <div class="panel">
-            <input type="checkbox" id="on3" name="on3" value="on3" onchange="toggleSrc(3)">
-            <label for="on3">Send 3</label><br>
-            <input type="range" min="0" max="100" value="100" class="slider" id="alpha3">
-          </div>
-          <div class="panel">
-            <input type="checkbox" id="on4" name="on4" value="on4" onchange="toggleSrc(4)">
-            <label for="on4">Send 4</label><br>
-            <input type="range" min="0" max="100" value="100" class="slider" id="alpha4"><br>
-          </div>
-          <div class="panel">
-            <input type="checkbox" id="on5" name="on5" value="on5" onchange="toggleSrc(5)">
-            <label for="on5">Send 5</label><br>
-            <input type="range" min="0" max="100" value="100" class="slider" id="alpha5"><br>
-          </div>
-          <div class="panel">
-            <input type="checkbox" id="on6" name="on6" value="on6" onchange="toggleSrc(6)">
-            <label for="on6">Send 6</label><br>
-            <input type="range" min="0" max="100" value="100" class="slider" id="alpha6"><br>
+          <div id="sourceToggles">
+            <!--
+            <div class="panel">
+              <input type="checkbox" id="on1" name="on1" value="on1" onchange="toggleSrc(1)">
+              <label for="on1">Send 1</label><br>
+              <input type="range" min="0" max="100" value="100" class="slider" id="alpha1"><br>
+            </div>
+            <div class="panel">
+              <input type="checkbox" id="on2" name="on2" value="on2" onchange="toggleSrc(2)">
+              <label for="on2">Send 2</label><br>
+              <input type="range" min="0" max="100" value="100" class="slider" id="alpha2"><br>
+            </div>
+            <div class="panel">
+              <input type="checkbox" id="on3" name="on3" value="on3" onchange="toggleSrc(3)">
+              <label for="on3">Send 3</label><br>
+              <input type="range" min="0" max="100" value="100" class="slider" id="alpha3">
+            </div>
+            <div class="panel">
+              <input type="checkbox" id="on4" name="on4" value="on4" onchange="toggleSrc(4)">
+              <label for="on4">Send 4</label><br>
+              <input type="range" min="0" max="100" value="100" class="slider" id="alpha4"><br>
+            </div>
+            <div class="panel">
+              <input type="checkbox" id="on5" name="on5" value="on5" onchange="toggleSrc(5)">
+              <label for="on5">Send 5</label><br>
+              <input type="range" min="0" max="100" value="100" class="slider" id="alpha5"><br>
+            </div>
+            <div class="panel">
+              <input type="checkbox" id="on6" name="on6" value="on6" onchange="toggleSrc(6)">
+              <label for="on6">Send 6</label><br>
+              <input type="range" min="0" max="100" value="100" class="slider" id="alpha6"><br>
+            </div>
+          -->
           </div>
 
           <div id="blends">
@@ -81,12 +85,12 @@
 
         </div>
 
-        <div id="srcHeader">~ SOURCES ~</div>
+        <div id="srcHeader">SOURCES</div>
 
         <!-- p5 CONTAINERS -->
-        <!--
-        <div id="d1" class="inputSrc"></div>
-        <div id="d2" class="inputSrc"></div> -->
+
+
+
 
         <!-- INIT HYDRA SOURCES -->
         <!--
@@ -98,27 +102,41 @@
         <video id="video1" class="inputSrc" src="https://dl.dropboxusercontent.com/s/779cy34fiem6fz4/flowers.mp4?dl=0" width="720" height="400" loop autoplay muted></video>
         <video id="video2" class="inputSrc" src="https://dl.dropboxusercontent.com/s/n7y86joln4uj4t7/trees.mov?dl=0" width="720" height="400" loop autoplay muted></video>
         -->
+        <div id="loadedP5s"></div>
+        <div id="loadedHydras">
+          <!-- <canvas id="hydraCanvas" class="inputSrc" width="720" height="400"></canvas> -->
+        </div>
         <div id="loadedVids"></div>
 
       </div>
     </main>
 
     <!-- LOAD P5 SKETCHES -->
+
+
     <!--
-    <script src="P5bounce.js"></script>
-    <script src="P5morph.js"></script> -->
+    <script src="sources/p5/P5bounce.js"></script>
+    <script src="sources/p5/P5morph.js"></script>
+    -->
+    <!--<script src="sources/p5/P5morph.js"></script>-->
 
     <!-- INIT HYDRA INSTANCES -->
     <script>
-      /*
+/*
+    function hydraDemo1(h) {
+      h.osc(() => -hydra.mouse.x / 10, 0.5, 0.8).rotate(0, 0.1).kaleid().color(-1, 1).out();
+    }
+
       var hydra = new Hydra({
         makeGlobal: false,
         canvas: document.getElementById("hydraCanvas"),
         detectAudio: false,
         autoLoop: false
       }).synth
-      hydra.osc(() => -hydra.mouse.x / 10, 0.5, 0.8).rotate(0, 0.1).kaleid().color(-1, 1).out()
-
+      //hydra.osc(() => -hydra.mouse.x / 10, 0.5, 0.8).rotate(0, 0.1).kaleid().color(-1, 1).out()
+      hydraDemo1(hydra);
+*/
+      /*
       var hydra2 = new Hydra({
         makeGlobal: false,
         canvas: document.getElementById("hydraCanvas2"),
@@ -132,9 +150,9 @@
     <!-- INIT P5 INSTANCES -->
     <script>
       /*
-      let myp5a = new p5(p5bounce, "d1");
-      let myp5b = new p5(p5morph, "d2");
-      */
+      let myp5a = new p5(P5bounce, "d1");
+      let myp5b = new p5(P5morph, "d2");
+*/
     </script>
 
     <script src="flommo.js"></script>
