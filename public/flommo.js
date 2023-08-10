@@ -238,6 +238,10 @@ route("/srclist");
     else if(event.key == 'b'){
       document.querySelector("#welcome").style = "display:none;";
       document.getElementById("nocursor").style.cursor = "none"
+      for(let i=0; i<numSources; i++){
+        outOn[i] = false;
+        document.querySelector(`#on${i+1}`).checked = false;
+      }
     }
     else if(event.key == 'i'){
       gInvert = !gInvert;
