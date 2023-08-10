@@ -12,15 +12,19 @@ main {
   margin:0 auto;
 }
 
-span#archive {
-  color: #666;
+div#archive {
+  color: #aaa;
+  margin-top:40px;
+  display:none;
 }
 
-span#archive a {
+div#archive a {
   color: #666;
+  font-size:x-large;
+  text-decoration:none;
 }
 
-span#archive a:hover {
+div#archive a:hover {
   color: #fff;
 }
 

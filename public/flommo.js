@@ -9,7 +9,31 @@ const hydraInstances = [];
 
 var numSources = 0;
 
+if (navigator.requestMIDIAccess) console.log('This browser supports WebMIDI!')
+  else console.log('WebMIDI is not supported in this browser.');
+
+navigator.requestMIDIAccess()
+  .then(onMIDISuccess, onMIDIFailure);
+
+function onMIDISuccess(midiAccess) {
+// console.log(midiAccess)
+const midi = midiAccess
+const inputs = midi.inputs.values()
+const input = inputs.next()
+console.log(input)
+input.value.onmidimessage = onMIDIMessage
+}
+
+function onMIDIFailure(e) {
+  console.log('Could not access your MIDI devices: ', e)
+}
+
+
 function initSources(sourceList){
+
+  if(!sourceList["vids"].length && !sourceList["hydras"].length && !sourceList["p5s"].length){
+    document.getElementById("archive").style.display = "block";
+  }
 
   const vidWrapper = document.getElementById("loadedVids");
   const p5Wrapper = document.getElementById("loadedP5s");
@@ -100,12 +124,6 @@ function initSources(sourceList){
 
     p5Wrapper.appendChild(p5Div);
 
-    //let tmp1 = window.location.origin + "/sources/p5/" + p;
-    //p5Instances.push(new p5(tmp1, p5Div.id ));
-
-    //var loc = this.p.substring(0,this.p.lastIndexOf('.'));
-    //var canvasID = "p5Canvas"+this.i;
-
     p5s["p5Canvas"+i] = p;
     i++;
     numSources++;
@@ -130,12 +148,11 @@ async function route(url){
 route("/srclist");
 
 
-// <video id="video2" class="inputSrc" src="https://dl.dropboxusercontent.com/s/n7y86joln4uj4t7/trees.mov?dl=0" width="720" height="400" loop autoplay muted></video>
-
 // INIT MIXER SETTINGS
   const outOn = Array(6).fill(false);
   const outAlpha = Array(6).fill(1);
-  var blendMode = "screen";
+  var blendMode = "source-over";
+  var gInvert = false;
 
   function changeBlend() {
     blendMode = document.querySelector("#blendInput").value;
@@ -151,6 +168,48 @@ route("/srclist");
     document.querySelector("#welcome").style = "display:none;";
   }
 
+  // MIDI listers
+  function onMIDIMessage(message) {
+    const data = message.data // [command/channel, note, velocity]
+    if (data[0] != 248) console.log(data);
+    if (data[0] != 248){
+      const cmd = data[0];
+      const note = data[1];
+      const velocity = data[2];
+      //152 keyboard, 144 ableton
+      if(cmd==144 && velocity==127){
+        if(note >= 60 && note <= 69){
+          n = note-60;
+          outOn[n] = !(outOn[n]);
+          document.querySelector(`#on${n+1}`).checked = outOn[n+1];
+          document.querySelector("#welcome").style = "display:none;";
+        }
+        else if(note==70){
+          blendMode = "source-over"
+          document.getElementById("source-over").checked = true;
+        }
+        else if(note==71){
+          blendMode = "screen"
+          document.getElementById("screen").checked = true;
+        }
+        else if(note==72){
+          blendMode = "multiply"
+          document.getElementById("multiply").checked = true;
+        }
+        else if(note==73){
+          blendMode = "difference"
+          document.getElementById("difference").checked = true;
+        }
+        else if(note==74){
+          gInvert = !gInvert;
+        }
+
+      }
+
+    }
+
+  }
+
   // Keyboard listeners
   document.addEventListener('keydown', (event) => {
     if(event.key >= 0 && event.key <=  9){
@@ -159,18 +218,26 @@ route("/srclist");
       document.querySelector("#welcome").style = "display:none;";
     }
     else if(event.key == 'q'){
+      blendMode = "source-over"
+      document.getElementById("source-over").checked = true;
+    }
+    else if(event.key == 'w'){
       blendMode = "screen"
       document.getElementById("screen").checked = true;
     }
-    else if(event.key == 'w'){
+    else if(event.key == 'e'){
       blendMode = "multiply"
       document.getElementById("multiply").checked = true;
     }
-    else if(event.key == 'e'){
+    else if(event.key == 'r'){
       blendMode = "difference"
       document.getElementById("difference").checked = true;
-    } else if(event.key == 'b'){
+    }
+    else if(event.key == 'b'){
       document.querySelector("#welcome").style = "display:none;";
+    }
+    else if(event.key == 'i'){
+      gInvert = !gInvert;
     }
   }, false);
 
@@ -188,69 +255,15 @@ route("/srclist");
 
     var out1 = document.getElementById("out1");
     var ctxo1 = out1.getContext('2d');
-    /*
-    var src1 = document.getElementById("d1").firstChild;
-    var src2 = document.getElementById("d2").firstChild;
-    var src3 = document.getElementById("hydraCanvas");
-    var src4 = document.getElementById("hydraCanvas2");
-    var src5 = document.getElementById("video1");
-    var src6 = document.getElementById("video2");
-    */
-
-
-    // update hydras
-    //hydra.tick(16);
-    //hydra2.tick(16);
 
     // update videos (even if offscreen)
-    //src5.play();
-    //src6.play();
     for(let k in vids) document.getElementById(k).play();
 
     // update alphas
     for(let i=0; i<numSources; i++) outAlpha[i] = document.querySelector(`#alpha${i+1}`).value/100;
 
-    // render 3d hydra canvas to a 2d canvas
-    // all other canvas updates are tethered to this to keep them in sync
-    /*
-    var img = new Image();
-    img.onload=function(){
-      ctxo1.clearRect(0, 0, out1.width, out1.height);
-
-      if(outOn[0]){
-        ctxo1.globalAlpha = outAlpha[0];
-        ctxo1.drawImage(src1, 0, 0, out1.offsetWidth, out1.offsetHeight);
-      }
-      if(outOn[1]){
-        ctxo1.globalAlpha = outAlpha[1];
-        ctxo1.drawImage(src2, 0, 0, out1.offsetWidth, out1.offsetHeight);
-      }
-      if(outOn[2]){
-        ctxo1.globalAlpha = outAlpha[2];
-        ctxo1.drawImage(img,0,0, out1.offsetWidth, out1.offsetHeight);
-      }
-      if(outOn[3]){
-        ctxo1.globalAlpha = outAlpha[3];
-        ctxo1.drawImage(img2,0,0, out1.offsetWidth, out1.offsetHeight);
-      }
-      if(outOn[4]){
-        ctxo1.globalAlpha = outAlpha[4];
-        ctxo1.drawImage(src5,0,0, out1.offsetWidth, out1.offsetHeight);
-      }
-      if(outOn[5]){
-        ctxo1.globalAlpha = outAlpha[5];
-        ctxo1.drawImage(src6,0,0, out1.offsetWidth, out1.offsetHeight);
-      }
-    }
-    img.src = src3.toDataURL('image/jpeg');
-
-    var img2 = new Image();
-    img2.src = src4.toDataURL('image/jpeg');
-    */
-
     ctxo1.clearRect(0, 0, out1.width, out1.height);
 
-    //hydra.tick(16);
     for(hi of hydraInstances){
       hi.tick(16);
     }
@@ -280,6 +293,8 @@ route("/srclist");
       i++;
     }
 
+    if(gInvert) ctxo1.filter = 'invert(1)'
+    else ctxo1.filter = 'invert(0)'
     ctxo1.globalCompositeOperation = blendMode;
 
 }
