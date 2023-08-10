@@ -166,6 +166,7 @@ route("/srclist");
   function toggleSrc(s){
     outOn[s-1] = (document.querySelector(`#on${s}`).checked) ? true : false;
     document.querySelector("#welcome").style = "display:none;";
+    document.getElementById("nocursor").style.cursor = "none";
   }
 
   // MIDI listers
@@ -181,7 +182,7 @@ route("/srclist");
         if(note >= 60 && note <= 69){
           n = note-60;
           outOn[n] = !(outOn[n]);
-          document.querySelector(`#on${n+1}`).checked = outOn[n+1];
+          document.querySelector(`#on${n+1}`).checked = outOn[n];
           document.querySelector("#welcome").style = "display:none;";
         }
         else if(note==70){
@@ -216,6 +217,7 @@ route("/srclist");
       outOn[event.key-1] = !(outOn[event.key-1]);
       document.querySelector(`#on${event.key}`).checked = outOn[event.key-1];
       document.querySelector("#welcome").style = "display:none;";
+      document.getElementById("nocursor").style.cursor = "none"
     }
     else if(event.key == 'q'){
       blendMode = "source-over"
@@ -235,6 +237,7 @@ route("/srclist");
     }
     else if(event.key == 'b'){
       document.querySelector("#welcome").style = "display:none;";
+      document.getElementById("nocursor").style.cursor = "none"
     }
     else if(event.key == 'i'){
       gInvert = !gInvert;
@@ -245,7 +248,7 @@ route("/srclist");
   function resizeMain() {
     document.getElementById("out1").width = window.innerWidth;
     document.getElementById("out1").height = window.innerHeight;
-    document.getElementById("nocursor").style = "cursor:none;width:100%;height:" + window.innerHeight + "px";
+    document.getElementById("nocursor").style.height = window.innerHeight + "px";
   }
   resizeMain();
   window.addEventListener('resize', resizeMain);
