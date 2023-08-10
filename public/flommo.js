@@ -9,26 +9,6 @@ const hydraInstances = [];
 
 var numSources = 0;
 
-if (navigator.requestMIDIAccess) console.log('This browser supports WebMIDI!')
-  else console.log('WebMIDI is not supported in this browser.');
-
-navigator.requestMIDIAccess()
-  .then(onMIDISuccess, onMIDIFailure);
-
-function onMIDISuccess(midiAccess) {
-// console.log(midiAccess)
-const midi = midiAccess
-const inputs = midi.inputs.values()
-const input = inputs.next()
-console.log(input)
-input.value.onmidimessage = onMIDIMessage
-}
-
-function onMIDIFailure(e) {
-  console.log('Could not access your MIDI devices: ', e)
-}
-
-
 function initSources(sourceList){
 
   if(!sourceList["vids"].length && !sourceList["hydras"].length && !sourceList["p5s"].length){
@@ -41,21 +21,38 @@ function initSources(sourceList){
   const togglePanel = document.getElementById("sourceToggles");
 
   var i=0;
-  for(v of sourceList["vids"]){
-    const vElement = document.createElement("video");
+  for(p of sourceList["p5s"]){
 
-    vElement.src = window.location.origin + "/sources/vids/" + v;
-    vElement.classList.add("inputSrc");
-    vElement.id = "video"+i;
-    vElement.width = 720;
-    vElement.height = 400;
-    vElement.loop = true;
-    vElement.autoplay = true;
-    vElement.muted = true;
+    const scriptElement = document.createElement("script");
+    scriptElement.src = "sources/p5/" + p;
+    scriptElement.async = true;
 
-    vidWrapper.appendChild(vElement);
+    scriptElement.p = p;
+    scriptElement.i = i;
 
-    vids["video"+i] = v;
+    scriptElement.onload = function() {
+      var loc = this.p.substring(0,this.p.lastIndexOf('.'));
+      var canvasID = "p5Canvas"+this.i;
+      p5Instances.push(new p5(window[loc], canvasID ));
+    }
+    document.body.appendChild(scriptElement);
+
+    const dElement = document.createElement("div");
+    dElement.classList.add("inputDiv");
+
+    const srcLabel = document.createElement("div");
+    dElement.classList.add("srcLabel");
+    dElement.innerHTML = numSources+1;
+
+    const p5Div = document.createElement("div");
+    p5Div.id = "p5Canvas"+i;
+    p5Div.classList.add("inputSrc");
+
+    p5Wrapper.appendChild(dElement);
+    dElement.appendChild(srcLabel);
+    dElement.appendChild(p5Div);
+
+    p5s["p5Canvas"+i] = p;
     i++;
     numSources++;
   }
@@ -88,13 +85,22 @@ function initSources(sourceList){
     }
     document.body.appendChild(scriptElement);
 
+    const dElement = document.createElement("div");
+    dElement.classList.add("inputDiv");
+
+    const srcLabel = document.createElement("div");
+    dElement.classList.add("srcLabel");
+    dElement.innerHTML = numSources+1;
+
     const hydraCanv = document.createElement("canvas");
     hydraCanv.id = "hydraCanvas"+i;
     hydraCanv.classList.add("inputSrc");
     hydraCanv.width = 720;
     hydraCanv.height = 400;
 
-    hydraWrapper.appendChild(hydraCanv);
+    hydraWrapper.appendChild(dElement);
+    dElement.appendChild(srcLabel);
+    dElement.appendChild(hydraCanv);
 
     hydras["hydraCanvas"+i] = h;
     i++;
@@ -102,29 +108,30 @@ function initSources(sourceList){
   }
 
   var i=0;
-  for(p of sourceList["p5s"]){
+  for(v of sourceList["vids"]){
+    const dElement = document.createElement("div");
+    dElement.classList.add("inputDiv");
 
-    const scriptElement = document.createElement("script");
-    scriptElement.src = "sources/p5/" + p;
-    scriptElement.async = true;
+    const srcLabel = document.createElement("div");
+    dElement.classList.add("srcLabel");
+    dElement.innerHTML = numSources+1;
 
-    scriptElement.p = p;
-    scriptElement.i = i;
+    const vElement = document.createElement("video");
+    vElement.src = window.location.origin + "/sources/vids/" + v;
+    vElement.classList.add("inputSrc");
+    vElement.id = "video"+i;
+    vElement.width = 720;
+    vElement.height = 400;
+    vElement.loop = true;
+    vElement.autoplay = true;
+    vElement.muted = true;
 
-    scriptElement.onload = function() {
-      var loc = this.p.substring(0,this.p.lastIndexOf('.'));
-      var canvasID = "p5Canvas"+this.i;
-      p5Instances.push(new p5(window[loc], canvasID ));
-    }
-    document.body.appendChild(scriptElement);
+    vidWrapper.appendChild(dElement);
+    dElement.appendChild(srcLabel);
+    dElement.appendChild(vElement);
 
-    const p5Div = document.createElement("div");
-    p5Div.id = "p5Canvas"+i;
-    p5Div.classList.add("inputSrc");
 
-    p5Wrapper.appendChild(p5Div);
-
-    p5s["p5Canvas"+i] = p;
+    vids["video"+i] = v;
     i++;
     numSources++;
   }
@@ -135,7 +142,6 @@ function initSources(sourceList){
     panelDiv.innerHTML = `<input type="checkbox" id="on${j+1}" name="on${j+1}" value="on${j+1}" onchange="toggleSrc(${j+1})"><label for="on${j+1}">Send ${j+1}</label><br><input type="range" min="0" max="100" value="100" class="slider" id="alpha${j+1}"><br></br>`;
 
     togglePanel.appendChild(panelDiv);
-
   }
 
 }
@@ -162,6 +168,11 @@ route("/srclist");
     blendMode = b;
   }
 
+  function toggleFilter(f){
+    gInvert = !gInvert;
+    document.getElementById("#invert").checked = gInvert;
+  }
+
   // GUI listeners
   function toggleSrc(s){
     outOn[s-1] = (document.querySelector(`#on${s}`).checked) ? true : false;
@@ -170,6 +181,21 @@ route("/srclist");
   }
 
   // MIDI listers
+  navigator.requestMIDIAccess()
+  .then(onMIDISuccess, onMIDIFailure);
+
+  function onMIDISuccess(midiAccess) {
+  const midi = midiAccess
+  const inputs = midi.inputs.values()
+  const input = inputs.next()
+  console.log(input)
+  input.value.onmidimessage = onMIDIMessage
+  }
+
+  function onMIDIFailure(e) {
+    console.log('Could not access your MIDI devices: ', e)
+  }
+
   function onMIDIMessage(message) {
     const data = message.data // [command/channel, note, velocity]
     if (data[0] != 248) console.log(data);
@@ -203,6 +229,7 @@ route("/srclist");
         }
         else if(note==74){
           gInvert = !gInvert;
+          document.getElementById("invert").checked = gInvert;
         }
 
       }
@@ -245,6 +272,7 @@ route("/srclist");
     }
     else if(event.key == 'i'){
       gInvert = !gInvert;
+      document.getElementById("invert").checked = gInvert;
     }
   }, false);
 
@@ -253,6 +281,7 @@ route("/srclist");
     document.getElementById("out1").width = window.innerWidth;
     document.getElementById("out1").height = window.innerHeight;
     document.getElementById("nocursor").style.height = window.innerHeight + "px";
+    document.getElementById("srcPreviews").style.width = `${Math.max(720,720 * Math.floor(window.innerWidth / 720))}px`;
   }
   resizeMain();
   window.addEventListener('resize', resizeMain);

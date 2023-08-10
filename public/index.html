@@ -44,8 +44,9 @@
           <div id="sourceToggles"></div>
 
           <div id="blends">
+            BLENDS:
             <input type="radio" id="source-over" name="blendInput" value="source-over" checked="true" onchange="toggleBlend('source-over')">
-              <label for="screen">(q) source-over</label>
+              <label for="source-over">(q) source-over</label>
             <input type="radio" id="screen" name="blendInput" value="screen" onchange="toggleBlend('screen')">
               <label for="screen">(w) screen</label>
             <input type="radio" id="multiply" name="blendInput" value="multiply" onchange="toggleBlend('multiply')">
@@ -54,13 +55,20 @@
               <label for="difference">(r) difference</label>
           </div>
 
+          <div id="filters">
+            FILTERS:
+            <input type="checkbox" id="invert" name="filterInput" value="invert" onchange="toggleFilter('invert')">
+              <label for="invert">(i) invert</label>
+          </div>
         </div>
 
         <div id="srcHeader">SOURCES</div>
 
-        <div id="loadedP5s"></div>
-        <div id="loadedHydras"></div>
-        <div id="loadedVids"></div>
+        <div id="srcPreviews">
+          <div id="loadedP5s"></div>
+          <div id="loadedHydras"></div>
+          <div id="loadedVids"></div>
+        </div>
 
       </div>
     </main>

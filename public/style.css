@@ -58,11 +58,13 @@ div#welcome {
 }
 
 div#controls {
-  margin-left:20px;
-  margin-top:20px;
+  width:100%;
+  padding:20px;
   display:block;
   float:left;
   clear:both;
+  background: #00000088;
+  font-size:larger;
 }
 
 div#controls div.panel {
@@ -77,12 +79,19 @@ div#controls div#blends {
   margin-top:20px;
 }
 
+div#controls div#filters {
+  display:block;
+  float:left;
+  clear:left;
+  margin-top:20px;
+}
+
 div#srcHeader {
   width:100%;
   display:block;
   float:left;
   clear:both;
-  background:#000;
+  background:#00000088;
   color:#fff;
   padding:5px 0;
   margin:5px 0;
@@ -103,4 +112,21 @@ video.inputSrc {
   object-fit:cover;
   display:block;
   float:left;
+}
+
+div.srcDiv {
+  display:block;
+  float:left;
+}
+
+div.srcLabel {
+  background: #00000088;
+  display:block;
+  float:left;
+  z-index:100;
+  font-size:larger;
+}
+
+div#srcPreviews {
+  margin:0 auto;
 }
