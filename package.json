@@ -1,6 +1,6 @@
 {
   "name": "flommo",
-  "version": "0.004",
+  "version": "0.0.4",
   "description": "",
   "main": "index.js",
   "scripts": {
