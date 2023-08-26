@@ -14,6 +14,20 @@ const vidsPath = "./public/sources/vids";
 const hydraPath = "./public/sources/hydra";
 const p5Path = "./public/sources/p5";
 
+app.get('/upload', (req, res) => {
+    //don't forget to sanitize inputs
+    console.log(req);
+    var name = req.query.name;
+    var file = req.query.myFile;
+    res.send("name received = " + name)
+    /*
+    fs.writeFile(`${p5Path}/${name}.txt`, 'This is a test file!', function (err) {
+        if (err) throw err;
+        console.log('File is created successfully.');
+      });
+      */
+})
+
 app.get('/srclist', (req, res) => {
     var vids = [];
     var hydras = [];
