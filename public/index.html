@@ -3,6 +3,7 @@
 
   <head>
 
+
     <!-- import p5js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
@@ -68,6 +69,71 @@
           <div id="loadedP5s"></div>
           <div id="loadedHydras"></div>
           <div id="loadedVids"></div>
+
+          <!--
+          <form action="/upload">
+            <input type="file" id="myFile" name="filename">
+            <input type="submit">
+          </form>
+        -->
+          <label for="vidUpload">Upload Video:</label><br>
+          <input type="file" name="vidUpload" onchange="uploadVid(this.files)" /><br>
+          <br>
+          <label for="p5Upload">Upload P5 sketch:</label><br>
+          <input type="file" name="p5Upload" onchange="uploadP5(this.files)" /><br>
+          <br>
+          <label for="hydraUpload">Upload Hydra sketch:</label><br>
+          <input type="file" name="hydraUpload" onchange="uploadHydra(this.files)" />
+
+          <script src="/socket.io/socket.io.js"></script>
+          <script>
+            const socket = io();
+
+            function uploadVid(files) {
+              console.log(files[0])
+
+             // socket.emit("upload", { files[0] }, (status) => {
+              socket.emit("uploadVid", { name: files[0].name, data: files[0] }, (status) => {
+                console.log(status);
+              })
+
+              socket.on('srcUpdate', function(msg) {
+                reInitSources();
+              })
+
+            }
+
+            function uploadP5(files) {
+              console.log(files[0])
+
+             // socket.emit("upload", { files[0] }, (status) => {
+              socket.emit("uploadP5", { name: files[0].name, data: files[0] }, (status) => {
+                console.log(status);
+              })
+
+              socket.on('srcUpdate', function(msg) {
+                reInitSources();
+              })
+
+            }
+
+            function uploadHydra(files) {
+              console.log(files[0])
+
+             // socket.emit("upload", { files[0] }, (status) => {
+              socket.emit("uploadHydra", { name: files[0].name, data: files[0] }, (status) => {
+                console.log(status);
+              })
+
+              socket.on('srcUpdate', function(msg) {
+                reInitSources();
+              })
+
+            }
+          </script>
+
+
+        </div>
 
       </div>
     </main>
