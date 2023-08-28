@@ -1,19 +1,56 @@
+const fs = require('fs');
+
 const express = require('express');
 const app = express();
 const port = 3000;
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
     console.log(`FLOMMO on port ${port}`)
 });
 
-app.use(express.static('public'));
 
-const fs = require('fs');
+const { Server } = require("socket.io");
+const io = new Server(server, {
+    maxHttpBufferSize: 1e8 // 100 MB
+})
+
+app.use(express.static('public'));
 
 const vidsPath = "./public/sources/vids";
 const hydraPath = "./public/sources/hydra";
 const p5Path = "./public/sources/p5";
 
+io.on("connection", (socket) => {
+    socket.on("uploadVid", (file, callback) => {
+        //console.log(file)
+
+        fs.writeFile("./public/sources/vids/" + file.name, file.data, (err) => {
+            callback({ message: err ? "failure" : "success" })
+        })
+        io.emit('srcUpdate', '.');
+    })
+
+    socket.on("uploadHydra", (file, callback) => {
+        //console.log(file)
+
+        fs.writeFile("./public/sources/hydra/" + file.name, file.data, (err) => {
+            callback({ message: err ? "failure" : "success" })
+        })
+        io.emit('srcUpdate', '.');
+    })
+
+    socket.on("uploadP5", (file, callback) => {
+        //console.log(file)
+
+        fs.writeFile("./public/sources/p5/" + file.name, file.data, (err) => {
+            callback({ message: err ? "failure" : "success" })
+        })
+        io.emit('srcUpdate', '.');
+    })
+})
+
+
+/*
 app.get('/upload', (req, res) => {
     //don't forget to sanitize inputs
     console.log(req);
@@ -25,8 +62,8 @@ app.get('/upload', (req, res) => {
         if (err) throw err;
         console.log('File is created successfully.');
       });
-      */
-})
+      */ /*
+}) */
 
 app.get('/srclist', (req, res) => {
     var vids = [];

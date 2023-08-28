@@ -1,24 +1,48 @@
-const vids = {};
-const hydras = {};
-const p5s = {};
+const vidWrapper = document.getElementById("loadedVids");
+  const p5Wrapper = document.getElementById("loadedP5s");
+  const hydraWrapper = document.getElementById("loadedHydras");
+  const togglePanel = document.getElementById("sourceToggles");
 
-const p5Instances = [];
+var vids = {};
+var hydras = {};
+var p5s = {};
 
-const hydraFnctns = [];
-const hydraInstances = [];
+var p5Instances = [];
+
+var hydraFnctns = [];
+var hydraInstances = [];
 
 var numSources = 0;
 
 function initSources(sourceList){
 
-  if(!sourceList["vids"].length && !sourceList["hydras"].length && !sourceList["p5s"].length){
-    document.getElementById("archive").style.display = "block";
-  }
-
+  /*
   const vidWrapper = document.getElementById("loadedVids");
   const p5Wrapper = document.getElementById("loadedP5s");
   const hydraWrapper = document.getElementById("loadedHydras");
   const togglePanel = document.getElementById("sourceToggles");
+  */
+
+  vids = {};
+  hydras = {};
+  p5s = {};
+  p5Instances = [];
+  hydraFnctns = [];
+  hydraInstances = [];
+  numSources = 0;
+
+  while (vidWrapper.firstChild) {
+    vidWrapper.removeChild(vidWrapper.firstChild);
+  }
+  while (p5Wrapper.firstChild) {
+    p5Wrapper.removeChild(p5Wrapper.firstChild);
+  }
+  while (hydraWrapper.firstChild) {
+    hydraWrapper.removeChild(hydraWrapper.firstChild);
+  }
+  while (togglePanel.firstChild) {
+    togglePanel.removeChild(togglePanel.firstChild);
+  }
 
   var i=0;
   for(p of sourceList["p5s"]){
@@ -144,6 +168,12 @@ function initSources(sourceList){
     togglePanel.appendChild(panelDiv);
   }
 
+  if(!sourceList["vids"].length && !sourceList["hydras"].length && !sourceList["p5s"].length){
+    document.getElementById("archive").style.display = "block";
+  } else {
+    document.getElementById("archive").style.display = "none";
+  }
+
 }
 
 async function route(url){
@@ -152,6 +182,12 @@ async function route(url){
     initSources(data);
 }
 route("/srclist");
+
+
+function reInitSources(){
+
+  route("/srclist")
+}
 
 
 // INIT MIXER SETTINGS
