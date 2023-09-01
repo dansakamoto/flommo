@@ -1,4 +1,4 @@
-const vidWrapper = document.getElementById("loadedVids");
+  const vidWrapper = document.getElementById("loadedVids");
   const p5Wrapper = document.getElementById("loadedP5s");
   const hydraWrapper = document.getElementById("loadedHydras");
   const togglePanel = document.getElementById("sourceToggles");
@@ -13,6 +13,7 @@ var hydraFnctns = [];
 var hydraInstances = [];
 
 var numSources = 0;
+
 
 function initSources(sourceList){
 
@@ -48,7 +49,7 @@ function initSources(sourceList){
   for(p of sourceList["p5s"]){
 
     const scriptElement = document.createElement("script");
-    scriptElement.src = "sources/p5/" + p;
+    scriptElement.src = "sources/"+ROOM+"/p5/" + p;
     scriptElement.async = true;
 
     scriptElement.p = p;
@@ -72,9 +73,20 @@ function initSources(sourceList){
     p5Div.id = "p5Canvas"+i;
     p5Div.classList.add("inputSrc");
 
+    const closeButton = document.createElement("button");
+    closeButton.type = "button";
+    closeButton.innerHTML = "X";
+    const x = numSources;
+    closeButton.addEventListener("click", () => {delSrc("p",p)});
+
+
     p5Wrapper.appendChild(dElement);
     dElement.appendChild(srcLabel);
     dElement.appendChild(p5Div);
+    dElement.appendChild(document.createElement("br"));
+    dElement.appendChild(closeButton);
+
+
 
     p5s["p5Canvas"+i] = p;
     i++;
@@ -85,7 +97,7 @@ function initSources(sourceList){
   for(h of sourceList["hydras"]){
 
     const scriptElement = document.createElement("script");
-    scriptElement.src = "sources/hydra/" + h;
+    scriptElement.src = "sources/"+ROOM+"/hydra/" + h;
     scriptElement.async = true;
 
     scriptElement.h = h;
@@ -122,9 +134,42 @@ function initSources(sourceList){
     hydraCanv.width = 720;
     hydraCanv.height = 400;
 
+    const closeButton = document.createElement("button");
+    closeButton.type = "button";
+    closeButton.innerHTML = "X";
+    const x = numSources;
+
+    const hydraInput = document.createElement("textarea");
+    const hydraInButton = document.createElement("button");
+    hydraInput.id = "hIn"+i;
+    hydraInput.rows = 3;
+    hydraInput.cols = 60;
+
+    hydraInButton.innerHTML = "Run";
+    const j = i
+    hydraInButton.addEventListener("click", () => {
+      execHydra(j);
+    })
+
+    hydraInput.addEventListener("keypress", (e) => {
+      if(e.which === 13 && e.shiftKey) {
+        e.preventDefault();
+        execHydra(j)
+      }
+    })
+
+
+
     hydraWrapper.appendChild(dElement);
     dElement.appendChild(srcLabel);
     dElement.appendChild(hydraCanv);
+    dElement.appendChild(document.createElement("br"));
+    dElement.appendChild(closeButton);
+    dElement.appendChild(document.createElement("br"));
+    dElement.appendChild(hydraInput);
+    dElement.appendChild(hydraInButton);
+
+    closeButton.addEventListener("click", () => {delSrc("h", h)});
 
     hydras["hydraCanvas"+i] = h;
     i++;
@@ -141,7 +186,7 @@ function initSources(sourceList){
     dElement.innerHTML = numSources+1;
 
     const vElement = document.createElement("video");
-    vElement.src = window.location.origin + "/sources/vids/" + v;
+    vElement.src = window.location.origin + "/sources/"+ROOM+"/vids/" + v;
     vElement.classList.add("inputSrc");
     vElement.id = "video"+i;
     vElement.width = 720;
@@ -150,9 +195,18 @@ function initSources(sourceList){
     vElement.autoplay = true;
     vElement.muted = true;
 
+    const closeButton = document.createElement("button");
+    closeButton.type = "button";
+    closeButton.innerHTML = "X";
+    const x = numSources;
+
     vidWrapper.appendChild(dElement);
     dElement.appendChild(srcLabel);
     dElement.appendChild(vElement);
+    dElement.appendChild(document.createElement("br"));
+    dElement.appendChild(closeButton);
+
+    closeButton.addEventListener("click", () => {delSrc('v',v)});
 
 
     vids["video"+i] = v;
@@ -181,12 +235,12 @@ async function route(url){
     var data = await response.json();
     initSources(data);
 }
-route("/srclist");
+route("/srclist?room=" + ROOM);
 
 
 function reInitSources(){
 
-  route("/srclist")
+  route("/srclist?room=" + ROOM)
 }
 
 
@@ -276,6 +330,9 @@ function reInitSources(){
 
   // Keyboard listeners
   document.addEventListener('keydown', (event) => {
+
+    if(textAreaActive()) return
+
     if(event.key >= 0 && event.key <=  9){
       outOn[event.key-1] = !(outOn[event.key-1]);
       document.querySelector(`#on${event.key}`).checked = outOn[event.key-1];
