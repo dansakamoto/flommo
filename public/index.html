@@ -18,6 +18,17 @@
 
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8" />
+
+    <script>
+      const params= new URLSearchParams(window.location.search);
+      const ROOM = (params.get("room")) ? params.get("room") : Date.now();
+
+      if(!params.get("room")){
+        history.pushState({},"","?room="+ROOM)
+      }
+      console.log(ROOM);
+    </script>
+
   </head>
 
   <body>
@@ -28,7 +39,7 @@
 
         <div id="nocursor">
           <div id="welcome">
-            <span style="font-size:8em;">flo<span style="letter-spacing:-.18em;">m</span>mo</span><span style="font-size:1em"> <span style="font-family:'Courier New', Courier, monospace">0.0.4</span></span>
+            <span style="font-size:8em;">flo<span style="letter-spacing:-.18em;">m</span>mo</span><span style="font-size:1em"> <span style="font-family:'Courier New', Courier, monospace">0.0.5</span></span>
             <br>
             <span>experimental / in-development - may only behave in Chrome/Chromium for now</span>
             <br><br>
@@ -77,59 +88,108 @@
           </form>
         -->
           <label for="vidUpload">Upload Video:</label><br>
-          <input type="file" name="vidUpload" onchange="uploadVid(this.files)" /><br>
+          <input type="file" id="vidUpload" name="vidUpload" onchange="uploadVid(this.files)" /><br>
           <br>
-          <label for="p5Upload">Upload P5 sketch:</label><br>
-          <input type="file" name="p5Upload" onchange="uploadP5(this.files)" /><br>
-          <br>
-          <label for="hydraUpload">Upload Hydra sketch:</label><br>
-          <input type="file" name="hydraUpload" onchange="uploadHydra(this.files)" />
+          <label for="codeUpload">Upload JS sketch:</label><br>
+          <textarea id="codeUpload" name="codeUpload" rows="10" cols="60"></textarea><br>
+          Type: <input type="radio" name="codeType" name="typeHydra" id="typeHydra" value="typeHydra" checked="true" /> <label for="uploadHydra">Hydra</label>
+          <input type="radio" name="codeType" name="typeP5" id="typeP5" value="typeP5"> <label for="typeP5">P5js</label><br>
+          <button type="button" onclick="uploadCode()">Submit</button>
+          <!-- <input type="file" name="hydraUpload" onchange="uploadHydra(this.files)" /> -->
 
           <script src="/socket.io/socket.io.js"></script>
           <script>
             const socket = io();
 
+              socket.on('srcUpdate', function(msg) {
+                reInitSources();
+              })
+
             function uploadVid(files) {
               console.log(files[0])
 
-             // socket.emit("upload", { files[0] }, (status) => {
-              socket.emit("uploadVid", { name: files[0].name, data: files[0] }, (status) => {
+              const status = socket.emit("uploadVid", { room:ROOM, name: files[0].name, data: files[0] }, (status) => {
                 console.log(status);
-              })
-
-              socket.on('srcUpdate', function(msg) {
-                reInitSources();
+                if(status.message === "success"){
+                  reInitSources();
+                }
               })
 
             }
 
-            function uploadP5(files) {
-              console.log(files[0])
-
-             // socket.emit("upload", { files[0] }, (status) => {
-              socket.emit("uploadP5", { name: files[0].name, data: files[0] }, (status) => {
-                console.log(status);
-              })
-
-              socket.on('srcUpdate', function(msg) {
-                reInitSources();
-              })
+            function uploadCode() {
+              const jsType = document.querySelector('input[name="codeType"]:checked').value;
+              if(jsType === "typeHydra") uploadHydra()
+              else uploadP5()
 
             }
 
-            function uploadHydra(files) {
-              console.log(files[0])
+            function uploadP5() {
+              const code = document.getElementById("codeUpload").value;
+              document.getElementById("codeUpload").value = "";
 
-             // socket.emit("upload", { files[0] }, (status) => {
-              socket.emit("uploadHydra", { name: files[0].name, data: files[0] }, (status) => {
+              socket.emit("uploadP5", {room:ROOM, src:code}, (status) => {
                 console.log(status);
+                if(status.message === "success"){
+                  reInitSources();
+                }
               })
 
-              socket.on('srcUpdate', function(msg) {
-                reInitSources();
+              console.log(code);
+            }
+
+            function uploadHydra() {
+              const code = document.getElementById("codeUpload").value;
+              document.getElementById("codeUpload").value = "";
+
+              socket.emit("uploadHydra", {room:ROOM,src:code}, (status) => {
+                console.log(status);
+                if(status.message === "success"){
+                  reInitSources();
+                }
               })
+
+              console.log(code)
 
             }
+
+            function execHydra(index) {
+              console.log("execHydra: " + index)
+              const code = document.getElementById("hIn" + index).value;
+              eval("hydraInstances[" + index + "]." + code)
+            }
+
+            function shortcuts(e) {
+              if(e.which === 13 && e.shiftKey) {
+                //e.preventDefault();
+                //execHydra(i)
+                console.log("flag")
+              }
+            }
+
+            document.getElementById("codeUpload").addEventListener("keypress", (e) => {
+              if(e.which === 13 && e.shiftKey) {
+                e.preventDefault();
+                uploadCode();
+              }
+            })
+
+            function textAreaActive() {
+              const a = document.activeElement.tagName;
+              return a.toLowerCase() === "textarea";
+            }
+
+            function delSrc(type,name){
+              console.log("tbd: to delete " + type + "/" + name)
+
+              socket.emit("delSrc", {type:type, name:name, room:ROOM}, (status) => {
+                console.log(status);
+                if(status.message === "success"){
+                  reInitSources();
+                }
+              })
+            }
+
           </script>
 
 
