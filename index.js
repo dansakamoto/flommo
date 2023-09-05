@@ -7,7 +7,7 @@ const port = process.env.PORT || 3000;
 
 var server;
 
-if(port === 443){
+if(port === "443"){
      var privateKey = fs.readFileSync('../ssl/p.key')
      var certificate = fs.readFileSync('../ssl/c.cer')
      server = https.createServer({
