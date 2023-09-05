@@ -5,16 +5,18 @@ const app = express();
 const https = require('https');
 const port = process.env.PORT || 3000;
 
+var server;
+
 if(port === 443){
      var privateKey = fs.readFileSync('../ssl/p.key')
-     var certificate = fs.readFileSynce('../ssl/c.cer')
-     const server = https.createServer({
+     var certificate = fs.readFileSync('../ssl/c.cer')
+     server = https.createServer({
         key: privateKey,
         cert: certificate
      }, app).listen(port);
      console.log(`FLOMMO on port 443`);
 } else {
-    const server = app.listen(port, () => {
+    server = app.listen(port, () => {
         console.log(`FLOMMO @ http://localhost:${port}`)
     });
 }
