@@ -4,6 +4,19 @@ html, body {
   font-family:'Dosis', sans-serif;
   color: white;
 }
+
+span#title {
+  font-family:'Dosis', sans-serif;
+}
+
+.code {
+  font-family:monospace;
+  font-size:larger;
+  background-color:#ccc;
+  color:#333;
+  padding:2px;
+}
+
 canvas {
   display: block;
 }

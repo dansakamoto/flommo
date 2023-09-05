@@ -106,7 +106,7 @@ io.on("connection", (socket) => {
         console.log(room)
 
         ts = Date.now();
-        code.src = "function h" + ts + "(h){" + code.src + "}";
+        code.src = "function h" + ts + "(f){" + code.src + "}";
 
         if(!fs.existsSync(srcPath + room)){
             fs.mkdir(srcPath + room, (err) => {
@@ -143,7 +143,7 @@ io.on("connection", (socket) => {
         const room = code.room;
         console.log(room)
         ts = Date.now();
-        code.src = "var p" + ts + " = ( p ) => {" + code.src + "}";
+        code.src = "var p" + ts + " = ( f ) => {" + code.src + "}";
 
         if(!fs.existsSync(srcPath + room)){
             fs.mkdir(srcPath + room, (err) => {
