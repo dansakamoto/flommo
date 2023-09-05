@@ -2,11 +2,22 @@ const fs = require('fs');
 
 const express = require('express');
 const app = express();
-const port = 3000;
+const https = require('https');
+const port = process.env.PORT || 3000;
 
-const server = app.listen(port, () => {
-    console.log(`FLOMMO @ http://localhost:${port}`)
-});
+if(port === 443){
+     var privateKey = fs.readFileSync('../ssl/p.key')
+     var certificate = fs.readFileSynce('../ssl/c.cer')
+     const server = https.createServer({
+        key: privateKey,
+        cert: certificate
+     }, app).listen(port);
+     console.log(`FLOMMO on port 443`);
+} else {
+    const server = app.listen(port, () => {
+        console.log(`FLOMMO @ http://localhost:${port}`)
+    });
+}
 
 const { Server } = require("socket.io");
 const io = new Server(server, {
