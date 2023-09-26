@@ -17,6 +17,18 @@ span#title {
   padding:2px;
 }
 
+.cm-s-default, .CodeMirror-gutters {
+  background-color: #00000000;
+  color:white;
+  border:0;
+}
+
+.CodeMirror-line span {
+  background-color:#00000099 !important;
+  padding:2px;
+  font-size:large;
+}
+
 canvas {
   display: block;
 }

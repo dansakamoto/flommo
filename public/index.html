@@ -16,6 +16,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400&display=swap" rel="stylesheet">
 
+    <link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.css">
+    </link>
+
     <link rel="stylesheet" type="text/css" href="style.css">
     <meta charset="utf-8" />
 
@@ -29,18 +33,28 @@
       console.log(ROOM);
     </script>
 
+
+
+    <script type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.js">
+    </script>
+
+    <script defer src="editor.js"></script>
+
   </head>
 
   <body>
     <main>
       <canvas id="out1"></canvas>
 
+      <div id="editor"></div>
+
       <div id="interface">
 
         <div id="nocursor">
           <div id="welcome">
             <span id="title">
-            <span style="font-size:8em;">flo<span style="letter-spacing:-.18em;">m</span>mo</span><span style="font-size:1em"></span> <span style="font-family:'Courier New', Courier, monospace">0.0.5</span></span>
+            <span style="font-size:8em;">flo<span style="letter-spacing:-.18em;">m</span>mo</span><span style="font-size:1em"></span> <span style="font-family:'Courier New', Courier, monospace">0.0.6</span></span>
             <br>
             <span>experimental / in-development - may only behave in Chrome/Chromium for now</span>
             <br><br>
@@ -142,7 +156,8 @@
             }
 
             function uploadHydra() {
-              const code = document.getElementById("codeUpload").value;
+              //const code = document.getElementById("codeUpload").value;
+              const code = cmEditor.getValue();
               document.getElementById("codeUpload").value = "";
 
               socket.emit("uploadHydra", {room:ROOM,src:code}, (status) => {
@@ -174,6 +189,19 @@
               if(e.which === 13 && e.shiftKey) {
                 e.preventDefault();
                 uploadCode();
+              }
+            })
+
+            document.getElementById("editor").addEventListener("keypress", (e) => {
+              if(e.which === 13 && e.shiftKey) {
+                e.preventDefault();
+                uploadCode();
+              } else if(e.which === 13 && e.ctrlKey) {
+                e.preventDefault()
+                const index = 0;
+                const code = cmEditor.getValue();
+                console.log(code)
+                eval("hydraInstances[" + index + "]." + code)
               }
             })
 

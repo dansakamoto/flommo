@@ -1,4 +1,4 @@
-const dotenv = require('dotenv').config()
+require('dotenv').config()
 const fs = require('fs');
 
 const express = require('express');
@@ -9,8 +9,8 @@ const port = process.env.PORT || 3000;
 var server;
 
 if(port === "443"){
-     var privateKey = fs.readFileSync('../ssl/p.key')
-     var certificate = fs.readFileSync('../ssl/c.cer')
+     var privateKey = fs.readFileSync(process.env.SSL_KEY_PATH)
+     var certificate = fs.readFileSync(process.env.SSL_CERT_PATH)
      server = https.createServer({
         key: privateKey,
         cert: certificate

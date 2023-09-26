@@ -334,6 +334,8 @@ function reInitSources(){
     if(textAreaActive()) return
 
     if(event.key >= 0 && event.key <=  9){
+      event.preventDefault();
+
       outOn[event.key-1] = !(outOn[event.key-1]);
       document.querySelector(`#on${event.key}`).checked = outOn[event.key-1];
       document.querySelector("#welcome").style = "display:none;";
