@@ -1,32 +1,28 @@
-/*
-* MIXER
-*/
 const outOn = Array(6).fill(false);
 const outAlpha = Array(6).fill(1);
 var blendMode = "source-over";
 var gInvert = false;
 
+// UTILITY FUNCTIONS
 function changeBlend() {
   blendMode = document.querySelector("#blendInput").value;
 }
-
 function toggleBlend(b){
   blendMode = b;
 }
-
 function toggleFilter(f){
-  gInvert = !gInvert;
-  document.getElementById("#invert").checked = gInvert;
+  if(f === 'invert') {
+    gInvert = !gInvert;
+    document.getElementById("#invert").checked = gInvert;
+  }
 }
-
-// GUI listeners
 function toggleSrc(s){
   outOn[s-1] = (document.querySelector(`#on${s}`).checked) ? true : false;
   document.querySelector("#welcome").style = "display:none;";
   document.getElementById("nocursor").style.cursor = "none";
 }
 
-// MIDI listeners
+// MIDI LISTENERS
 if ('requestMIDIAccess' in navigator) {
   navigator.requestMIDIAccess()
     .then(onMIDISuccess, onMIDIFailure);
@@ -48,7 +44,7 @@ function onMIDIMessage(message) {
     const cmd = data[0];
     const note = data[1];
     const velocity = data[2];
-    //152 keyboard, 144 ableton
+    // Dev: 152 keyboard, 144 ableton
     if(cmd==144 && velocity==127){
       if(note >= 60 && note <= 69){
         n = note-60;
@@ -80,7 +76,7 @@ function onMIDIMessage(message) {
   }
 }
 
-// Keyboard listeners
+// KEYBOARD LISTENERS
 document.addEventListener('keydown', (event) => {
 
   if(textAreaActive()) return
@@ -122,36 +118,3 @@ document.addEventListener('keydown', (event) => {
     document.getElementById("invert").checked = gInvert;
   }
 }, false);
-
-/*
-* LIVE CODE EDITOR
-*/
-
-// Initialize
-var cmEditor = CodeMirror(document.querySelector('#editor'), {
-  lineNumbers: true,
-  tabSize: 2,
-  value: 'f.'
-});
-
-// Code upload listener
-document.getElementById("codeUpload").addEventListener("keypress", (e) => {
-  if(e.which === 13 && e.shiftKey) {
-    e.preventDefault();
-    uploadCode();
-  }
-})
-
-// Code editor keyboard shortcuts
-document.getElementById("editor").addEventListener("keypress", (e) => {
-  if(e.which === 13 && e.shiftKey) {
-    e.preventDefault();
-    uploadCode();
-  } else if(e.which === 13 && e.ctrlKey) {
-    e.preventDefault()
-    const index = 0;
-    const code = cmEditor.getValue();
-    console.log(code)
-    eval("hydraInstances[" + index + "]." + code)
-  }
-})

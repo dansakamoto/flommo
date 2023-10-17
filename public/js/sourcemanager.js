@@ -10,6 +10,7 @@ var vids = {}, hydras = {}, p5s = {};
 var p5Instances = [], hydraFnctns = [], hydraInstances = [];
 var numSources = 0;
 
+// SOURCES INIT / REFRESH
 function initSources(sourceList){
 
   // TO DO - switch dict over to sources, save hydraFnctns inside? rm numSources, rely on sources.length?
@@ -217,7 +218,13 @@ async function getSources(room){
 }
 getSources(ROOM);
 
-// Source uploaders
+// Socket - source update listener
+const socket = io();
+socket.on('srcUpdate', function(msg) {
+  getSources(ROOM);
+})
+
+// SOURCE UPLOAD
 function uploadVid(files) {
   console.log(files[0])
   const status = socket.emit("uploadSrc", { room:ROOM, name: files[0].name, type: "vid", data: files[0] }, (status) => {
@@ -226,11 +233,6 @@ function uploadVid(files) {
       getSources(ROOM);
     }
   })
-}
-function uploadCode() {
-  const jsType = document.querySelector('input[name="codeType"]:checked').value;
-  if(jsType === "typeHydra") uploadHydra()
-  else uploadP5()
 }
 function uploadP5() {
   const code = document.getElementById("codeUpload").value;
@@ -256,8 +258,13 @@ function uploadHydra() {
   })
   console.log(code)
 }
+function uploadCode() {
+  const jsType = document.querySelector('input[name="codeType"]:checked').value;
+  if(jsType === "typeHydra") uploadHydra()
+  else uploadP5()
+}
 
-// Delete a source
+//SOURCE DELETE
 function delSrc(type,name){
   socket.emit("delSrc", {type:type, name:name, room:ROOM}, (status) => {
     console.log(status);
@@ -266,9 +273,3 @@ function delSrc(type,name){
     }
   })
 }
-
-// Socket - source update listener
-const socket = io();
-socket.on('srcUpdate', function(msg) {
-  getSources(ROOM);
-})
