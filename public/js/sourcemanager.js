@@ -2,6 +2,7 @@ const params= new URLSearchParams(window.location.search);
 const ROOM = (params.get("room")) ? params.get("room") : Date.now();
 if(!params.get("room")) history.pushState({},"","?room="+ROOM)
 
+const uploadsDir = "uploads"
 const vidWrapper = document.getElementById("loadedVids");
 const p5Wrapper = document.getElementById("loadedP5s");
 const hydraWrapper = document.getElementById("loadedHydras");
@@ -27,7 +28,7 @@ function initSources(sourceList){
   for(p of sourceList["p5s"]){
 
     const scriptElement = document.createElement("script");
-    scriptElement.src = "sources/"+ROOM+"/p5/" + p;
+    scriptElement.src = uploadsDir+"/"+ROOM+"/p5/" + p;
     scriptElement.async = true;
 
     scriptElement.p = p;
@@ -73,7 +74,7 @@ function initSources(sourceList){
   for(h of sourceList["hydras"]){
 
     const scriptElement = document.createElement("script");
-    scriptElement.src = "sources/"+ROOM+"/hydra/" + h;
+    scriptElement.src = uploadsDir+"/"+ROOM+"/hydra/" + h;
     scriptElement.async = true;
 
     scriptElement.h = h;
@@ -160,7 +161,7 @@ function initSources(sourceList){
     dElement.innerHTML = numSources+1;
 
     const vElement = document.createElement("video");
-    vElement.src = window.location.origin + "/sources/"+ROOM+"/vids/" + v;
+    vElement.src = window.location.origin + "/" + uploadsDir + "/" + ROOM + "/vids/" + v;
     vElement.classList.add("inputSrc");
     vElement.id = "video"+i;
     vElement.width = 720;
