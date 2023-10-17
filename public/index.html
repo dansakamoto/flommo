@@ -2,45 +2,19 @@
 <html lang="en">
 
   <head>
-
-
-    <!-- import p5js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
-
-    <!-- import hydra synth -->
-    <script src="https://unpkg.com/hydra-synth"></script>
-
-    <!-- import fonts -->
+    <meta charset="utf-8" />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Dosis:wght@400&display=swap" rel="stylesheet">
-
-    <link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.css">
-    </link>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@400&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
+    <script src="https://unpkg.com/hydra-synth"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.js"></script>
+    <script defer src="/socket.io/socket.io.js"></script>
 
     <link rel="stylesheet" type="text/css" href="style.css">
-    <meta charset="utf-8" />
-
-    <script>
-      const params= new URLSearchParams(window.location.search);
-      const ROOM = (params.get("room")) ? params.get("room") : Date.now();
-
-      if(!params.get("room")){
-        history.pushState({},"","?room="+ROOM)
-      }
-      console.log(ROOM);
-    </script>
-
-
-
-    <script type="text/javascript"
-      src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.js">
-    </script>
-
-    <script defer src="editor.js"></script>
-
+    <script defer src="scripts.js"></script>
   </head>
 
   <body>
@@ -50,11 +24,11 @@
       <div id="editor"></div>
 
       <div id="interface">
-
         <div id="nocursor">
           <div id="welcome">
             <span id="title">
-            <span style="font-size:8em;">flo<span style="letter-spacing:-.18em;">m</span>mo</span><span style="font-size:1em"></span> <span style="font-family:'Courier New', Courier, monospace">0.0.6</span></span>
+              <span style="font-size:8em;">flo<span style="letter-spacing:-.18em;">m</span>mo</span><span style="font-size:1em"></span> <span style="font-family:'Courier New', Courier, monospace">0.0.6</span>
+            </span>
             <br>
             <span>experimental / in-development - may only behave in Chrome/Chromium for now</span>
             <br><br>
@@ -65,7 +39,7 @@
             <br>
             <br>
             <a id="ghlink" target="_blank" href="https://github.com/dansakamoto/flommo">&gt; View source on github</a>
-            <div id="archive">WARNING: No sources loaded. Place files inside of /sources/ and reload, or<br><a href="proof02">view the example workspace</a></div>
+            <div id="archive">WARNING: No sources loaded. Place files inside of /sources/ and reload, or<br><a href="archive/proof02">view the example workspace</a></div>
           </div>
         </div>
 
@@ -98,12 +72,6 @@
           <div id="loadedHydras"></div>
           <div id="loadedVids"></div>
 
-          <!--
-          <form action="/upload">
-            <input type="file" id="myFile" name="filename">
-            <input type="submit">
-          </form>
-        -->
           <label for="vidUpload">Upload Video:</label><br>
           <input type="file" id="vidUpload" name="vidUpload" onchange="uploadVid(this.files)" /><br>
           <br>
@@ -112,124 +80,10 @@
           Type: <input type="radio" name="codeType" name="typeHydra" id="typeHydra" value="typeHydra" checked="true" /> <label for="uploadHydra">Hydra</label>
           <input type="radio" name="codeType" name="typeP5" id="typeP5" value="typeP5"> <label for="typeP5">P5js</label><br>
           <button type="button" onclick="uploadCode()">Submit</button>
-          <!-- <input type="file" name="hydraUpload" onchange="uploadHydra(this.files)" /> -->
-
-          <script src="/socket.io/socket.io.js"></script>
-          <script>
-            const socket = io();
-
-              socket.on('srcUpdate', function(msg) {
-                reInitSources();
-              })
-
-            function uploadVid(files) {
-              console.log(files[0])
-
-              const status = socket.emit("uploadVid", { room:ROOM, name: files[0].name, data: files[0] }, (status) => {
-                console.log(status);
-                if(status.message === "success"){
-                  reInitSources();
-                }
-              })
-
-            }
-
-            function uploadCode() {
-              const jsType = document.querySelector('input[name="codeType"]:checked').value;
-              if(jsType === "typeHydra") uploadHydra()
-              else uploadP5()
-
-            }
-
-            function uploadP5() {
-              const code = document.getElementById("codeUpload").value;
-              document.getElementById("codeUpload").value = "";
-
-              socket.emit("uploadP5", {room:ROOM, src:code}, (status) => {
-                console.log(status);
-                if(status.message === "success"){
-                  reInitSources();
-                }
-              })
-
-              console.log(code);
-            }
-
-            function uploadHydra() {
-              //const code = document.getElementById("codeUpload").value;
-              const code = cmEditor.getValue();
-              document.getElementById("codeUpload").value = "";
-
-              socket.emit("uploadHydra", {room:ROOM,src:code}, (status) => {
-                console.log(status);
-                if(status.message === "success"){
-                  reInitSources();
-                }
-              })
-
-              console.log(code)
-
-            }
-
-            function execHydra(index) {
-              console.log("execHydra: " + index)
-              const code = document.getElementById("hIn" + index).value;
-              eval("hydraInstances[" + index + "]." + code)
-            }
-
-            function shortcuts(e) {
-              if(e.which === 13 && e.shiftKey) {
-                //e.preventDefault();
-                //execHydra(i)
-                console.log("flag")
-              }
-            }
-
-            document.getElementById("codeUpload").addEventListener("keypress", (e) => {
-              if(e.which === 13 && e.shiftKey) {
-                e.preventDefault();
-                uploadCode();
-              }
-            })
-
-            document.getElementById("editor").addEventListener("keypress", (e) => {
-              if(e.which === 13 && e.shiftKey) {
-                e.preventDefault();
-                uploadCode();
-              } else if(e.which === 13 && e.ctrlKey) {
-                e.preventDefault()
-                const index = 0;
-                const code = cmEditor.getValue();
-                console.log(code)
-                eval("hydraInstances[" + index + "]." + code)
-              }
-            })
-
-            function textAreaActive() {
-              const a = document.activeElement.tagName;
-              return a.toLowerCase() === "textarea";
-            }
-
-            function delSrc(type,name){
-              console.log("tbd: to delete " + type + "/" + name)
-
-              socket.emit("delSrc", {type:type, name:name, room:ROOM}, (status) => {
-                console.log(status);
-                if(status.message === "success"){
-                  reInitSources();
-                }
-              })
-            }
-
-          </script>
-
-
         </div>
 
       </div>
     </main>
-
-    <script src="flommo.js"></script>
 
   </body>
 </html>

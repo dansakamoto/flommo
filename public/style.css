@@ -4,31 +4,6 @@ html, body {
   font-family:'Dosis', sans-serif;
   color: white;
 }
-
-span#title {
-  font-family:'Dosis', sans-serif;
-}
-
-.code {
-  font-family:monospace;
-  font-size:larger;
-  background-color:#ccc;
-  color:#333;
-  padding:2px;
-}
-
-.cm-s-default, .CodeMirror-gutters {
-  background-color: #00000000;
-  color:white;
-  border:0;
-}
-
-.CodeMirror-line span {
-  background-color:#00000099 !important;
-  padding:2px;
-  font-size:large;
-}
-
 canvas {
   display: block;
 }
@@ -37,31 +12,61 @@ main {
   margin:0 auto;
 }
 
+/*
+* Live code editor
+*/
+.code {
+  font-family:monospace;
+  font-size:larger;
+  background-color:#ccc;
+  color:#333;
+  padding:2px;
+}
+.cm-s-default, .CodeMirror-gutters {
+  background-color: #00000000;
+  color:white;
+  border:0;
+}
+.CodeMirror-line span {
+  background-color:#00000099 !important;
+  padding:2px;
+  font-size:large;
+}
+
+/*
+* Welcome screen
+*/
+div#welcome {
+  display:block;
+  padding-left:20px;
+}
+span#title {
+  font-family:'Dosis', sans-serif;
+}
 div#archive {
   color: #aaa;
   margin-top:40px;
   display:none;
 }
-
 div#archive a {
   color: #666;
   font-size:x-large;
   text-decoration:none;
 }
-
 div#archive a:hover {
   color: #fff;
 }
-
 a#ghlink {
   text-decoration: none;
   color: #aaa;
 }
-
 a#ghlink:hover {
   color:#fff;
 }
 
+/*
+* Main output
+*/
 canvas#out1 {
   margin:0 auto;
   border: 0px solid black;
@@ -71,17 +76,13 @@ canvas#out1 {
   position:fixed;
   z-index:-5;
 }
-
 div#nocursor {
   width:100%;
-  /*cursor:none;*/
 }
 
-div#welcome {
-  display:block;
-  padding-left:20px;
-}
-
+/*
+* Controls
+*/
 div#controls {
   width:100%;
   padding:20px;
@@ -91,19 +92,16 @@ div#controls {
   background: #00000088;
   font-size:larger;
 }
-
 div#controls div.panel {
   display:block;
   float:left;
 }
-
 div#controls div#blends {
   display:block;
   float:left;
   clear:left;
   margin-top:20px;
 }
-
 div#controls div#filters {
   display:block;
   float:left;
@@ -111,6 +109,9 @@ div#controls div#filters {
   margin-top:20px;
 }
 
+/*
+* Sources viewer
+*/
 div#srcHeader {
   width:100%;
   display:block;
@@ -122,28 +123,23 @@ div#srcHeader {
   margin:5px 0;
   text-align:center;
 }
-
 div.inputSrc {
   display:block;
   float:left;
 }
-
 canvas.inputSrc {
   display:block;
   float:left;
 }
-
 video.inputSrc {
   object-fit:cover;
   display:block;
   float:left;
 }
-
 div.srcDiv {
   display:block;
   float:left;
 }
-
 div.srcLabel {
   background: #00000088;
   display:block;
@@ -151,7 +147,6 @@ div.srcLabel {
   z-index:100;
   font-size:larger;
 }
-
 div#srcPreviews {
   margin:0 auto;
 }

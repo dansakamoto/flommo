@@ -129,5 +129,8 @@ dist
 .yarn/install-state.gz
 .pnp.*
 
+# sources folders generated dynamically
 public/sources/*
+
+# offline/development asset storage
 srcbin/

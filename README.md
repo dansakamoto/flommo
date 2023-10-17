@@ -4,4 +4,4 @@ A browser-based mixed media flow machine ~ in the space between VJ and livecode 
 
 Work in progress
 
-https://bubble-bow-newsstand.glitch.me/
+https://flommo.dansakamoto.com/
