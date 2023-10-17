@@ -18,18 +18,10 @@ function initSources(sourceList){
   p5Instances = [], hydraFnctns = [], hydraInstances = [];
   numSources = 0;
 
-  while (vidWrapper.firstChild) {
-    vidWrapper.removeChild(vidWrapper.firstChild);
-  }
-  while (p5Wrapper.firstChild) {
-    p5Wrapper.removeChild(p5Wrapper.firstChild);
-  }
-  while (hydraWrapper.firstChild) {
-    hydraWrapper.removeChild(hydraWrapper.firstChild);
-  }
-  while (togglePanel.firstChild) {
-    togglePanel.removeChild(togglePanel.firstChild);
-  }
+  while (vidWrapper.firstChild) vidWrapper.removeChild(vidWrapper.firstChild);
+  while (p5Wrapper.firstChild) p5Wrapper.removeChild(p5Wrapper.firstChild);
+  while (hydraWrapper.firstChild) hydraWrapper.removeChild(hydraWrapper.firstChild);
+  while (togglePanel.firstChild) togglePanel.removeChild(togglePanel.firstChild);
 
   var i=0;
   for(p of sourceList["p5s"]){
