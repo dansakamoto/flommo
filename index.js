@@ -10,7 +10,6 @@ const vidsPath = "/vids/";
 const hydraPath = "/hydra/";
 const p5Path = "/p5/";
 
-
 //  First time directory structure initilization
 if(!fs.existsSync(srcPath)){
     console.log("sources directory doesn't exist, creating")
@@ -68,7 +67,6 @@ const { Server } = require("socket.io");
 const io = new Server(server, {
     maxHttpBufferSize: 1e8 // 100 MB
 })
-
 io.on("connection", (socket) => {
 
     socket.on("uploadVid", (file, callback) => {
