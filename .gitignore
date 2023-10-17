@@ -130,7 +130,7 @@ dist
 .pnp.*
 
 # sources folders generated dynamically
-public/sources/*
+public/uploads/*
 
 # offline/development asset storage
 dev/
