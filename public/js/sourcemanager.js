@@ -12,6 +12,7 @@ var numSources = 0;
 
 function initSources(sourceList){
 
+  // TO DO - switch dict over to sources, save hydraFnctns inside? rm numSources, rely on sources.length?
   vids = {}, hydras = {}, p5s = {};
   p5Instances = [], hydraFnctns = [], hydraInstances = [];
   numSources = 0;
@@ -219,8 +220,7 @@ getSources(ROOM);
 // Source uploaders
 function uploadVid(files) {
   console.log(files[0])
-
-  const status = socket.emit("uploadVid", { room:ROOM, name: files[0].name, data: files[0] }, (status) => {
+  const status = socket.emit("uploadSrc", { room:ROOM, name: files[0].name, type: "vid", data: files[0] }, (status) => {
     console.log(status);
     if(status.message === "success"){
       getSources(ROOM);
@@ -236,7 +236,7 @@ function uploadP5() {
   const code = document.getElementById("codeUpload").value;
   document.getElementById("codeUpload").value = "";
 
-  socket.emit("uploadP5", {room:ROOM, src:code}, (status) => {
+  socket.emit("uploadSrc", {room:ROOM, type: "p5", src:code}, (status) => {
     console.log(status);
     if(status.message === "success"){
       getSources(ROOM);
@@ -248,7 +248,7 @@ function uploadHydra() {
   const code = cmEditor.getValue();
   document.getElementById("codeUpload").value = "";
 
-  socket.emit("uploadHydra", {room:ROOM,src:code}, (status) => {
+  socket.emit("uploadSrc", {room:ROOM, type: "hydra", src:code}, (status) => {
     console.log(status);
     if(status.message === "success"){
       getSources(ROOM);

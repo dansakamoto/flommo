@@ -133,4 +133,4 @@ dist
 public/sources/*
 
 # offline/development asset storage
-srcbin/
+dev/
