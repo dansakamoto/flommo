@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@400&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.css">
-    <link rel="stylesheet" type="text/css" href="editor-style.css">
+    <link rel="stylesheet" type="text/css" href="style-editor.css">
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
@@ -44,7 +44,7 @@
             <div id="welcome">
               <span id="title">
                 <!--<span style="font-size:8em;">flo<span style="letter-spacing:-.18em;">m</span>mo</span><span style="font-size:1em"></span> -->
-                <img style="width:300px;" src="FLOMMO_LOGO.png" alt="Flommo"><span style="font-family:'Courier New', Courier, monospace">0.1.0</span>
+                <img style="width:300px;" src="FLOMMO_LOGO.png" alt="Flommo"><span style="font-family:'Courier New', Courier, monospace">0.1.1</span>
               </span>
               <br>
               <span>mixed-media flow machine</span>
@@ -59,20 +59,24 @@
 
           <div id="manual">
             <div id="m2">
-              <span>Controls</span>
+              <span>Controls</span><br>
               <br>
+              scroll down for gui<br>
               <br>
-              <span>
-                ctrl + space: hide/unhide interface<br>
-                ctrl + [0-9]: toggle source on/off<br>
-                ctrl + q/w/e/r: change blend mode<br>
-                ctrl + i: invert output<br>
-                ctrl + enter: (while text area active) add+run code<br>
-                ctrl + z/x/c: toggle input mode<br>
-                ctrl + .: about<br>
-                ctrl + /: show controls<br>
-                scroll down for gui
-              </span>
+              keyboard:<br>
+              ctrl + space: hide/unhide interface<br>
+              ctrl + [0-9]: toggle source on/off<br>
+              ctrl + q/w/e/r: change blend mode<br>
+              ctrl + i: invert output<br>
+              ctrl + enter: (while text area active) add+run code<br>
+              ctrl + z/x/c: toggle input mode<br>
+              ctrl + .: about<br>
+              ctrl + /: show controls<br>
+              <br>
+              midi:<br>
+              C3-A3: toggle source on/off<br>
+              A#3-C#4: change blend mode<br>
+              D4: invert output<br>
             </div>
           </div>
 
@@ -108,6 +112,11 @@
             FILTERS:
             <input type="checkbox" id="invert" name="filterInput" value="invert" onchange="toggleFilter('invert')">
               <label for="invert">|i| invert</label>
+          </div>
+
+          <div id="midi">
+            <label for="midion">MIDI listen:</label>
+            <input type="checkbox" id="midion" name="midion" value="midion" onchange="toggleMidi()">
           </div>
         </div>
 

@@ -212,6 +212,15 @@ div#controls div#filters {
   clear:left;*/
   margin-top:20px;
 }
+div#controls div#midi {
+  display:block;
+  /*float:left;
+  clear:left;*/
+  margin-top:20px;
+}
+div#midi input {
+  width: 50px;
+}
 div#videoeditor {
   font-family:monospace;
   padding:20px;

@@ -23,34 +23,42 @@ function toggleSrc(s){
 }
 
 // MIDI LISTENERS
+let midiActive = false;
 if ('requestMIDIAccess' in navigator) {
   navigator.requestMIDIAccess()
     .then(onMIDISuccess, onMIDIFailure);
 }
 function onMIDISuccess(midiAccess) {
-const midi = midiAccess
-const inputs = midi.inputs.values()
-const input = inputs.next()
-console.log(input)
-input.value.onmidimessage = onMIDIMessage
+  const midi = midiAccess
+  const inputs = midi.inputs.values()
+  let input = inputs.next()
+  while(input.value){
+    input.value.onmidimessage = onMIDIMessage
+    input = inputs.next()
+  }
 }
 function onMIDIFailure(e) {
   console.log('Could not access your MIDI devices: ', e)
 }
+function toggleMidi() {
+  mSwitch = document.getElementById("midion");
+  midiActive = mSwitch.checked;
+}
 function onMIDIMessage(message) {
+  if(!midiActive) return;
   const data = message.data // [command/channel, note, velocity]
   if (data[0] != 248) console.log(data);
   if (data[0] != 248){
     const cmd = data[0];
     const note = data[1];
     const velocity = data[2];
-    // Dev: 152 keyboard, 144 ableton
-    if(cmd==144 && velocity==127){
+    //if(cmd==midiChannel && velocity==127){
+    if(velocity==127){
       if(note >= 60 && note <= 69){
         n = note-60;
         outOn[n] = !(outOn[n]);
         document.querySelector(`#on${n+1}`).checked = outOn[n];
-        document.querySelector("#welcome").style = "display:none;";
+        //document.querySelector("#welcome").style = "display:none;";
       }
       else if(note==70){
         blendMode = "source-over"
