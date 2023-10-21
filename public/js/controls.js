@@ -79,33 +79,36 @@ function onMIDIMessage(message) {
 // KEYBOARD LISTENERS
 document.addEventListener('keydown', (event) => {
 
-  if(textAreaActive()) return
+  //if(textAreaActive()) return
 
-  if(event.key >= 0 && event.key <=  9){
+  if(event.code == "Space" && event.ctrlKey) {
+    toggleEditor("hide");
+  }
+  else if(event.key >= 0 && event.key <=  9 && event.ctrlKey){
     event.preventDefault();
 
     outOn[event.key-1] = !(outOn[event.key-1]);
     document.querySelector(`#on${event.key}`).checked = outOn[event.key-1];
-    document.querySelector("#welcome").style = "display:none;";
+    //document.querySelector("#welcome").style = "display:none;";
     document.getElementById("nocursor").style.cursor = "none"
   }
-  else if(event.key == 'q'){
+  else if(event.key == 'q'&& event.ctrlKey){
     blendMode = "source-over"
     document.getElementById("source-over").checked = true;
   }
-  else if(event.key == 'w'){
+  else if(event.key == 'w'&& event.ctrlKey){
     blendMode = "screen"
     document.getElementById("screen").checked = true;
   }
-  else if(event.key == 'e'){
+  else if(event.key == 'e'&& event.ctrlKey){
     blendMode = "multiply"
     document.getElementById("multiply").checked = true;
   }
-  else if(event.key == 'r'){
+  else if(event.key == 'r'&& event.ctrlKey){
     blendMode = "difference"
     document.getElementById("difference").checked = true;
   }
-  else if(event.key == 'b'){
+  else if(event.key == 'b'&& event.ctrlKey){
     document.querySelector("#welcome").style = "display:none;";
     document.getElementById("nocursor").style.cursor = "none"
     for(let i=0; i<numSources; i++){
@@ -113,8 +116,23 @@ document.addEventListener('keydown', (event) => {
       document.querySelector(`#on${i+1}`).checked = false;
     }
   }
-  else if(event.key == 'i'){
+  else if(event.key == 'i'&& event.ctrlKey){
     gInvert = !gInvert;
     document.getElementById("invert").checked = gInvert;
+  }
+  else if(event.key == 'z' && event.ctrlKey){
+    toggleEditor("video");
+  }
+  else if(event.key == 'x' && event.ctrlKey){
+    toggleEditor("hydra");
+  }
+  else if(event.key == 'c' && event.ctrlKey){
+    toggleEditor("p5");
+  }
+  else if(event.key == '/' && event.ctrlKey){
+    toggleEditor("info");
+  }
+  else if(event.key == '.' && event.ctrlKey){
+    toggleEditor("title");
   }
 }, false);

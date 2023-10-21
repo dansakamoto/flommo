@@ -57,7 +57,6 @@ exports.uploadSrc = function(file, callback) {
     }
 }
 
-
 exports.delSrc = function(msg, callback) {
 
     const TYPE = msg.type;

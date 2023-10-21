@@ -3,6 +3,7 @@ const ROOM = (params.get("room")) ? params.get("room") : Date.now();
 if(!params.get("room")) history.pushState({},"","?room="+ROOM)
 
 const uploadsDir = "uploads"
+const srcWrapper = document.getElementById("srcPreviews");
 const vidWrapper = document.getElementById("loadedVids");
 const p5Wrapper = document.getElementById("loadedP5s");
 const hydraWrapper = document.getElementById("loadedHydras");
@@ -19,9 +20,10 @@ function initSources(sourceList){
   p5Instances = [], hydraFnctns = [], hydraInstances = [];
   numSources = 0;
 
-  while (vidWrapper.firstChild) vidWrapper.removeChild(vidWrapper.firstChild);
-  while (p5Wrapper.firstChild) p5Wrapper.removeChild(p5Wrapper.firstChild);
-  while (hydraWrapper.firstChild) hydraWrapper.removeChild(hydraWrapper.firstChild);
+ // while (vidWrapper.firstChild) vidWrapper.removeChild(vidWrapper.firstChild);
+  //while (p5Wrapper.firstChild) p5Wrapper.removeChild(p5Wrapper.firstChild);
+  //while (hydraWrapper.firstChild) hydraWrapper.removeChild(hydraWrapper.firstChild);
+  while (srcWrapper.firstChild) srcWrapper.removeChild(srcWrapper.firstChild);
   while (togglePanel.firstChild) togglePanel.removeChild(togglePanel.firstChild);
 
   var i=0;
@@ -45,8 +47,8 @@ function initSources(sourceList){
     dElement.classList.add("inputDiv");
 
     const srcLabel = document.createElement("div");
-    dElement.classList.add("srcLabel");
-    dElement.innerHTML = numSources+1;
+    srcLabel.classList.add("srcLabel");
+    srcLabel.innerHTML = numSources+1;
 
     const p5Div = document.createElement("div");
     p5Div.id = "p5Canvas"+i;
@@ -59,10 +61,12 @@ function initSources(sourceList){
     closeButton.addEventListener("click", () => {delSrc("p",p)});
 
 
-    p5Wrapper.appendChild(dElement);
-    dElement.appendChild(srcLabel);
+    //p5Wrapper.appendChild(dElement);
+    srcWrapper.appendChild(dElement);
     dElement.appendChild(p5Div);
-    dElement.appendChild(document.createElement("br"));
+    dElement.appendChild(srcLabel);
+
+   //dElement.appendChild(document.createElement("br"));
     dElement.appendChild(closeButton);
 
     p5s["p5Canvas"+i] = p;
@@ -102,8 +106,8 @@ function initSources(sourceList){
     dElement.classList.add("inputDiv");
 
     const srcLabel = document.createElement("div");
-    dElement.classList.add("srcLabel");
-    dElement.innerHTML = numSources+1;
+    srcLabel.classList.add("srcLabel");
+    srcLabel.innerHTML = numSources+1;
 
     const hydraCanv = document.createElement("canvas");
     hydraCanv.id = "hydraCanvas"+i;
@@ -116,6 +120,7 @@ function initSources(sourceList){
     closeButton.innerHTML = "X";
     const x = numSources;
 
+    /*
     const hydraInput = document.createElement("textarea");
     const hydraInButton = document.createElement("button");
     hydraInput.id = "hIn"+i;
@@ -134,15 +139,18 @@ function initSources(sourceList){
         execHydra(j)
       }
     })
+    */
 
-    hydraWrapper.appendChild(dElement);
-    dElement.appendChild(srcLabel);
+    //hydraWrapper.appendChild(dElement);
+    srcWrapper.appendChild(dElement)
     dElement.appendChild(hydraCanv);
-    dElement.appendChild(document.createElement("br"));
+    dElement.appendChild(srcLabel);
+
+    //dElement.appendChild(document.createElement("br"));
     dElement.appendChild(closeButton);
     dElement.appendChild(document.createElement("br"));
-    dElement.appendChild(hydraInput);
-    dElement.appendChild(hydraInButton);
+    //dElement.appendChild(hydraInput);
+    //dElement.appendChild(hydraInButton);
 
     closeButton.addEventListener("click", () => {delSrc("h", h)});
 
@@ -157,8 +165,8 @@ function initSources(sourceList){
     dElement.classList.add("inputDiv");
 
     const srcLabel = document.createElement("div");
-    dElement.classList.add("srcLabel");
-    dElement.innerHTML = numSources+1;
+    srcLabel.classList.add("srcLabel");
+    srcLabel.innerHTML = numSources+1;
 
     const vElement = document.createElement("video");
     vElement.src = window.location.origin + "/" + uploadsDir + "/" + ROOM + "/vids/" + v;
@@ -175,10 +183,12 @@ function initSources(sourceList){
     closeButton.innerHTML = "X";
     const x = numSources;
 
-    vidWrapper.appendChild(dElement);
-    dElement.appendChild(srcLabel);
+    //vidWrapper.appendChild(dElement);
+    srcWrapper.appendChild(dElement);
+
     dElement.appendChild(vElement);
-    dElement.appendChild(document.createElement("br"));
+    dElement.appendChild(srcLabel);
+    //dElement.appendChild(document.createElement("br"));
     dElement.appendChild(closeButton);
 
     closeButton.addEventListener("click", () => {delSrc('v',v)});
@@ -196,11 +206,13 @@ function initSources(sourceList){
     togglePanel.appendChild(panelDiv);
   }
 
+  /*
   if(!sourceList["vids"].length && !sourceList["hydras"].length && !sourceList["p5s"].length){
     document.getElementById("archive").style.display = "block";
   } else {
     document.getElementById("archive").style.display = "none";
   }
+  */
 
 }
 async function getSources(room){
@@ -228,9 +240,9 @@ function uploadVid(files) {
   })
 }
 function uploadP5() {
-  const code = document.getElementById("codeUpload").value;
-  document.getElementById("codeUpload").value = "";
-
+  const code = cmEditor2.getValue();
+  //const code = document.getElementById("codeUpload").value;
+  //document.getElementById("codeUpload").value = "";
   socket.emit("uploadSrc", {room:ROOM, type: "p5", src:code}, (status) => {
     console.log(status);
     if(status.message === "success"){
@@ -241,8 +253,7 @@ function uploadP5() {
 }
 function uploadHydra() {
   const code = cmEditor.getValue();
-  document.getElementById("codeUpload").value = "";
-
+  //document.getElementById("codeUpload").value = "";
   socket.emit("uploadSrc", {room:ROOM, type: "hydra", src:code}, (status) => {
     console.log(status);
     if(status.message === "success"){
@@ -252,9 +263,13 @@ function uploadHydra() {
   console.log(code)
 }
 function uploadCode() {
+  if(activeEditor == "hydra") uploadHydra();
+  else if(activeEditor == "p5") uploadP5();
+  /*
   const jsType = document.querySelector('input[name="codeType"]:checked').value;
   if(jsType === "typeHydra") uploadHydra()
   else uploadP5()
+*/
 }
 
 //SOURCE DELETE

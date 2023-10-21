@@ -7,11 +7,13 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dosis:wght@400&display=swap">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.css">
+    <link rel="stylesheet" type="text/css" href="editor-style.css">
     <link rel="stylesheet" type="text/css" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
     <script src="https://unpkg.com/hydra-synth"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/javascript/javascript.min.js"></script>
     <script defer src="/socket.io/socket.io.js"></script>
     <script defer src="js/sourcemanager.js"></script>
     <script defer src="js/controls.js"></script>
@@ -23,26 +25,67 @@
     <main>
       <canvas id="out1"></canvas>
 
-      <div id="editor"></div>
-
       <div id="interface">
-        <div id="nocursor">
-          <div id="welcome">
-            <span id="title">
-              <span style="font-size:8em;">flo<span style="letter-spacing:-.18em;">m</span>mo</span><span style="font-size:1em"></span> <span style="font-family:'Courier New', Courier, monospace">0.1.0</span>
-            </span>
-            <br>
-            <span>experimental / in-development - may only behave in Chrome/Chromium for now</span>
-            <br><br>
-            <span>Select a source using a number key, or scroll down for the gui</span><br><br>
-            <span>Note: P5 and Hydra are running in instance mode. Functions must start with 'f.'</span><br>
-            <span>e.g. <span class="code">f.osc().out()</span> or <span class="code">f.draw = () => {...}</span></span><br><br>
-            <span>Recommended P5 canvas size: 720 x 400</span>
-            <br>
-            <br>
-            <a id="ghlink" target="_blank" href="https://github.com/dansakamoto/flommo">&gt; View source on github</a>
-            <div id="archive">WARNING: No sources loaded. Place files inside of /sources/ and reload, or<br><a href="archive/proof02">view the example workspace</a></div>
+        <div id="hud">
+          <div id="menu">
+            <div>
+              <div class="label">MODES:</div>
+              <button id="videobutton" onclick="toggleEditor('video')">VIDEO</button>
+              <button id="hydrabutton" onclick="toggleEditor('hydra')">HYDRA</button>
+              <button id="p5button" onclick="toggleEditor('p5')">P5</button>
+            </div>
+            <div>
+              <button id="titlebutton" onclick="toggleEditor('title')">F</button>
+              <button id="infobutton" onclick="toggleEditor('info')">?</button>
+            </div>
           </div>
+
+          <div id="nocursor">
+            <div id="welcome">
+              <span id="title">
+                <!--<span style="font-size:8em;">flo<span style="letter-spacing:-.18em;">m</span>mo</span><span style="font-size:1em"></span> -->
+                <img style="width:300px;" src="FLOMMO_LOGO.png" alt="Flommo"><span style="font-family:'Courier New', Courier, monospace">0.1.0</span>
+              </span>
+              <br>
+              <span>mixed-media flow machine</span>
+              <br>
+              <span>experimental ~ some features may not work outside of chrome</span>
+              <br>
+              <br>
+              <a id="ghlink" target="_blank" href="https://github.com/dansakamoto/flommo">view source on github</a>
+              <div id="archive">WARNING: No sources loaded. Place files inside of /sources/ and reload, or<br><a href="archive/proof02">view the example workspace</a></div>
+            </div>
+          </div>
+
+          <div id="manual">
+            <div id="m2">
+              <span>Controls</span>
+              <br>
+              <br>
+              <span>
+                ctrl + space: hide/unhide interface<br>
+                ctrl + [0-9]: toggle source on/off<br>
+                ctrl + q/w/e/r: change blend mode<br>
+                ctrl + i: invert output<br>
+                ctrl + enter: run code<br>
+                ctrl + z/x/c: toggle input mode<br>
+                ctrl + .: about<br>
+                ctrl + /: show controls
+              </span>
+            </div>
+          </div>
+
+          <div id="editor"></div>
+
+          <div id="videoeditor">
+            <div id="videouploader">
+              <label for="vidUpload">upload video</label><br>
+              <input type="file" size="600px" id="vidUpload" name="vidUpload" onchange="uploadVid(this.files)" />
+            </div>
+          </div>
+          <div id="hydraeditor"></div>
+          <div id="p5editor"></div>
+          <div id="empty"></div>
         </div>
 
         <div id="controls">
@@ -51,29 +94,33 @@
           <div id="blends">
             BLENDS:
             <input type="radio" id="source-over" name="blendInput" value="source-over" checked="true" onchange="toggleBlend('source-over')">
-              <label for="source-over">(q) source-over</label>
+              <label for="source-over">|q| source-over</label>
             <input type="radio" id="screen" name="blendInput" value="screen" onchange="toggleBlend('screen')">
-              <label for="screen">(w) screen</label>
+              <label for="screen">|w| screen</label>
             <input type="radio" id="multiply" name="blendInput" value="multiply" onchange="toggleBlend('multiply')">
-              <label for="multiply">(e) multiply</label>
+              <label for="multiply">|e| multiply</label>
             <input type="radio" id="difference" name="blendInput" value="difference" onchange="toggleBlend('difference')">
-              <label for="difference">(r) difference</label>
+              <label for="difference">|r| difference</label>
           </div>
 
           <div id="filters">
             FILTERS:
             <input type="checkbox" id="invert" name="filterInput" value="invert" onchange="toggleFilter('invert')">
-              <label for="invert">(i) invert</label>
+              <label for="invert">|i| invert</label>
           </div>
         </div>
+
 
         <div id="srcHeader">SOURCES</div>
 
         <div id="srcPreviews">
+          <!--
           <div id="loadedP5s"></div>
           <div id="loadedHydras"></div>
           <div id="loadedVids"></div>
+          -->
 
+          <!--
           <label for="vidUpload">Upload Video:</label><br>
           <input type="file" id="vidUpload" name="vidUpload" onchange="uploadVid(this.files)" /><br>
           <br>
@@ -82,6 +129,7 @@
           Type: <input type="radio" name="codeType" name="typeHydra" id="typeHydra" value="typeHydra" checked="true" /> <label for="uploadHydra">Hydra</label>
           <input type="radio" name="codeType" name="typeP5" id="typeP5" value="typeP5"> <label for="typeP5">P5js</label><br>
           <button type="button" onclick="uploadCode()">Submit</button>
+          -->
         </div>
 
       </div>

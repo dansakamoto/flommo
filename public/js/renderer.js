@@ -42,11 +42,18 @@ function mixem() {
 }
 var t=setInterval(mixem,16); // ~60fps
 
-function onWindowResize() {
+function resizeRenderer() {
+  const menuHeight = document.getElementById("menu").offsetHeight
+  const noCursorHeight = window.innerHeight - menuHeight;
+
   document.getElementById("out1").width = window.innerWidth;
   document.getElementById("out1").height = window.innerHeight;
-  document.getElementById("nocursor").style.height = window.innerHeight + "px";
-  document.getElementById("srcPreviews").style.width = `${Math.max(720,720 * Math.floor(window.innerWidth / 720))}px`;
+  document.getElementById("nocursor").style.height = noCursorHeight + "px";
+  document.getElementById("manual").style.height = noCursorHeight + "px";
+  document.getElementById("welcome").style.top = "-" + menuHeight + "px";
+  document.getElementById("m2").style.top = "-" + menuHeight + "px";
+  document.getElementById("empty").style.height = noCursorHeight + "px";
+  //document.getElementById("srcPreviews").style.width = `${Math.max(720,720 * Math.floor(window.innerWidth / 720))}px`;
 }
-onWindowResize();
-window.addEventListener('resize', onWindowResize);
+resizeRenderer();
+window.addEventListener('resize', resizeRenderer);
