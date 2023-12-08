@@ -1,20 +1,15 @@
-const fs = require('fs');
-const SRCPATH = process.env.SRCPATH;
-const TYPEPATHS = {
-    "vids": process.env.VIDSPATH,
-    "hydras": process.env.HYDRAPATH,
-    "p5s": process.env.P5PATH
-};
+import fs from "fs";
+import { srcpath, typepaths } from "./fileManager.js";
 
-exports.srcList = function(req, res) {
-    const ROOM = req.query.room;
-    let sources = {};
-    for(const [type,path] of Object.entries(TYPEPATHS)){
-        sources[type] = []
-        if(fs.existsSync(SRCPATH + ROOM + path)){
-            sources[type] = fs.readdirSync(SRCPATH + ROOM + path);
-            if(sources[type][0] === ".DS_Store") sources[type].shift();
-        }
+export function srcList(req, res) {
+  const ROOM = req.query.room;
+  let sources = {};
+  for (const [type, path] of Object.entries(typepaths)) {
+    sources[type] = [];
+    if (fs.existsSync(srcpath + ROOM + path)) {
+      sources[type] = fs.readdirSync(srcpath + ROOM + path);
+      if (sources[type][0] === ".DS_Store") sources[type].shift();
     }
-    res.send(sources);
+  }
+  res.send(sources);
 }

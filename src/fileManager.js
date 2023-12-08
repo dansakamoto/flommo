@@ -1,78 +1,90 @@
-const fs = require('fs');
-const SRCPATH = process.env.SRCPATH;
-const SRCTYPES = {
-    "vid": process.env.VIDSPATH,
-    "hydra": process.env.HYDRAPATH,
-    "p5": process.env.P5PATH
+import fs from "fs";
+
+export const srcpath = "./public/uploads/";
+export const typepaths = {
+  vid: "/vids/",
+  hydra: "/hydra/",
+  p5: "/p5/",
 };
 
-exports.uploadSrc = function(file, callback) {
-    const ROOM = file.room;
-    const TYPE = file.type;
-    const PATH = SRCTYPES[TYPE];
-    let name, data, ts;
-
-    switch (TYPE) {
-        case "vid":
-            name = file.name;
-            data = file.data;
-            break;
-        case "hydra":
-            ts = Date.now();
-            name = "h" + ts + ".js";
-            data = "function h" + ts + "(f){" + file.src + "}";
-            break;
-        case "p5":
-            ts = Date.now();
-            name = "p" + ts + ".js";
-            data = "var p" + ts + " = ( f ) => {" + file.src + "}";
-            break;
-    }
-
-    if (!fs.existsSync(SRCPATH + ROOM)) {
-        fs.mkdir(SRCPATH + ROOM, (err) => {
-            if (!fs.existsSync(SRCPATH + ROOM + PATH)) {
-                console.log("making " + SRCPATH + ROOM + PATH);
-                fs.mkdir(SRCPATH + ROOM + PATH, (err) => {
-                    fs.writeFile(SRCPATH + ROOM + PATH + name, data, (err) => {
-                        console.log(err);
-                        callback({ message: err ? "failure" : "success" });
-                    });
-                });
-            }
-        });
-    } else if (!fs.existsSync(SRCPATH + ROOM + PATH)) {
-        console.log("making " + SRCPATH + ROOM + PATH);
-        fs.mkdir(SRCPATH + ROOM + PATH, (err) => {
-            fs.writeFile(SRCPATH + ROOM + PATH + name, data, (err) => {
-                console.log(err);
-                callback({ message: err ? "failure" : "success" });
-            });
-        });
-    } else {
-        fs.writeFile(SRCPATH + ROOM + PATH + name, data, (err) => {
-            console.log(err);
-            callback({ message: err ? "failure" : "success" });
-        });
-    }
+export function initFs() {
+  if (!fs.existsSync(srcpath)) {
+    fs.mkdir(srcpath, (err) => {
+      if (err) {
+        console.error(err);
+      }
+    });
+  }
 }
 
-exports.delSrc = function(msg, callback) {
+export function uploadSrc(file, callback) {
+  const ROOM = file.room;
+  const TYPE = file.type;
+  const PATH = typepaths[TYPE];
+  let name, data, ts;
 
-    const TYPE = msg.type;
-    const NAME = msg.name;
-    const ROOM = msg.room;
-    let typePath;
+  switch (TYPE) {
+    case "vid":
+      name = file.name;
+      data = file.data;
+      break;
+    case "hydra":
+      ts = Date.now();
+      name = "h" + ts + ".js";
+      data = "function h" + ts + "(f){" + file.src + "}";
+      break;
+    case "p5":
+      ts = Date.now();
+      name = "p" + ts + ".js";
+      data = "var p" + ts + " = ( f ) => {" + file.src + "}";
+      break;
+  }
 
-    if (TYPE === "h") typePath = process.env.HYDRAPATH;
-    else if(TYPE === "p") typePath = process.env.P5PATH;
-    else typePath = process.env.VIDSPATH;
-
-    console.log(TYPE);
-    console.log(SRCPATH + ROOM + typePath + NAME)
-
-    fs.unlink(SRCPATH + ROOM + typePath + NAME, (err) => {
-        callback({ message: err ? "failure" : "success"});
+  if (!fs.existsSync(srcpath + ROOM)) {
+    fs.mkdir(srcpath + ROOM, (err) => {
+      if (err) return console.error(err);
+      if (!fs.existsSync(srcpath + ROOM + PATH)) {
+        console.log("making " + srcpath + ROOM + PATH);
+        fs.mkdir(srcpath + ROOM + PATH, (err) => {
+          if (err) return console.error(err);
+          fs.writeFile(srcpath + ROOM + PATH + name, data, (err) => {
+            console.log(err);
+            callback({ message: err ? "failure" : "success" });
+          });
+        });
+      }
     });
+  } else if (!fs.existsSync(srcpath + ROOM + PATH)) {
+    console.log("making " + srcpath + ROOM + PATH);
+    fs.mkdir(srcpath + ROOM + PATH, (err) => {
+      if (err) return console.error(err);
+      fs.writeFile(srcpath + ROOM + PATH + name, data, (err) => {
+        console.log(err);
+        callback({ message: err ? "failure" : "success" });
+      });
+    });
+  } else {
+    fs.writeFile(srcpath + ROOM + PATH + name, data, (err) => {
+      console.log(err);
+      callback({ message: err ? "failure" : "success" });
+    });
+  }
+}
 
+export function delSrc(msg, callback) {
+  const TYPE = msg.type;
+  const NAME = msg.name;
+  const ROOM = msg.room;
+  let typePath;
+
+  if (TYPE === "h") typePath = typepaths.hydra;
+  else if (TYPE === "p") typePath = typepaths.p5;
+  else typePath = typepaths.vid;
+
+  console.log(TYPE);
+  console.log(srcpath + ROOM + typePath + NAME);
+
+  fs.unlink(srcpath + ROOM + typePath + NAME, (err) => {
+    callback({ message: err ? "failure" : "success" });
+  });
 }
