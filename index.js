@@ -1,9 +1,10 @@
+import {} from "dotenv/config";
 import express from "express";
 import { Server } from "socket.io";
 import { srcList } from "./src/routes.js";
 import { initFs, uploadSrc, delSrc } from "./src/fileManager.js";
 const app = express();
-const port = 3000;
+const port = process.env.PORT || 3000;
 
 initFs();
 
