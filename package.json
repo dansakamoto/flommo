@@ -5,16 +5,17 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "dev": "nodemon index.js"
+    "test": "vitest",
+    "start": "NODE_ENV=production node src/server/main.js",
+    "dev": "nodemon src/server/main.js -w src/server",
+    "build": "vite build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://dansakamoto@github.com/dansakamoto/flommo.git"
   },
   "keywords": [],
-  "author": "",
+  "author": "Dan Sakamoto",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/dansakamoto/flommo/issues"
@@ -22,12 +23,14 @@
   "homepage": "https://github.com/dansakamoto/flommo#readme",
   "dependencies": {
     "codemirror-minified": "^5.65.9",
-    "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "socket.io": "^4.7.2"
+    "socket.io": "^4.7.2",
+    "vite-express": "^0.12.0"
   },
   "devDependencies": {
     "eslint": "^8.55.0",
-    "nodemon": "^3.0.1"
+    "nodemon": "^3.0.1",
+    "vite": "^5.0.10",
+    "vitest": "^1.1.0"
   }
 }
