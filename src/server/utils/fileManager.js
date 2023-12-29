@@ -17,6 +17,18 @@ export function initFs() {
   }
 }
 
+export function getSources(room) {
+  const sources = {};
+  for (const [type, path] of Object.entries(typepaths)) {
+    sources[type] = [];
+    if (fs.existsSync(srcpath + room + path)) {
+      sources[type] = fs.readdirSync(srcpath + room + path);
+      if (sources[type][0] === ".DS_Store") sources[type].shift();
+    }
+  }
+  return sources;
+}
+
 export function uploadSrc(file, callback) {
   const ROOM = file.room;
   const TYPE = file.type;

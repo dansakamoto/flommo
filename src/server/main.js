@@ -1,8 +1,9 @@
 import express from "express";
 import ViteExpress from "vite-express";
 import { Server } from "socket.io";
-import { srcList } from "./routes.js";
-import { initFs, uploadSrc, delSrc } from "./fileManager.js";
+import { srcList } from "./routes/srcList.js";
+import { initFs, uploadSrc, delSrc } from "./utils/fileManager.js";
+
 const app = express();
 const port = 3000;
 
@@ -14,7 +15,6 @@ var server = app.listen(port, () => {
 
 ViteExpress.bind(app, server);
 
-//app.use(express.static("public"));
 app.get("/srclist", srcList);
 
 const io = new Server(server, { maxHttpBufferSize: 1e8 /* 100 MB */ });
