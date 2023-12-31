@@ -1,28 +1,32 @@
 import fs from "fs";
 
-export const srcpath = "./public/uploads/";
-export const typepaths = {
-  vid: "/vids/",
-  hydra: "/hydra/",
-  p5: "/p5/",
+const srcPath = "./public/uploads";
+const typePaths = {
+  vid: "vids",
+  hydra: "hydra",
+  p5: "p5",
 };
 
 export function initFs() {
-  if (!fs.existsSync(srcpath)) {
-    fs.mkdir(srcpath, (err) => {
-      if (err) {
-        console.error(err);
-      }
-    });
+  fs.mkdirSync(srcPath, { recursive: true });
+}
+
+function initRoom(room) {
+  if (!room) {
+    console.error("cannot init room: missing room number");
+    return;
+  }
+  for (const t in typePaths) {
+    fs.mkdirSync(`${srcPath}/${room}/${typePaths[t]}`, { recursive: true });
   }
 }
 
 export function getSources(room) {
   const sources = {};
-  for (const [type, path] of Object.entries(typepaths)) {
+  for (const [type, path] of Object.entries(typePaths)) {
     sources[type] = [];
-    if (fs.existsSync(srcpath + room + path)) {
-      sources[type] = fs.readdirSync(srcpath + room + path);
+    if (fs.existsSync(`${srcPath}/${room}/${path}`)) {
+      sources[type] = fs.readdirSync(`${srcPath}/${room}/${path}`);
       if (sources[type][0] === ".DS_Store") sources[type].shift();
     }
   }
@@ -30,73 +34,42 @@ export function getSources(room) {
 }
 
 export function uploadSrc(file, callback) {
-  const ROOM = file.room;
-  const TYPE = file.type;
-  const PATH = typepaths[TYPE];
-  let name, data, ts;
+  const room = file.room;
+  const type = file.type;
+  const path = typePaths[type];
+  const ts = Date.now();
+  let name, data;
 
-  switch (TYPE) {
-    case "vid":
-      name = file.name;
-      data = file.data;
-      break;
-    case "hydra":
-      ts = Date.now();
-      name = "h" + ts + ".js";
-      data = "function h" + ts + "(f){" + file.src + "}";
-      break;
-    case "p5":
-      ts = Date.now();
-      name = "p" + ts + ".js";
-      data = "var p" + ts + " = ( f ) => {" + file.src + "}";
-      break;
+  initRoom(room);
+
+  if (type === "vid") {
+    name = file.name;
+    data = file.data;
+  } else if (type === "hydra") {
+    name = `h${ts}.js`;
+    data = `function h${ts}(f){${file.src}}`;
+  } else if (type === "p5") {
+    name = `p${ts}.js`;
+    data = `var p${ts} = ( f ) => {${file.src}}`;
   }
 
-  if (!fs.existsSync(srcpath + ROOM)) {
-    fs.mkdir(srcpath + ROOM, (err) => {
-      if (err) return console.error(err);
-      if (!fs.existsSync(srcpath + ROOM + PATH)) {
-        console.log("making " + srcpath + ROOM + PATH);
-        fs.mkdir(srcpath + ROOM + PATH, (err) => {
-          if (err) return console.error(err);
-          fs.writeFile(srcpath + ROOM + PATH + name, data, (err) => {
-            console.log(err);
-            callback({ message: err ? "failure" : "success" });
-          });
-        });
-      }
-    });
-  } else if (!fs.existsSync(srcpath + ROOM + PATH)) {
-    console.log("making " + srcpath + ROOM + PATH);
-    fs.mkdir(srcpath + ROOM + PATH, (err) => {
-      if (err) return console.error(err);
-      fs.writeFile(srcpath + ROOM + PATH + name, data, (err) => {
-        console.log(err);
-        callback({ message: err ? "failure" : "success" });
-      });
-    });
-  } else {
-    fs.writeFile(srcpath + ROOM + PATH + name, data, (err) => {
-      console.log(err);
-      callback({ message: err ? "failure" : "success" });
-    });
-  }
+  fs.writeFile(`${srcPath}/${room}/${path}/${name}`, data, (err) => {
+    if (err) console.error(err);
+    callback({ message: err ? "failure" : "success" });
+  });
 }
 
 export function delSrc(msg, callback) {
-  const TYPE = msg.type;
-  const NAME = msg.name;
-  const ROOM = msg.room;
+  const type = msg.type;
+  const name = msg.name;
+  const room = msg.room;
   let typePath;
 
-  if (TYPE === "h") typePath = typepaths.hydra;
-  else if (TYPE === "p") typePath = typepaths.p5;
-  else typePath = typepaths.vid;
+  if (type === "h") typePath = typePaths.hydra;
+  else if (type === "p") typePath = typePaths.p5;
+  else if (type === "v") typePath = typePaths.vid;
 
-  console.log(TYPE);
-  console.log(srcpath + ROOM + typePath + NAME);
-
-  fs.unlink(srcpath + ROOM + typePath + NAME, (err) => {
+  fs.unlink(`${srcPath}/${room}/${typePath}/${name}`, (err) => {
     callback({ message: err ? "failure" : "success" });
   });
 }
