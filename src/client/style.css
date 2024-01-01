@@ -1,15 +1,21 @@
-html, body {
+@font-face {
+  font-family: "Dosis";
+  src: local("Dosis"), url("Dosis-VariableFont_wght.ttf") format("TrueType");
+}
+
+html,
+body {
   margin: 0;
   padding: 0;
-  font-family:'Dosis', sans-serif;
+  font-family: "Dosis", sans-serif;
   color: white;
 }
 canvas {
   display: block;
 }
 main {
-  width:100%;
-  margin:0 auto;
+  width: 100%;
+  margin: 0 auto;
 }
 
 /*
@@ -22,14 +28,16 @@ main {
   justify-content: space-between;
   width: 100%;
 }
-#menu div, #menu div.label {
+#menu div,
+#menu div.label {
   display: flex;
 }
-#menu button, #menu div.label {
+#menu button,
+#menu div.label {
   padding: 10px;
   justify-self: flex-end;
   display: flex;
-  background:#00000066;
+  background: #00000066;
 }
 #menu button {
   background-color: inherit;
@@ -40,11 +48,11 @@ main {
   background: #00000066;
 }
 #p5button:hover {
-  color: #ED225D;
+  color: #ed225d;
 }
 #p5button.active {
   color: #ffffff;
-  background: #ED225D33;
+  background: #ed225d33;
 }
 #hydrabutton:hover {
   color: #69beef;
@@ -87,16 +95,17 @@ main {
 }
 
 .code {
-  font-family:monospace;
+  font-family: monospace;
 
-  background-color:#ccc;
-  color:#333;
-  padding:2px;
+  background-color: #ccc;
+  color: #333;
+  padding: 2px;
 }
-.cm-s-default, .CodeMirror-gutters {
+.cm-s-default,
+.CodeMirror-gutters {
   background-color: #00000000;
-  color:white;
-  border:0;
+  color: white;
+  border: 0;
 }
 .cm-s-tomorrow-night-eighties .CodeMirror-gutters {
   background-color: #00000000;
@@ -104,39 +113,39 @@ main {
 .CodeMirror-line span {
   /*background-color:#00000099 !important;*/
   /*padding:2px;*/
-  font-size:large;
+  font-size: large;
 }
 .cm-property {
-  color:purple;
+  color: purple;
 }
 .cm-variable {
-  color:green;
+  color: green;
 }
 .cm-comment {
-  color:#9b9b9b;
+  color: #9b9b9b;
 }
 
 /*
 * Welcome screen
 */
 div#welcome {
-  display:block;
-  position:relative;
-  background:#000000;
+  display: block;
+  position: relative;
+  background: #000000;
   padding: 20px;
 }
 span#title {
-  font-family:'Dosis', sans-serif;
+  font-family: "Dosis", sans-serif;
 }
 div#archive {
   color: #aaa;
-  margin-top:40px;
-  display:none;
+  margin-top: 40px;
+  display: none;
 }
 div#archive a {
   color: #666;
-  font-size:x-large;
-  text-decoration:none;
+  font-size: x-large;
+  text-decoration: none;
 }
 div#archive a:hover {
   color: #fff;
@@ -146,106 +155,106 @@ a#ghlink {
   color: #aaa;
 }
 a#ghlink:hover {
-  color:#fff;
+  color: #fff;
 }
 
 /*
 * Main output
 */
 canvas#out1 {
-  margin:0 auto;
+  margin: 0 auto;
   border: 0px solid black;
-  background:#000;
-  float:left;
-  clear:both;
-  position:fixed;
-  z-index:-5;
+  background: #000;
+  float: left;
+  clear: both;
+  position: fixed;
+  z-index: -5;
 }
 div#nocursor {
-  width:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 div#manual {
-  width:100%;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  font-family:monospace;
-  font-size:x-large;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: monospace;
+  font-size: x-large;
 }
 div#manual div {
-  background:#000000;
+  background: #000000;
   padding: 20px;
-  display:block;
-  position:relative;
+  display: block;
+  position: relative;
 }
 div#empty {
-  width:100%;
+  width: 100%;
 }
 
 /*
 * Controls
 */
 div#controls {
-  padding:20px;
-  display:block;
+  padding: 20px;
+  display: block;
   /*float:left;
   clear:both;*/
   background: #00000088;
-  font-size:larger;
+  font-size: larger;
 }
 div#controls div.panel {
   /*display:block;
   float:left;*/
 }
 div#controls div#blends {
-  display:block;
+  display: block;
   /*float:left;
   clear:left;*/
-  margin-top:20px;
+  margin-top: 20px;
 }
 div#controls div#filters {
-  display:block;
+  display: block;
   /*float:left;
   clear:left;*/
-  margin-top:20px;
+  margin-top: 20px;
 }
 div#controls div#midi {
-  display:block;
+  display: block;
   /*float:left;
   clear:left;*/
-  margin-top:20px;
+  margin-top: 20px;
 }
 div#midi input {
   width: 50px;
 }
 div#videoeditor {
-  font-family:monospace;
-  padding:20px;
-  display:flex;
+  font-family: monospace;
+  padding: 20px;
+  display: flex;
   justify-content: center;
 }
 div#videoeditor input {
   background: #00000066;
   border: 1px solid #aaaaaa66;
-  padding:20px;
+  padding: 20px;
 }
 
 /*
 * Sources viewer
 */
 div#srcHeader {
-  width:100%;
-  display:none;
+  width: 100%;
+  display: none;
   /*float:left;
   clear:both;*/
-  background:#00000088;
-  color:#fff;
-  padding:5px 0;
-  margin:5px 0;
-  text-align:center;
+  background: #00000088;
+  color: #fff;
+  padding: 5px 0;
+  margin: 5px 0;
+  text-align: center;
 }
 div#controls {
   font-family: monospace;
@@ -255,72 +264,72 @@ div.inputSrc {
   float:left; */
 }
 div.inputDiv {
-  margin-bottom:20px;
+  margin-bottom: 20px;
   /*display:block;
   float:left; */
 }
 canvas.inputSrc {
-  width:360px;
+  width: 360px;
   /*display:block;
   float:left;*/
 }
 canvas.p5Canvas {
-  width:360px !important;
-  height:200px !important;
+  width: 360px !important;
+  height: 200px !important;
 }
 video.inputSrc {
-  width:360px;
-  height:200px;
-  object-fit:cover;
-  display:block;
+  width: 360px;
+  height: 200px;
+  object-fit: cover;
+  display: block;
   /*float:left;*/
 }
 div.srcDiv {
- /*display:block;
+  /*display:block;
   float:left;*/
 }
 div.srcLabel {
-  display:block;
+  display: block;
   /*float:left; */
-  z-index:100;
-  font-size:x-large;
+  z-index: 100;
+  font-size: x-large;
 }
 div.inputDiv button {
-  border:0;
-  color:#fff;
+  border: 0;
+  color: #fff;
   position: absolute;
-  top:0;
-  right:0;
-  background:#00000000;
-  padding:5px 10px;
+  top: 0;
+  right: 0;
+  background: #00000000;
+  padding: 5px 10px;
 }
 div.inputDiv button:hover {
-  background:#000000ff;
+  background: #000000ff;
 }
 div#sourceToggles {
   display: flex;
   justify-content: flex-start;
-  flex-wrap:wrap;
+  flex-wrap: wrap;
 }
 div#srcPreviews {
   background: #00000088;
-  display:flex;
-  flex-wrap:wrap;
+  display: flex;
+  flex-wrap: wrap;
   justify-content: flex-start;
-  padding-bottom:20px;
+  padding-bottom: 20px;
 }
 div#srcPreviews .inputDiv {
   margin: 0 15px;
 }
 
 .inputDiv {
-  position:relative;
+  position: relative;
 }
 .inputDiv .srcLabel {
   font-family: monospace;
-  background:#00000055;
-  padding:10px 15px;
+  background: #00000055;
+  padding: 10px 15px;
   position: absolute;
-  top:0;
-  left:0;
+  top: 0;
+  left: 0;
 }

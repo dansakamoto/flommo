@@ -2,18 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Dosis:wght@400&display=swap"
-    />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.css"
     />
-    <link rel="stylesheet" type="text/css" href="style-editor.css" />
-    <link rel="stylesheet" type="text/css" href="style.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
     <script src="https://unpkg.com/hydra-synth"></script>
@@ -59,15 +51,7 @@
 
           <div id="nocursor">
             <div id="welcome">
-              <span id="title">
-                <img
-                  style="width: 300px"
-                  src="FLOMMO_LOGO.png"
-                  alt="Flommo"
-                /><span style="font-family: 'Courier New', Courier, monospace"
-                  >0.2.0</span
-                >
-              </span>
+              <span id="title"></span>
               <br />
               <span>mixed-media flow machine</span>
               <br />
@@ -201,5 +185,6 @@
         <div id="srcPreviews"></div>
       </div>
     </main>
+    <script type="module" src="src/client/main.js"></script>
   </body>
 </html>
