@@ -2,6 +2,10 @@ import "./style.css";
 import "./style-editor.css";
 import logo from "./FLOMMO_LOGO.png";
 import { io } from "socket.io-client";
+import { basicSetup, EditorView } from "codemirror";
+import { EditorState, Compartment } from "@codemirror/state";
+import { javascript } from "@codemirror/lang-javascript";
+import { coolGlow } from "thememirror";
 
 document.querySelector("#title").innerHTML = `<img
 style="width: 300px"
@@ -367,7 +371,8 @@ window.uploadVid = (files) => {
   );
 };
 function uploadP5() {
-  const code = cmEditor2.getValue();
+  //const code = cmEditor2.getValue();
+  const code = cmEditor2.state.doc.toString();
   //const code = document.getElementById("codeUpload").value;
   //document.getElementById("codeUpload").value = "";
   socket.emit("uploadSrc", { room: room, type: "p5", src: code }, (status) => {
@@ -379,7 +384,9 @@ function uploadP5() {
   console.log(code);
 }
 function uploadHydra() {
-  const code = cmEditor.getValue();
+  // const code = cmEditor.getValue();
+  const code = cmEditor.state.doc.toString();
+  console.log(code);
   //document.getElementById("codeUpload").value = "";
   socket.emit(
     "uploadSrc",
@@ -635,20 +642,41 @@ window.addEventListener("resize", resizeRenderer);
  */
 var activeEditor = "info";
 
-var cmEditor = CodeMirror(document.querySelector("#hydraeditor"), {
-  lineNumbers: true,
-  tabSize: 2,
-  theme: "tomorrow-night-eighties",
-  value:
-    "// running in instance mode - functions must start with f.\n\nf.osc().out()",
+let language = new Compartment(),
+  tabSize = new Compartment();
+
+let cmState = EditorState.create({
+  doc: "// running in instance mode - functions must start with f.\n\nf.osc().out()",
+  extensions: [
+    basicSetup,
+    language.of(javascript()),
+    tabSize.of(EditorState.tabSize.of(2)),
+    coolGlow,
+  ],
 });
 
-var cmEditor2 = CodeMirror(document.querySelector("#p5editor"), {
+var cmEditor = new EditorView({
+  parent: document.querySelector("#hydraeditor"),
+  extensions: [javascript()],
+  state: cmState,
+});
+
+let cmState2 = EditorState.create({
+  doc: "// running in instance mode - functions must start with f.\n\nf.setup = () => {\n\tf.createCanvas(720,400)\n}\n\nf.draw = () => {\n\tf.background(f.sin(f.millis()/1000)*255,100,150)\n}",
+  extensions: [
+    basicSetup,
+    language.of(javascript()),
+    tabSize.of(EditorState.tabSize.of(2)),
+    coolGlow,
+  ],
+});
+
+var cmEditor2 = new EditorView({
+  parent: document.querySelector("#p5editor"),
+  extensions: [javascript()],
+  state: cmState2,
   lineNumbers: true,
   tabSize: 2,
-  theme: "tomorrow-night-eighties",
-  value:
-    "// running in instance mode - functions must start with f.\n\nf.setup = () => {\n\tf.createCanvas(720,400)\n}\n\nf.draw = () => {\n\tf.background(f.sin(f.millis()/1000)*255,100,150)\n}",
 });
 
 // Code upload listener (deprecated - non-codemirror textarea version)
@@ -703,7 +731,7 @@ function execHydra(index) {
 function resizeEditor() {
   const editorHeight =
     window.innerHeight - document.getElementById("menu").offsetHeight;
-  let editors = document.querySelectorAll(".CodeMirror");
+  let editors = document.querySelectorAll(".cm-editor");
   for (let e of editors) {
     e.style.height = editorHeight + "px";
   }
