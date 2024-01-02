@@ -2,13 +2,15 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <title>flommo</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
+    <script src="https://unpkg.com/hydra-synth"></script>
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.css"
     />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/p5.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.6.0/addons/p5.sound.min.js"></script>
-    <script src="https://unpkg.com/hydra-synth"></script>
     <script
       type="text/javascript"
       src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.52.2/codemirror.min.js"
@@ -18,10 +20,6 @@
       src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/6.65.7/mode/javascript/javascript.min.js"
     ></script>
     <script defer src="/socket.io/socket.io.js"></script>
-    <script defer src="js/sourcemanager.js"></script>
-    <script defer src="js/controls.js"></script>
-    <script defer src="js/renderer.js"></script>
-    <script defer src="js/editor.js"></script>
   </head>
 
   <body>
@@ -31,22 +29,8 @@
       <div id="interface">
         <div id="hud">
           <div id="menu">
-            <div>
-              <div class="label">MODES:</div>
-              <button id="videobutton" onclick="toggleEditor('video')">
-                VIDEO
-              </button>
-              <button id="hydrabutton" onclick="toggleEditor('hydra')">
-                HYDRA
-              </button>
-              <button id="p5button" onclick="toggleEditor('p5')">P5</button>
-            </div>
-            <div>
-              <button id="titlebutton" onclick="toggleEditor('title')">
-                F
-              </button>
-              <button id="infobutton" onclick="toggleEditor('info')">?</button>
-            </div>
+            <div id="modesmenu"></div>
+            <div id="infomenu"></div>
           </div>
 
           <div id="nocursor">
@@ -74,7 +58,6 @@
               >
             </div>
           </div>
-
           <div id="manual">
             <div id="m2">
               <span>Controls</span><br />
@@ -97,91 +80,19 @@
               D4: invert output<br />
             </div>
           </div>
-
           <div id="editor"></div>
-
-          <div id="videoeditor">
-            <div id="videouploader">
-              <label for="vidUpload">upload video</label><br />
-              <input
-                type="file"
-                size="600px"
-                id="vidUpload"
-                name="vidUpload"
-                onchange="uploadVid(this.files)"
-              />
-            </div>
-          </div>
+          <div id="videoeditor"></div>
           <div id="hydraeditor"></div>
           <div id="p5editor"></div>
           <div id="empty"></div>
         </div>
-
         <div id="controls">
           <div id="sourceToggles"></div>
-          <div id="blends">
-            BLENDS:
-            <input
-              type="radio"
-              id="source-over"
-              name="blendInput"
-              value="source-over"
-              checked="true"
-              onchange="toggleBlend('source-over')"
-            />
-            <label for="source-over">|q| source-over</label>
-            <input
-              type="radio"
-              id="screen"
-              name="blendInput"
-              value="screen"
-              onchange="toggleBlend('screen')"
-            />
-            <label for="screen">|w| screen</label>
-            <input
-              type="radio"
-              id="multiply"
-              name="blendInput"
-              value="multiply"
-              onchange="toggleBlend('multiply')"
-            />
-            <label for="multiply">|e| multiply</label>
-            <input
-              type="radio"
-              id="difference"
-              name="blendInput"
-              value="difference"
-              onchange="toggleBlend('difference')"
-            />
-            <label for="difference">|r| difference</label>
-          </div>
-
-          <div id="filters">
-            FILTERS:
-            <input
-              type="checkbox"
-              id="invert"
-              name="filterInput"
-              value="invert"
-              onchange="toggleFilter('invert')"
-            />
-            <label for="invert">|i| invert</label>
-          </div>
-
-          <div id="midi">
-            <label for="midion">MIDI listen:</label>
-            <input
-              type="checkbox"
-              id="midion"
-              name="midion"
-              value="midion"
-              onchange="toggleMidi()"
-            />
-          </div>
+          <div id="blends"></div>
+          <div id="filters"></div>
+          <div id="midi"></div>
         </div>
-
         <div id="srcHeader">SOURCES</div>
-
         <div id="srcPreviews"></div>
       </div>
     </main>
