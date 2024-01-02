@@ -17,7 +17,10 @@ ViteExpress.bind(app, server);
 
 app.get("/srclist", srcList);
 
-const io = new Server(server, { maxHttpBufferSize: 1e8 /* 100 MB */ });
+const io = new Server(server, {
+  maxHttpBufferSize: 1e8 /* 100 MB */,
+  serveClient: false,
+});
 io.on("connection", (socket) => {
   socket.on("uploadSrc", uploadSrc);
   socket.on("delSrc", delSrc);

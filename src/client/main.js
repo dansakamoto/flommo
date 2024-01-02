@@ -1,6 +1,7 @@
 import "./style.css";
 import "./style-editor.css";
 import logo from "./FLOMMO_LOGO.png";
+import { io } from "socket.io-client";
 
 document.querySelector("#title").innerHTML = `<img
 style="width: 300px"
@@ -344,6 +345,7 @@ getSources(room);
 
 // Socket - source update listener
 const socket = io();
+
 /*
 socket.on("srcUpdate", function (msg) {
   getSources(room);
