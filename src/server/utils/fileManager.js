@@ -47,7 +47,7 @@ export function uploadSrc(file, callback) {
     data = file.data;
   } else if (type === "hydra") {
     name = `h${ts}.js`;
-    data = `function h${ts}(f){${file.src}}`;
+    data = `function h${ts}(f){const { src, osc, gradient, shape, voronoi, noise, s0, s1, s2, s3, o0, o1, o2, o3, render } = f;${file.src}}`;
   } else if (type === "p5") {
     name = `p${ts}.js`;
     data = `var p${ts} = ( f ) => {${file.src}}`;
