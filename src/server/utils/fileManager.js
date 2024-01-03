@@ -40,6 +40,8 @@ export function uploadSrc(file, callback) {
   const ts = Date.now();
   let name, data;
 
+  console.log(file);
+
   initRoom(room);
 
   if (type === "vid") {
