@@ -1,6 +1,6 @@
 import "./main.css";
 import logo from "./assets/FLOMMO_LOGO.png";
-import "./components/codeEditor.js";
+import { initEditor } from "./components/codeEditor.js";
 
 const versionNum = "0.2.0";
 
@@ -13,3 +13,5 @@ alt="Flommo"
 /><span style="font-family: 'Courier New', Courier, monospace"
 >${versionNum}</span
 >`;
+
+initEditor();
