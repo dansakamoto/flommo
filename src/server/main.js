@@ -13,6 +13,8 @@ var server = app.listen(port, () => {
   console.log(`FLOMMO @ http://localhost:${port}`);
 });
 
+app.use(express.static("public"));
+
 ViteExpress.bind(app, server);
 
 app.get("/srclist", srcList);
