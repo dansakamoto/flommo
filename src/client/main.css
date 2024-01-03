@@ -1,6 +1,7 @@
 @font-face {
   font-family: "Dosis";
-  src: local("Dosis"), url("Dosis-VariableFont_wght.ttf") format("TrueType");
+  src: local("Dosis"),
+    url("assets/Dosis-VariableFont_wght.ttf") format("TrueType");
 }
 
 html,

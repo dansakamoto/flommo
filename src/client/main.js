@@ -1,6 +1,6 @@
-import "./style.css";
-import "./style-editor.css";
-import logo from "./FLOMMO_LOGO.png";
+import "./main.css";
+import "./components/editor.css";
+import logo from "./assets/FLOMMO_LOGO.png";
 import { io } from "socket.io-client";
 import { basicSetup, EditorView } from "codemirror";
 import { EditorState, Compartment } from "@codemirror/state";
