@@ -1,6 +1,6 @@
 import "./main.css";
 import logo from "./assets/FLOMMO_LOGO.png";
-import "./components/editor.js";
+import "./components/codeEditor.js";
 
 const versionNum = "0.2.0";
 

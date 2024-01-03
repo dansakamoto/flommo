@@ -1,5 +1,11 @@
-import { vids, hydraInstances, numSources, p5s, hydras } from "./sourceManager";
-import { outAlpha, outOn, gInvert, blendMode } from "../components/controller";
+import {
+  vids,
+  hydraInstances,
+  numSources,
+  p5s,
+  hydras,
+} from "../utils/sourceManager";
+import { outAlpha, outOn, gInvert, blendMode } from "./mixer";
 
 const OCANVAS = document.getElementById("out1");
 const OCONTEXT = OCANVAS.getContext("2d");
