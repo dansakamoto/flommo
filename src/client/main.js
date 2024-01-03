@@ -6,6 +6,8 @@ import { basicSetup, EditorView } from "codemirror";
 import { EditorState, Compartment } from "@codemirror/state";
 import { javascript } from "@codemirror/lang-javascript";
 import { coolGlow } from "thememirror";
+import Hydra from "hydra-synth";
+import p5 from "p5";
 
 document.querySelector("#title").innerHTML = `<img
 style="width: 300px"
@@ -371,8 +373,8 @@ window.uploadVid = (files) => {
   );
 };
 function uploadP5() {
-  //const code = cmEditor2.getValue();
-  const code = cmEditor2.state.doc.toString();
+  //const code = p5Editor.getValue();
+  const code = p5Editor.state.doc.toString();
   //const code = document.getElementById("codeUpload").value;
   //document.getElementById("codeUpload").value = "";
   socket.emit("uploadSrc", { room: room, type: "p5", src: code }, (status) => {
@@ -384,8 +386,8 @@ function uploadP5() {
   console.log(code);
 }
 function uploadHydra() {
-  // const code = cmEditor.getValue();
-  const code = cmEditor.state.doc.toString();
+  // const code = hydraEditor.getValue();
+  const code = hydraEditor.state.doc.toString();
   console.log(code);
   //document.getElementById("codeUpload").value = "";
   socket.emit(
@@ -645,8 +647,8 @@ var activeEditor = "info";
 let language = new Compartment(),
   tabSize = new Compartment();
 
-let cmState = EditorState.create({
-  doc: "// running in instance mode - functions must start with f.\n\nf.osc().out()",
+let hydraEditorState = EditorState.create({
+  doc: "osc().out()",
   extensions: [
     basicSetup,
     language.of(javascript()),
@@ -655,13 +657,13 @@ let cmState = EditorState.create({
   ],
 });
 
-var cmEditor = new EditorView({
+var hydraEditor = new EditorView({
   parent: document.querySelector("#hydraeditor"),
   extensions: [javascript()],
-  state: cmState,
+  state: hydraEditorState,
 });
 
-let cmState2 = EditorState.create({
+let p5EditorState = EditorState.create({
   doc: "// running in instance mode - functions must start with f.\n\nf.setup = () => {\n\tf.createCanvas(720,400)\n}\n\nf.draw = () => {\n\tf.background(f.sin(f.millis()/1000)*255,100,150)\n}",
   extensions: [
     basicSetup,
@@ -671,10 +673,10 @@ let cmState2 = EditorState.create({
   ],
 });
 
-var cmEditor2 = new EditorView({
+var p5Editor = new EditorView({
   parent: document.querySelector("#p5editor"),
   extensions: [javascript()],
-  state: cmState2,
+  state: p5EditorState,
   lineNumbers: true,
   tabSize: 2,
 });
@@ -697,7 +699,7 @@ document.getElementById("hydraeditor").addEventListener("keypress", (e) => {
   } /* else if (e.which === 13 && e.ctrlKey) {
     e.preventDefault();
     const index = 0;
-    const code = cmEditor.getValue();
+    const code = hydraEditor.getValue();
     console.log(code);
     eval("hydraInstances[" + index + "]." + code);
   } */
