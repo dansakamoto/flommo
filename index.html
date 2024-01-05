@@ -11,20 +11,14 @@
         <div id="hud">
           <div id="menu">
             <div id="modesmenu">
-              <div class="label">MODES:</div>
-              <button id="videobutton" onclick="toggleEditor('video')">
-                VIDEO
-              </button>
-              <button id="hydrabutton" onclick="toggleEditor('hydra')">
-                HYDRA
-              </button>
-              <button id="p5button" onclick="toggleEditor('p5')">P5</button>
+              <div class="label">ADD:</div>
+              <button id="videobutton">VIDEO</button>
+              <button id="hydrabutton">HYDRA</button>
+              <button id="p5button">P5</button>
             </div>
             <div id="infomenu">
-              <button id="titlebutton" onclick="toggleEditor('title')">
-                F
-              </button>
-              <button id="infobutton" onclick="toggleEditor('info')">?</button>
+              <button id="titlebutton">F</button>
+              <button id="infobutton">?</button>
             </div>
           </div>
           <div id="nocursor">
@@ -78,13 +72,7 @@
           <div id="videoeditor">
             <div id="videouploader">
               <label for="vidUpload">upload video</label><br />
-              <input
-                type="file"
-                size="600px"
-                id="vidUpload"
-                name="vidUpload"
-                onchange="uploadVid(this.files)"
-              />
+              <input type="file" size="600px" id="vidUpload" name="vidUpload" />
             </div>
           </div>
           <div id="hydraeditor"></div>
@@ -101,23 +89,15 @@
               name="blendInput"
               value="source-over"
               checked="true"
-              onchange="toggleBlend('source-over')"
             />
             <label for="source-over">|q| source-over</label>
-            <input
-              type="radio"
-              id="screen"
-              name="blendInput"
-              value="screen"
-              onchange="toggleBlend('screen')"
-            />
+            <input type="radio" id="screen" name="blendInput" value="screen" />
             <label for="screen">|w| screen</label>
             <input
               type="radio"
               id="multiply"
               name="blendInput"
               value="multiply"
-              onchange="toggleBlend('multiply')"
             />
             <label for="multiply">|e| multiply</label>
             <input
@@ -125,7 +105,6 @@
               id="difference"
               name="blendInput"
               value="difference"
-              onchange="toggleBlend('difference')"
             />
             <label for="difference">|r| difference</label>
           </div>
@@ -136,19 +115,12 @@
               id="invert"
               name="filterInput"
               value="invert"
-              onchange="toggleFilter('invert')"
             />
             <label for="invert">|i| invert</label>
           </div>
           <div id="midi">
             <label for="midion">MIDI listen:</label>
-            <input
-              type="checkbox"
-              id="midion"
-              name="midion"
-              value="midion"
-              onchange="toggleMidi()"
-            />
+            <input type="checkbox" id="midion" name="midion" value="midion" />
           </div>
         </div>
         <div id="srcHeader">SOURCES</div>
