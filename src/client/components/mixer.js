@@ -1,9 +1,32 @@
-import * as sources from "../utils/sourceManager";
+import { sources } from "../utils/sourceManager";
+
+const togglePanel = document.getElementById("sourceToggles");
 
 export const outOn = Array(6).fill(false);
 export const outAlpha = Array(6).fill(1);
 export var blendMode = "source-over";
 export var gInvert = false;
+
+export function refreshToggles() {
+  while (togglePanel.firstChild)
+    togglePanel.removeChild(togglePanel.firstChild);
+
+  for (let j = 0; j < sources.length; j++) {
+    const panelDiv = document.createElement("div");
+    panelDiv.classList.add("panel");
+    panelDiv.innerHTML = `<input type="checkbox" id="on${j + 1}" name="on${
+      j + 1
+    }" value="on${j + 1}" onchange="toggleSrc(${j + 1})"><label for="on${
+      j + 1
+    }">Send ${
+      j + 1
+    }</label><br><input type="range" min="0" max="100" value="100" class="slider" id="alpha${
+      j + 1
+    }"><br></br>`;
+
+    togglePanel.appendChild(panelDiv);
+  }
+}
 
 // UTILITY FUNCTIONS
 window.changeBlend = () => {
