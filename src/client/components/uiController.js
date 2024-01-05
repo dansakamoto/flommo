@@ -7,6 +7,7 @@ var activePanel;
 togglePanel("title");
 resizeEditor();
 window.addEventListener("resize", resizeEditor);
+
 document.addEventListener(
   "keydown",
   (event) => {
@@ -16,18 +17,21 @@ document.addEventListener(
   },
   false
 );
+
 document.querySelector("#hydraeditor").addEventListener("keypress", (e) => {
   if (e.which === 13 && e.ctrlKey) {
     e.preventDefault();
     uploadHydra(hydraEditor.state.doc.toString());
   }
 });
+
 document.querySelector("#p5editor").addEventListener("keypress", (e) => {
   if (e.which === 13 && e.ctrlKey) {
     e.preventDefault();
     uploadP5(p5Editor.state.doc.toString());
   }
 });
+
 document.querySelector("#videobutton").onclick = () => {
   togglePanel("video");
 };
@@ -55,21 +59,18 @@ function resizeEditor() {
   document.querySelector("#videoeditor").style.height = editorHeight + "px";
 }
 
-function togglePanel(active) {
+export function togglePanel(active) {
   if (active === "hide") {
-    if (document.querySelector("#hud").style.visibility == "hidden") {
-      document.querySelector("#hud").style = "visibility:visible";
-      document.querySelector("#interface").style.cursor = "auto";
-    } else {
-      document.querySelector("#hud").style = "visibility:hidden";
-      document.querySelector("#interface").style.cursor = "none";
-    }
+    const currentState = document.querySelector("#hud").style.visibility;
+    document.querySelector("#hud").style =
+      currentState === "hidden" ? "visibility:visible" : "visibility:hidden";
+    document.querySelector("#interface").style.cursor =
+      currentState === "hidden" ? "auto" : "none";
     return;
   }
 
-  if (active === activePanel) active = "none";
-
-  activePanel = active;
+  if (active !== activePanel) activePanel = active;
+  else activePanel = "none";
 
   document.querySelector("#hydrabutton").classList.remove("active");
   document.querySelector("#p5button").classList.remove("active");
@@ -83,27 +84,27 @@ function togglePanel(active) {
   document.querySelector("#manual").style = "display:none;";
   document.querySelector("#empty").style = "display:none;";
 
-  if (active === "hydra") {
+  if (activePanel === "hydra") {
     document.querySelector("#hydrabutton").classList.add("active");
     document.querySelector("#hydraeditor").style = "display:block";
     resizeEditor();
-  } else if (active === "p5") {
+  } else if (activePanel === "p5") {
     document.querySelector("#p5button").classList.add("active");
     document.querySelector("#p5editor").style = "display:block";
     resizeEditor();
-  } else if (active === "video") {
+  } else if (activePanel === "video") {
     document.querySelector("#videobutton").classList.add("active");
     document.querySelector("#videoeditor").style = "display:flex";
     resizeEditor();
-  } else if (active === "info") {
+  } else if (activePanel === "info") {
     document.querySelector("#infobutton").classList.add("active");
     document.querySelector("#manual").style = "display:flex";
     resizeRenderer();
-  } else if (active === "title") {
+  } else if (activePanel === "title") {
     document.querySelector("#titlebutton").classList.add("active");
     document.querySelector("#nocursor").style = "display:flex";
     resizeRenderer();
-  } else if (active === "none") {
+  } else if (activePanel === "none") {
     document.querySelector("#empty").style = "display:block";
     resizeRenderer();
   }

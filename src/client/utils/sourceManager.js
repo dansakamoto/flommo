@@ -62,11 +62,12 @@ async function fetchSources(room) {
 function refreshSources(sourceList) {
   sources.length = 0;
   while (srcWrapper.firstChild) srcWrapper.removeChild(srcWrapper.firstChild);
-  for (const file of sourceList["p5"]) sources.push({ type: "p5", file: file });
+  for (const file of sourceList["p5"])
+    sources.push({ type: "p5", file: file, active: false, alpha: 1 });
   for (const file of sourceList["hydra"])
-    sources.push({ type: "hydra", file: file });
+    sources.push({ type: "hydra", file: file, active: false, alpha: 1 });
   for (const file of sourceList["vid"])
-    sources.push({ type: "video", file: file });
+    sources.push({ type: "video", file: file, active: false, alpha: 1 });
 
   for (let i = 0; i < sources.length; i++) {
     const s = sources[i];
@@ -79,7 +80,6 @@ function refreshSources(sourceList) {
       scriptElement.i = i;
       scriptElement.t = s.type;
       scriptElement.onload = function () {
-        console.log("running onload");
         const loc = this.f.substring(0, this.f.lastIndexOf("."));
         const canvasID = "srcCanvas" + this.i;
 
@@ -92,10 +92,6 @@ function refreshSources(sourceList) {
             detectAudio: false,
             autoLoop: false,
           }).synth;
-          console.log("running inner script");
-          console.log("this.i = " + this.i);
-          console.log("sources = ");
-          console.log(sources);
           window[loc](sources[this.i].instance);
         }
       };

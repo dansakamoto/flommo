@@ -1,13 +1,14 @@
 import { sources } from "../utils/sourceManager";
-import * as mixer from "./mixer";
+import { gInvert, blendMode } from "./mixer";
 
 const outputCanvas = document.getElementById("out1");
 const outputContext = outputCanvas.getContext("2d");
 
-function mixem() {
-  for (let i = 0; i < sources.length; i++)
-    mixer.outAlpha[i] = document.querySelector(`#alpha${i + 1}`).value / 100;
+setInterval(mixem, 16); // ~60fps
+resizeRenderer();
+window.addEventListener("resize", resizeRenderer);
 
+function mixem() {
   outputContext.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
 
   for (let i = 0; i < sources.length; i++) {
@@ -16,8 +17,8 @@ function mixem() {
     if (s.type === "video") document.getElementById(id).play();
     else if (s.type === "hydra") s.instance.tick(16);
 
-    if (mixer.outOn[i]) {
-      outputContext.globalAlpha = mixer.outAlpha[i];
+    if (s.active) {
+      outputContext.globalAlpha = s.alpha;
       const srcElement =
         s.type === "p5"
           ? document.getElementById(id).firstChild
@@ -31,12 +32,11 @@ function mixem() {
       );
     }
 
-    if (mixer.gInvert) outputContext.filter = "invert(1)";
+    if (gInvert) outputContext.filter = "invert(1)";
     else outputContext.filter = "invert(0)";
-    outputContext.globalCompositeOperation = mixer.blendMode;
+    outputContext.globalCompositeOperation = blendMode;
   }
 }
-setInterval(mixem, 16); // ~60fps
 
 export function resizeRenderer() {
   const menuHeight = document.getElementById("menu").offsetHeight;
@@ -50,5 +50,3 @@ export function resizeRenderer() {
   document.getElementById("m2").style.top = "-" + menuHeight + "px";
   document.getElementById("empty").style.height = noCursorHeight + "px";
 }
-resizeRenderer();
-window.addEventListener("resize", resizeRenderer);
