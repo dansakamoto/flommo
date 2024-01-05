@@ -65,9 +65,9 @@ export function delSrc(msg, callback) {
   const room = msg.room;
   let typePath;
 
-  if (type === "h") typePath = typePaths.hydra;
-  else if (type === "p") typePath = typePaths.p5;
-  else if (type === "v") typePath = typePaths.vid;
+  if (type === "hydra") typePath = typePaths.hydra;
+  else if (type === "p5") typePath = typePaths.p5;
+  else if (type === "video") typePath = typePaths.vid;
 
   fs.unlink(`${srcPath}/${room}/${typePath}/${name}`, (err) => {
     callback({ message: err ? "failure" : "success" });

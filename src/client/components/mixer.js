@@ -1,4 +1,4 @@
-import { numSources } from "../utils/sourceManager";
+import * as sources from "../utils/sourceManager";
 
 export const outOn = Array(6).fill(false);
 export const outAlpha = Array(6).fill(1);
@@ -86,9 +86,12 @@ document.addEventListener(
   (event) => {
     //if(textAreaActive()) return
 
-    if (event.code == "Space" && event.ctrlKey) {
-      window.toggleEditor("hide");
-    } else if (event.key >= 0 && event.key <= 9 && event.ctrlKey) {
+    if (
+      event.code !== "Space" &&
+      event.ctrlKey &&
+      event.key >= 0 &&
+      event.key <= 9
+    ) {
       event.preventDefault();
 
       outOn[event.key - 1] = !outOn[event.key - 1];
@@ -110,11 +113,11 @@ document.addEventListener(
     } else if (event.key == "b" && event.ctrlKey) {
       document.querySelector("#welcome").style = "display:none;";
       document.getElementById("nocursor").style.cursor = "none";
-      for (let i = 0; i < numSources; i++) {
+      for (let i = 0; i < sources.count; i++) {
         outOn[i] = false;
         document.querySelector(`#on${i + 1}`).checked = false;
       }
-    } else if (event.key == "i" && event.ctrlKey) {
+    } else if (event.key === "i" && event.ctrlKey) {
       gInvert = !gInvert;
       document.getElementById("invert").checked = gInvert;
     } else if (event.key == "z" && event.ctrlKey) {

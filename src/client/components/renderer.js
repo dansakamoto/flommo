@@ -1,72 +1,96 @@
-import {
-  vids,
-  hydraInstances,
-  numSources,
-  p5s,
-  hydras,
-} from "../utils/sourceManager";
-import { outAlpha, outOn, gInvert, blendMode } from "./mixer";
+import { sources } from "../utils/sourceManager";
+import * as mixer from "./mixer";
 
-const OCANVAS = document.getElementById("out1");
-const OCONTEXT = OCANVAS.getContext("2d");
+const outputCanvas = document.getElementById("out1");
+const outputContext = outputCanvas.getContext("2d");
 
 function mixem() {
-  // make sure all sources update
-  for (let k in vids) document.getElementById(k).play(); // update videos (even if offscreen)
-  for (const hi of hydraInstances) {
-    hi.tick(16);
-  } // update hydra instances
-  for (let i = 0; i < numSources; i++)
-    outAlpha[i] = document.querySelector(`#alpha${i + 1}`).value / 100; // update alpha levels
+  /*
+  for (let i = 0; i < sources.length; i++)
+    mixer.outAlpha[i] = document.querySelector(`#alpha${i + 1}`).value / 100;
 
-  OCONTEXT.clearRect(0, 0, OCANVAS.width, OCANVAS.height);
+  outputContext.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
+
+  for (let i = 0; i < sources.length; i++) {
+    const s = sources[i];
+    const id = s.file;
+    if (s.type === "video") document.getElementById(s.file).play();
+    else if (s.type === "hydra") s.instance.tick(16);
+
+    if (mixer.outOn[i]) {
+      outputContext.globalAlpha = mixer.outAlpha[i];
+      outputContext.drawImage(
+        document.getElementById(id).firstChild,
+        0,
+        0,
+        outputCanvas.offsetWidth,
+        outputCanvas.offsetHeight
+      );
+    }
+
+    if (mixer.gInvert) outputContext.filter = "invert(1)";
+    else outputContext.filter = "invert(0)";
+    outputContext.globalCompositeOperation = mixer.blendMode;
+  }
+
+  */
+  /*
+  for (const k in sources.vids) document.getElementById(k).play(); // update videos (even if offscreen)
+  for (const hi of sources.hydraInstances) {
+    hi.tick(16); // update hydra instances
+  }
+  for (let i = 0; i < sources.numSources; i++)
+    mixer.outAlpha[i] = document.querySelector(`#alpha${i + 1}`).value / 100;
+
+  outputContext.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
   let srcNum = 0;
 
-  for (let k in p5s) {
-    if (outOn[srcNum]) {
-      OCONTEXT.globalAlpha = outAlpha[srcNum];
-      OCONTEXT.drawImage(
+  for (let k in sources.p5s) {
+    if (mixer.outOn[srcNum]) {
+      outputContext.globalAlpha = mixer.outAlpha[srcNum];
+      outputContext.drawImage(
         document.getElementById(k).firstChild,
         0,
         0,
-        OCANVAS.offsetWidth,
-        OCANVAS.offsetHeight
+        outputCanvas.offsetWidth,
+        outputCanvas.offsetHeight
       );
     }
     srcNum++;
   }
 
-  for (let k in hydras) {
-    if (outOn[srcNum]) {
-      OCONTEXT.globalAlpha = outAlpha[srcNum];
-      OCONTEXT.drawImage(
+  for (let k in sources.hydras) {
+    if (mixer.outOn[srcNum]) {
+      outputContext.globalAlpha = mixer.outAlpha[srcNum];
+      outputContext.drawImage(
         document.getElementById(k),
         0,
         0,
-        OCANVAS.offsetWidth,
-        OCANVAS.offsetHeight
+        outputCanvas.offsetWidth,
+        outputCanvas.offsetHeight
       );
     }
     srcNum++;
   }
 
-  for (let k in vids) {
-    if (outOn[srcNum]) {
-      OCONTEXT.globalAlpha = outAlpha[srcNum];
-      OCONTEXT.drawImage(
+  for (let k in sources.vids) {
+    if (mixer.outOn[srcNum]) {
+      outputContext.globalAlpha = mixer.outAlpha[srcNum];
+      outputContext.drawImage(
         document.getElementById(k),
         0,
         0,
-        OCANVAS.offsetWidth,
-        OCANVAS.offsetHeight
+        outputCanvas.offsetWidth,
+        outputCanvas.offsetHeight
       );
     }
     srcNum++;
   }
 
-  if (gInvert) OCONTEXT.filter = "invert(1)";
-  else OCONTEXT.filter = "invert(0)";
-  OCONTEXT.globalCompositeOperation = blendMode;
+  if (mixer.gInvert) outputContext.filter = "invert(1)";
+  else outputContext.filter = "invert(0)";
+  outputContext.globalCompositeOperation = mixer.blendMode;
+  */
 }
 setInterval(mixem, 16); // ~60fps
 
