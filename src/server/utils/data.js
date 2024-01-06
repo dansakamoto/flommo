@@ -24,14 +24,12 @@ export async function getSources(room) {
 export async function uploadSrc(file, callback) {
   const room = file.room;
   const type = file.type;
-  const ts = Date.now();
-  const funcName = "f" + ts;
 
   const client = await pool.connect();
   try {
     await client.query({
-      text: `INSERT INTO sources(room, type, callsign, data) VALUES($1, $2, $3, $4)`,
-      values: [room, type, funcName, file.src],
+      text: `INSERT INTO sources(room, type, data) VALUES($1, $2, $3)`,
+      values: [room, type, file.src],
     });
   } catch (e) {
     console.error("Error adding source to database" + e);
