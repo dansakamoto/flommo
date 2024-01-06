@@ -7,7 +7,7 @@
   <body>
     <main>
       <canvas id="out1"></canvas>
-      <div id="interface">
+      <div id="interface" style="opacity: 0; transition: opacity 2s">
         <div id="hud">
           <div id="menu">
             <div id="modesmenu">
@@ -30,12 +30,6 @@
               <span>
                 experimental ~ some features may not work outside of chrome
               </span>
-              <br />
-              <br />
-              <span style="color: red"
-                >ALERT: persistent storage temporarily disabled. uploaded files
-                may be regularly deleted for now.</span
-              >
               <br />
               <br />
               <a
@@ -70,10 +64,18 @@
           </div>
           <div id="editor"></div>
           <div id="videoeditor">
-            <div id="videouploader">
-              <label for="vidUpload">upload video</label><br />
-              <input type="file" size="600px" id="vidUpload" name="vidUpload" />
-            </div>
+            <form id="videouploader">
+              <label for="vidUpload">video URL</label><br />
+              <input
+                type="text"
+                size="80"
+                id="vidUpload"
+                name="vidUpload"
+                autocomplete="off"
+              />
+              <input type="submit" />
+              <!--<input type="file" size="600px" id="vidUpload" name="vidUpload" />-->
+            </form>
           </div>
           <div id="hydraeditor"></div>
           <div id="p5editor"></div>

@@ -88,14 +88,17 @@ export function togglePanel(active) {
     document.querySelector("#hydrabutton").classList.add("active");
     document.querySelector("#hydraeditor").style = "display:block";
     resizeEditor();
+    document.querySelector("#hydraeditor").querySelector(".cm-content").focus();
   } else if (activePanel === "p5") {
     document.querySelector("#p5button").classList.add("active");
     document.querySelector("#p5editor").style = "display:block";
     resizeEditor();
+    document.querySelector("#p5editor").querySelector(".cm-content").focus();
   } else if (activePanel === "video") {
     document.querySelector("#videobutton").classList.add("active");
     document.querySelector("#videoeditor").style = "display:flex";
     resizeEditor();
+    document.querySelector("#vidUpload").focus();
   } else if (activePanel === "info") {
     document.querySelector("#infobutton").classList.add("active");
     document.querySelector("#manual").style = "display:flex";

@@ -4,20 +4,21 @@ import { io } from "socket.io-client";
 import { refreshToggles } from "../components/mixer";
 
 const socket = io();
-const uploadsDir = "uploads";
 const srcWrapper = document.getElementById("srcPreviews");
-const videoUploader = document.querySelector("#vidUpload");
+const videoUploader = document.querySelector("#videouploader");
 const params = new URLSearchParams(window.location.search);
 const room = params.get("room") ? params.get("room") : Date.now();
 if (!params.get("room")) history.pushState({}, "", "?room=" + room);
 
 fetchSources(room);
-videoUploader.onchange = () => {
-  console.log(videoUploader);
-  uploadVid(videoUploader.files);
+
+videoUploader.onsubmit = (e) => {
+  e.preventDefault();
+  uploadVid(e.target.elements.vidUpload.value);
+  document.querySelector("#vidUpload").value = "";
 };
 
-export const sources = [];
+export var sources = [];
 
 export function uploadP5(code) {
   socket.emit("uploadSrc", { room: room, type: "p5", src: code }, (status) => {
@@ -35,19 +36,18 @@ export function uploadHydra(code) {
   );
 }
 
-function uploadVid(files) {
+function uploadVid(url) {
   socket.emit(
     "uploadSrc",
-    { room: room, name: files[0].name, type: "vid", data: files[0] },
+    { room: room, type: "video", src: url },
     (status) => {
-      console.log(status);
       if (status.message === "success") fetchSources(room);
     }
   );
 }
 
-function delSrc(type, name) {
-  socket.emit("delSrc", { type: type, name: name, room: room }, (status) => {
+function delSrc(id) {
+  socket.emit("delSrc", { id: id }, (status) => {
     if (status.message === "success") fetchSources(room);
   });
 }
@@ -62,42 +62,16 @@ async function fetchSources(room) {
 function refreshSources(sourceList) {
   sources.length = 0;
   while (srcWrapper.firstChild) srcWrapper.removeChild(srcWrapper.firstChild);
-  for (const file of sourceList["p5"])
-    sources.push({ type: "p5", file: file, active: false, alpha: 1 });
-  for (const file of sourceList["hydra"])
-    sources.push({ type: "hydra", file: file, active: false, alpha: 1 });
-  for (const file of sourceList["vid"])
-    sources.push({ type: "video", file: file, active: false, alpha: 1 });
+
+  sources = sourceList;
 
   for (let i = 0; i < sources.length; i++) {
     const s = sources[i];
 
-    if (s.type !== "hydra" || s.type !== "p5") {
-      const scriptElement = document.createElement("script");
-      scriptElement.src = `${uploadsDir}/${room}/${s.type}/${s.file}`;
-      scriptElement.async = true;
-      scriptElement.f = s.file;
-      scriptElement.i = i;
-      scriptElement.t = s.type;
-      scriptElement.onload = function () {
-        const loc = this.f.substring(0, this.f.lastIndexOf("."));
-        const canvasID = "srcCanvas" + this.i;
+    sources[i]["alpha"] = s.alpha;
+    sources[i]["active"] = s.active;
 
-        if (this.t === "p5") {
-          sources[this.i]["instance"] = new p5(window[loc], canvasID);
-        } else if (this.t === "hydra") {
-          sources[this.i]["instance"] = new Hydra({
-            makeGlobal: false,
-            canvas: document.getElementById(canvasID),
-            detectAudio: false,
-            autoLoop: false,
-          }).synth;
-          window[loc](sources[this.i].instance);
-        }
-      };
-      document.body.appendChild(scriptElement);
-    }
-
+    const containerName = "srcCanvas" + i;
     const inputDiv = document.createElement("div");
     inputDiv.classList.add("inputDiv");
     const srcLabel = document.createElement("div");
@@ -107,7 +81,7 @@ function refreshSources(sourceList) {
     closeButton.type = "button";
     closeButton.innerHTML = "X";
     closeButton.addEventListener("click", () => {
-      delSrc(s.type, s.file);
+      delSrc(s.id);
     });
 
     let srcContainer;
@@ -117,20 +91,36 @@ function refreshSources(sourceList) {
       srcContainer = document.createElement("canvas");
     } else if (s.type === "video") {
       srcContainer = document.createElement("video");
-      srcContainer.src = `${window.location.origin}/${uploadsDir}/${room}/vids/${s.file}`;
+      srcContainer.src = s.data;
       srcContainer.loop = true;
       srcContainer.autoplay = true;
       srcContainer.muted = true;
     }
     srcContainer.width = 720;
     srcContainer.height = 400;
-    srcContainer.id = "srcCanvas" + i;
+    srcContainer.id = containerName;
     srcContainer.classList.add("inputSrc");
 
     srcWrapper.appendChild(inputDiv);
     inputDiv.appendChild(srcContainer);
     inputDiv.appendChild(srcLabel);
     inputDiv.appendChild(closeButton);
+
+    const canvasID = containerName;
+    if (s.type === "p5") {
+      sources[i]["instance"] = new p5(Function("f", s.data), canvasID);
+    } else if (s.type === "hydra") {
+      const hydraDestructurer =
+        "const { src, osc, gradient, shape, voronoi, noise, s0, s1, s2, s3, o0, o1, o2, o3, render } = f;";
+      sources[i]["instance"] = new Hydra({
+        makeGlobal: false,
+        canvas: document.getElementById(canvasID),
+        detectAudio: false,
+        autoLoop: false,
+      }).synth;
+      const hFunc = Function("f", hydraDestructurer + s.data);
+      hFunc(sources[i].instance);
+    }
   }
 
   refreshToggles();

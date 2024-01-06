@@ -1,13 +1,12 @@
+import "dotenv/config.js";
 import express from "express";
 import ViteExpress from "vite-express";
 import { Server } from "socket.io";
 import { srcList } from "./routes/srcList.js";
-import { initFs, uploadSrc, delSrc } from "./utils/fileManager.js";
+import { uploadSrc, delSrc } from "./utils/data.js";
 
 const app = express();
 const port = 3000;
-
-initFs();
 
 var server = app.listen(port, () => {
   console.log(`FLOMMO @ http://localhost:${port}`);
