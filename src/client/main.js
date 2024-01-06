@@ -13,3 +13,5 @@ alt="Flommo"
 /><span style="font-family: 'Courier New', Courier, monospace"
 >${versionNum}</span
 >`;
+
+document.querySelector("#interface").style.opacity = 1;
