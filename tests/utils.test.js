@@ -1,5 +1,10 @@
 import { describe, test, expect, vi } from "vitest";
-import { addSrc, delSrc, updateSrc, getSources } from "../utils/data";
+import {
+  addSrc,
+  delSrc,
+  updateSrc,
+  getSources,
+} from "../src/server/utils/data.js";
 
 describe("Test database interactions", async () => {
   test("Test getSources", async () => {

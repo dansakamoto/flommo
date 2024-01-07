@@ -1,10 +1,10 @@
 import Hydra from "hydra-synth";
 import p5 from "p5";
 import { io } from "socket.io-client";
-import { refreshToggles } from "../components/mixer";
-import { refreshSrcButtons, checkPanelReset } from "./uiController";
-import { refreshEditors } from "../components/codeEditor";
-import { resizeEditor } from "./uiController";
+import { refreshToggles } from "../controller/mixer";
+import { refreshSrcButtons, checkPanelReset } from "../views/uiController";
+import { refreshEditors } from "../controller/codeEditor";
+import { resizeEditor } from "../views/uiController";
 
 const socket = io();
 const srcWrapper = document.getElementById("srcPreviews");

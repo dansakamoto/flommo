@@ -1,6 +1,6 @@
-import { uploadHydra, uploadP5, sources } from "./sourceManager.js";
-import { resizeRenderer } from "../components/renderer.js";
-import { hydraEditor, p5Editor } from "../components/codeEditor.js";
+import { uploadHydra, uploadP5, sources } from "../services/sourceManager.js";
+import { resizeRenderer } from "./renderer.js";
+import { hydraEditor, p5Editor } from "../controller/codeEditor.js";
 
 var activePanel;
 

@@ -1,5 +1,5 @@
-import { sources } from "../utils/sourceManager";
-import { gInvert, blendMode } from "./mixer";
+import { sources } from "../services/sourceManager";
+import { gInvert, blendMode } from "../controller/mixer";
 
 const outputCanvas = document.getElementById("out1");
 const outputContext = outputCanvas.getContext("2d");

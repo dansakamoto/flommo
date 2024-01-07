@@ -1,5 +1,5 @@
-import { sources, bgUpdateSrc } from "../utils/sourceManager";
-import { togglePanel } from "../utils/uiController";
+import { sources, bgUpdateSrc } from "../services/sourceManager";
+import { togglePanel } from "../views/uiController";
 
 const toggles = document.getElementById("sourceToggles");
 const blendModes = ["source-over", "screen", "multiply", "difference"];

@@ -1,6 +1,6 @@
-import "./main.css";
 import logo from "./assets/FLOMMO_LOGO.png";
-import "./utils/uiController";
+import "./style.css";
+import "./views/uiController";
 
 const versionNum = "0.4.0";
 
@@ -13,5 +13,4 @@ alt="Flommo"
 /><span style="font-family: 'Courier New', Courier, monospace"
 >${versionNum}</span
 >`;
-
 document.querySelector("#interface").style.opacity = 1;

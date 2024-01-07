@@ -2,9 +2,8 @@ import { EditorView } from "codemirror";
 import { EditorState, Compartment } from "@codemirror/state";
 import { javascript } from "@codemirror/lang-javascript";
 import { coolGlow } from "thememirror";
-import "./codeEditor.css";
-import { sources, updateSrc } from "../utils/sourceManager";
-import { getActivePanel } from "../utils/uiController";
+import { sources, updateSrc } from "../services/sourceManager";
+import { getActivePanel } from "../views/uiController";
 
 const language = new Compartment();
 const tabSize = new Compartment();
