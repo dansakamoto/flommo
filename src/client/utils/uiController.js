@@ -1,12 +1,11 @@
-import { uploadHydra, uploadP5, sources } from "../utils/sourceManager.js";
-import { resizeRenderer } from "./renderer.js";
-import { hydraEditor, p5Editor } from "./codeEditor.js";
+import { uploadHydra, uploadP5, sources } from "./sourceManager.js";
+import { resizeRenderer } from "../components/renderer.js";
+import { hydraEditor, p5Editor } from "../components/codeEditor.js";
 
 var activePanel;
 
 togglePanel("title");
 resizeEditor();
-window.addEventListener("resize", resizeEditor);
 
 document.addEventListener(
   "keydown",
@@ -48,7 +47,11 @@ document.querySelector("#infobutton").onclick = () => {
   togglePanel("info");
 };
 
-function resizeEditor() {
+export function getActivePanel() {
+  return activePanel;
+}
+
+export function resizeEditor() {
   const editorHeight =
     window.innerHeight - document.querySelector("#menu").offsetHeight;
   const editors = document.querySelectorAll(".cm-editor");
@@ -57,6 +60,9 @@ function resizeEditor() {
     e.style.height = editorHeight + "px";
   }
   document.querySelector("#videoeditor").style.height = editorHeight + "px";
+  for (const v of document.querySelectorAll(".addedVideoEditor")) {
+    v.style.height = editorHeight + "px";
+  }
 }
 
 export function togglePanel(active) {
@@ -72,6 +78,14 @@ export function togglePanel(active) {
   if (active !== activePanel) activePanel = active;
   else activePanel = "none";
 
+  const srcButtons = document.getElementById("srcbuttons").children;
+  for (const s of srcButtons) {
+    s.classList.remove("active");
+  }
+  const addedEditors = document.getElementById("addededitors").children;
+  for (const a of addedEditors) {
+    a.style = "display:none";
+  }
   document.querySelector("#hydrabutton").classList.remove("active");
   document.querySelector("#p5button").classList.remove("active");
   document.querySelector("#videobutton").classList.remove("active");
@@ -83,6 +97,7 @@ export function togglePanel(active) {
   document.querySelector("#nocursor").style = "display:none;";
   document.querySelector("#manual").style = "display:none;";
   document.querySelector("#empty").style = "display:none;";
+  document.querySelector("#addededitors").style = "display:none";
 
   if (activePanel === "hydra") {
     document.querySelector("#hydrabutton").classList.add("active");
@@ -110,11 +125,18 @@ export function togglePanel(active) {
   } else if (activePanel === "none") {
     document.querySelector("#empty").style = "display:block";
     resizeRenderer();
+  } else {
+    document
+      .querySelector("#additionalEditor" + activePanel)
+      .classList.add("active");
+    document.querySelector("#addededitors").style = "display:block";
+    const sourceId = sources[activePanel].id;
+    document.querySelector("#editor" + sourceId).style = "display:flex";
+    resizeEditor();
   }
 }
 
 export function refreshSrcButtons() {
-  /*
   const editLabel = document.querySelector("#editlabel");
   const buttonsDiv = document.querySelector("#srcbuttons");
 
@@ -124,8 +146,26 @@ export function refreshSrcButtons() {
 
   for (let i = 0; i < sources.length; i++) {
     const b = document.createElement("button");
+    b.id = "additionalEditor" + i;
+    if (i === activePanel) {
+      b.classList.add("active");
+    }
+
+    b.onclick = () => {
+      togglePanel(i);
+    };
+
+    if (sources[i].type === "p5") b.classList.add("p5button");
+    else if (sources[i].type === "hydra") b.classList.add("hydrabutton");
+    else if (sources[i].type === "video") b.classList.add("videobutton");
+
     b.innerHTML = i + 1;
     buttonsDiv.appendChild(b);
   }
-  */
+}
+
+export function checkPanelReset() {
+  if (typeof activePanel === "number" && activePanel + 1 > sources.length) {
+    togglePanel("none");
+  }
 }

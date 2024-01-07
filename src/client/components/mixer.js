@@ -1,5 +1,5 @@
-import { sources } from "../utils/sourceManager";
-import { togglePanel } from "./uiController";
+import { sources, bgUpdateSrc } from "../utils/sourceManager";
+import { togglePanel } from "../utils/uiController";
 
 const toggles = document.getElementById("sourceToggles");
 const blendModes = ["source-over", "screen", "multiply", "difference"];
@@ -41,6 +41,7 @@ document.addEventListener(
       event.preventDefault();
 
       sources[event.key - 1].active = !sources[event.key - 1].active;
+      bgUpdateSrc(sources[event.key - 1].id, sources[event.key - 1].active);
       document.querySelector(`#on${event.key}`).checked =
         sources[event.key - 1].active;
       document.getElementById("nocursor").style.cursor = "none";
@@ -128,6 +129,7 @@ function toggleSrc(id) {
   s.active = document.querySelector(`#on${id + 1}`).checked ? true : false;
   document.querySelector("#welcome").style = "display:none;";
   document.getElementById("nocursor").style.cursor = "none";
+  bgUpdateSrc(sources[id].id, sources[id].active);
 }
 
 function onMIDISuccess(midiAccess) {

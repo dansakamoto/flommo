@@ -3,7 +3,7 @@ import express from "express";
 import ViteExpress from "vite-express";
 import { Server } from "socket.io";
 import { srcList } from "./routes/srcList.js";
-import { addSrc, delSrc } from "./utils/data.js";
+import { addSrc, delSrc, updateSrc } from "./utils/data.js";
 
 const app = express();
 const port = 3000;
@@ -25,4 +25,5 @@ const io = new Server(server, {
 io.on("connection", (socket) => {
   socket.on("uploadSrc", addSrc);
   socket.on("delSrc", delSrc);
+  socket.on("updateSrc", updateSrc);
 });

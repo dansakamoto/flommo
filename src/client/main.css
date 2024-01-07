@@ -52,27 +52,29 @@ main {
 .submitButton {
   cursor: pointer;
 }
-#p5button:hover {
+
+#menu .p5button:hover {
   color: #ed225d;
 }
-#p5button.active {
+#menu .p5button.active {
   color: #ffffff;
   background: #ed225d33;
 }
-#hydrabutton:hover {
+#menu .hydrabutton:hover {
   color: #69beef;
 }
-#hydrabutton.active {
+#menu .hydrabutton.active {
   color: #ffffff;
   background: #69beef33;
 }
-#videobutton:hover {
+#menu .videobutton:hover {
   color: #ff00ff;
 }
-#videobutton.active {
+#menu .videobutton.active {
   color: #ffffff;
   background: #ff00ff33;
 }
+
 #infobutton:hover {
   color: #009900;
 }
@@ -235,17 +237,6 @@ div#controls div#midi {
 div#midi input {
   width: 50px;
 }
-div#videoeditor {
-  font-family: monospace;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
-}
-div#videoeditor input {
-  background: #00000066;
-  border: 1px solid #aaaaaa66;
-  padding: 20px;
-}
 
 /*
 * Sources viewer
@@ -339,7 +330,18 @@ div#srcPreviews .inputDiv {
   left: 0;
 }
 
-#videouploader input {
+div#videoeditor,
+.addedVideoEditor {
+  font-family: monospace;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+div#videoeditor input,
+.addedVideoEditor input {
+  background: #00000066;
+  border: 1px solid #aaaaaa66;
+  padding: 20px;
   color: white;
   font-family: monospace;
   font-size: 16px;
