@@ -5,7 +5,7 @@ describe("Test database interactions", async () => {
   test("Test getSources", async () => {
     const result = await getSources(1234);
     expect(mockQuery).toHaveBeenLastCalledWith(
-      "SELECT * FROM sources WHERE room = '1234'"
+      "SELECT * FROM sources WHERE room = '1234' ORDER BY id ASC"
     );
     expect(result).toEqual(["test"]);
   });
@@ -51,7 +51,7 @@ describe("Test database interactions", async () => {
       mockCallback
     );
     expect(mockQuery).toHaveBeenLastCalledWith({
-      text: "UPDATE sources SET data = $1,alpha = $2,active = $3 WHERE id = $4",
+      text: "UPDATE sources SET data = $1, alpha = $2, active = $3 WHERE id = $4",
       values: ["test source", 0.75, false, 4567],
     });
     expect(mockCallback).toHaveBeenLastCalledWith({ message: "success" });

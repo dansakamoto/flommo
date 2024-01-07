@@ -10,7 +10,9 @@ export async function getSources(room) {
   const client = await pool.connect();
   let data;
   try {
-    data = await client.query(`SELECT * FROM sources WHERE room = '${room}'`);
+    data = await client.query(
+      `SELECT * FROM sources WHERE room = '${room}' ORDER BY id ASC`
+    );
   } catch (e) {
     console.error("Error retrieving sources from database: " + e);
     client.release();
@@ -37,6 +39,7 @@ export async function addSrc(file, callback) {
     callback({ message: "failure" });
   }
 
+  client.release();
   callback({ message: "success" });
 }
 
@@ -56,23 +59,28 @@ export async function delSrc(file, callback) {
     return;
   }
 
+  client.release();
   callback({ message: "success" });
 }
 
 export async function updateSrc(file, callback) {
   let setQ = "";
   const queryVals = [];
+  let delineator = "";
   if (file.src !== undefined) {
     queryVals.push(file.src);
-    setQ += `data = $${queryVals.length},`;
+    setQ += `${delineator}data = $${queryVals.length}`;
+    delineator = ", ";
   }
   if (file.alpha !== undefined) {
     queryVals.push(file.alpha);
-    setQ += `alpha = $${queryVals.length},`;
+    setQ += `${delineator}alpha = $${queryVals.length}`;
+    delineator = ", ";
   }
   if (file.active !== undefined) {
     queryVals.push(file.active);
-    setQ += `active = $${queryVals.length}`;
+    setQ += `${delineator}active = $${queryVals.length}`;
+    delineator = ", ";
   }
 
   if (queryVals.length === 0) {
@@ -96,5 +104,6 @@ export async function updateSrc(file, callback) {
     return;
   }
 
+  client.release();
   callback({ message: "success" });
 }

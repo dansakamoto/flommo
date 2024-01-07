@@ -2,7 +2,9 @@ import Hydra from "hydra-synth";
 import p5 from "p5";
 import { io } from "socket.io-client";
 import { refreshToggles } from "../components/mixer";
-import { refreshSrcButtons } from "../components/uiController";
+import { refreshSrcButtons, checkPanelReset } from "./uiController";
+import { refreshEditors } from "../components/codeEditor";
+import { resizeEditor } from "./uiController";
 
 const socket = io();
 const srcWrapper = document.getElementById("srcPreviews");
@@ -37,7 +39,7 @@ export function uploadHydra(code) {
   );
 }
 
-function uploadVid(url) {
+export function uploadVid(url) {
   socket.emit(
     "uploadSrc",
     { room: room, type: "video", src: url },
@@ -45,6 +47,18 @@ function uploadVid(url) {
       if (status.message === "success") fetchSources(room);
     }
   );
+}
+
+export function updateSrc(id, data) {
+  socket.emit("updateSrc", { id: id, src: data }, (status) => {
+    if (status.message === "success") fetchSources(room);
+  });
+}
+
+export function bgUpdateSrc(id, data) {
+  socket.emit("updateSrc", { id: id, active: data }, (status) => {
+    if (status.message === "failure") console.log("error syncing source state");
+  });
 }
 
 function delSrc(id) {
@@ -124,6 +138,9 @@ function refreshSources(sourceList) {
     }
   }
 
+  checkPanelReset();
   refreshToggles();
+  refreshEditors();
   refreshSrcButtons();
+  resizeEditor();
 }
