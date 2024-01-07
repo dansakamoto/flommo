@@ -68,18 +68,15 @@ describe("Test database interactions", async () => {
   });
 });
 
-const mockQuery = vi.fn(() => {
+const mockQuery = vi.fn(async () => {
   return { rows: ["test"] };
 });
 
 vi.mock("pg", () => {
   class Pool {
     on = vi.fn();
-    connect = async () => {
-      return {
-        query: mockQuery,
-        release: vi.fn(),
-      };
+    query = async (input) => {
+      return await mockQuery(input);
     };
   }
   return { default: { Pool: Pool } };
