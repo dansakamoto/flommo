@@ -2,6 +2,7 @@ import Hydra from "hydra-synth";
 import p5 from "p5";
 import { io } from "socket.io-client";
 import { refreshToggles } from "../components/mixer";
+import { refreshSrcButtons } from "../components/uiController";
 
 const socket = io();
 const srcWrapper = document.getElementById("srcPreviews");
@@ -124,4 +125,5 @@ function refreshSources(sourceList) {
   }
 
   refreshToggles();
+  refreshSrcButtons();
 }

@@ -2,7 +2,7 @@ import pg from "pg";
 
 const pool = new pg.Pool();
 pool.on("error", (err, client) => {
-  console.error(`Unexpected error on idle client`, err);
+  console.error(`Unexpected error on idle client: `, err);
   client.release();
 });
 
@@ -12,7 +12,7 @@ export async function getSources(room) {
   try {
     data = await client.query(`SELECT * FROM sources WHERE room = '${room}'`);
   } catch (e) {
-    console.error("Error retrieving sources from database" + e);
+    console.error("Error retrieving sources from database: " + e);
     client.release();
     return [];
   }
@@ -21,7 +21,7 @@ export async function getSources(room) {
   return data.rows;
 }
 
-export async function uploadSrc(file, callback) {
+export async function addSrc(file, callback) {
   const room = file.room;
   const type = file.type;
 
@@ -32,7 +32,7 @@ export async function uploadSrc(file, callback) {
       values: [room, type, file.src],
     });
   } catch (e) {
-    console.error("Error adding source to database" + e);
+    console.error("Error adding source to database: " + e);
     client.release();
     callback({ message: "failure" });
   }
@@ -50,9 +50,50 @@ export async function delSrc(file, callback) {
       values: [id],
     });
   } catch (e) {
-    console.error("Error deleting source to database" + e);
+    console.error("Error deleting source to database: " + e);
     client.release();
     callback({ message: "failure" });
+    return;
+  }
+
+  callback({ message: "success" });
+}
+
+export async function updateSrc(file, callback) {
+  let setQ = "";
+  const queryVals = [];
+  if (file.src !== undefined) {
+    queryVals.push(file.src);
+    setQ += `data = $${queryVals.length},`;
+  }
+  if (file.alpha !== undefined) {
+    queryVals.push(file.alpha);
+    setQ += `alpha = $${queryVals.length},`;
+  }
+  if (file.active !== undefined) {
+    queryVals.push(file.active);
+    setQ += `active = $${queryVals.length}`;
+  }
+
+  if (queryVals.length === 0) {
+    callback({ message: "failure" });
+    return;
+  }
+
+  queryVals.push(file.id);
+  const query = {
+    text: `UPDATE sources SET ${setQ} WHERE id = $${queryVals.length}`,
+    values: queryVals,
+  };
+
+  const client = await pool.connect();
+  try {
+    await client.query(query);
+  } catch (e) {
+    console.error("Error updating database: " + e);
+    client.release();
+    callback({ message: "failure" });
+    return;
   }
 
   callback({ message: "success" });

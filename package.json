@@ -5,11 +5,11 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "test": "vitest",
     "start": "NODE_ENV=production node src/server/main.js",
     "dev": "nodemon src/server/main.js -w src/server",
-    "build": "vite build",
-    "force": "vite --force"
+    "build": "vitest run && vite build",
+    "force": "vite --force",
+    "test": "vitest"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,6 @@
     "eslint": "^8.55.0",
     "nodemon": "^3.0.1",
     "vite": "^5.0.10",
-    "vitest": "^1.1.0"
+    "vitest": "^1.1.3"
   }
 }

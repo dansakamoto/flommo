@@ -47,6 +47,10 @@ main {
   border: inherit;
   font-size: inherit;
   background: #00000066;
+  cursor: pointer;
+}
+.submitButton {
+  cursor: pointer;
 }
 #p5button:hover {
   color: #ed225d;
@@ -339,4 +343,12 @@ div#srcPreviews .inputDiv {
   color: white;
   font-family: monospace;
   font-size: 16px;
+}
+
+#editlabel {
+  margin-left: 2em;
+}
+
+#vidUpload:focus {
+  outline: 0;
 }

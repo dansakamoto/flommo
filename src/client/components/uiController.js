@@ -1,4 +1,4 @@
-import { uploadHydra, uploadP5 } from "../utils/sourceManager.js";
+import { uploadHydra, uploadP5, sources } from "../utils/sourceManager.js";
 import { resizeRenderer } from "./renderer.js";
 import { hydraEditor, p5Editor } from "./codeEditor.js";
 
@@ -111,4 +111,21 @@ export function togglePanel(active) {
     document.querySelector("#empty").style = "display:block";
     resizeRenderer();
   }
+}
+
+export function refreshSrcButtons() {
+  /*
+  const editLabel = document.querySelector("#editlabel");
+  const buttonsDiv = document.querySelector("#srcbuttons");
+
+  editLabel.style.visibility = sources.length === 0 ? "hidden" : "visible";
+
+  while (buttonsDiv.firstChild) buttonsDiv.removeChild(buttonsDiv.firstChild);
+
+  for (let i = 0; i < sources.length; i++) {
+    const b = document.createElement("button");
+    b.innerHTML = i + 1;
+    buttonsDiv.appendChild(b);
+  }
+  */
 }
