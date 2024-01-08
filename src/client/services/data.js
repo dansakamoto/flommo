@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 import { convertDropboxURL } from "../utils/urlConverter";
-import * as session from "../session";
+import session from "../session";
 import { setupUI } from "../ui/setupUI";
 
 const socket = io();

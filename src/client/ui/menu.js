@@ -1,20 +1,20 @@
-import * as f from "../session";
+import session from "../session";
 import { togglePanel } from "./menuListeners";
 
 export function updateMenu() {
   const editLabel = document.querySelector("#editlabel");
   const buttonsDiv = document.querySelector("#srcbuttons");
 
-  editLabel.innerHTML = f.sources.length === 0 ? "" : "EDIT:";
+  editLabel.innerHTML = session.sources.length === 0 ? "" : "EDIT:";
 
   while (buttonsDiv.firstChild) buttonsDiv.removeChild(buttonsDiv.firstChild);
 
-  for (let i = 0; i < f.sources.length; i++) {
-    const s = f.sources[i];
+  for (let i = 0; i < session.sources.length; i++) {
+    const s = session.sources[i];
     const button = document.createElement("button");
 
     button.id = "additionalEditor" + i;
-    if (i === f.activePanel) {
+    if (i === session.activePanel) {
       button.classList.add("active");
     }
     button.onclick = () => {

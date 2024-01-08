@@ -24,12 +24,14 @@ vi.mock("socket.io-client", () => {
 });
 vi.mock("../../src/client/session.js", () => {
   return {
-    roomID: 1234,
-    updateSources: mocks.updateSources,
-    sources: [
-      { id: 123, type: "hydra" },
-      { id: 456, type: "video" },
-    ],
+    default: {
+      roomID: 1234,
+      updateSources: mocks.updateSources,
+      sources: [
+        { id: 123, type: "hydra" },
+        { id: 456, type: "video" },
+      ],
+    },
   };
 });
 vi.mock("../../src/client/ui/setupUI", () => {

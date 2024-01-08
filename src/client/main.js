@@ -1,12 +1,12 @@
 import logo from "./assets/FLOMMO_LOGO.png";
 import "./main.css";
-import * as session from "./session";
-import * as data from "./services/data";
+import session from "./session";
+import { loadSources } from "./services/data";
 
 const versionNum = "0.5.0";
 
 session.init();
-data.loadSources();
+loadSources();
 
 document.querySelector("#title").innerHTML = `<img
 style="width: 300px"

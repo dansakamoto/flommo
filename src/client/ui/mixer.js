@@ -1,12 +1,12 @@
 import { toggleSrc, updateAlpha } from "./mixerListeners";
-import { sources } from "../session";
+import session from "../session";
 
 export function updateMixer() {
   const toggles = document.getElementById("sourceToggles");
   while (toggles.firstChild) toggles.removeChild(toggles.firstChild);
 
-  for (let i = 0; i < sources.length; i++) {
-    const s = sources[i];
+  for (let i = 0; i < session.sources.length; i++) {
+    const s = session.sources[i];
 
     const toggleDiv = document.createElement("div");
     toggleDiv.classList.add("panel");

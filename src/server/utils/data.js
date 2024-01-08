@@ -1,12 +1,13 @@
 import pg from "pg";
 
-const pool = new pg.Pool();
-pool.on("error", (err, client) => {
-  console.error(`Unexpected error on idle client: `, err);
-  client.release();
-});
+var pool;
 
-export function testDBConnection() {
+export function dbConnect() {
+  pool = new pg.Pool();
+  pool.on("error", (err, client) => {
+    console.error(`Unexpected error on idle client: `, err);
+    client.release();
+  });
   pool.query("SELECT NOW()"); // test db connection
 }
 

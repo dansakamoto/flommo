@@ -1,12 +1,31 @@
-import { describe, test, expect, vi } from "vitest";
+import { describe, test, expect, vi, beforeAll } from "vitest";
 import {
+  dbConnect,
   addSrc,
   delSrc,
   updateSrc,
   getSources,
 } from "../../src/server/utils/data.js";
 
+const mockQuery = vi.fn(async () => {
+  return { rows: ["test"] };
+});
+vi.mock("pg", () => {
+  class Pool {
+    on = vi.fn();
+    query = async (input) => {
+      return await mockQuery(input);
+    };
+  }
+  return { default: { Pool: Pool } };
+});
+const mockCallback = vi.fn();
+
 describe("Test database interactions", async () => {
+  beforeAll(() => {
+    dbConnect();
+  });
+
   test("Test getSources", async () => {
     const result = await getSources(1234);
     expect(mockQuery).toHaveBeenLastCalledWith(
@@ -67,19 +86,3 @@ describe("Test database interactions", async () => {
     expect(mockCallback).toHaveBeenLastCalledWith({ message: "failure" });
   });
 });
-
-const mockQuery = vi.fn(async () => {
-  return { rows: ["test"] };
-});
-
-vi.mock("pg", () => {
-  class Pool {
-    on = vi.fn();
-    query = async (input) => {
-      return await mockQuery(input);
-    };
-  }
-  return { default: { Pool: Pool } };
-});
-
-const mockCallback = vi.fn();

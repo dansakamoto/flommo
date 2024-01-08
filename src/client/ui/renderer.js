@@ -1,7 +1,6 @@
 import Hydra from "hydra-synth";
 import p5 from "p5";
-import { sources } from "../session";
-import * as session from "../session";
+import session from "../session";
 import { delSrc } from "../services/data";
 
 setInterval(drawRenderer, 16); // ~60fps
@@ -24,8 +23,8 @@ export function updateRenderer() {
   const srcWrapper = document.getElementById("srcPreviews");
   while (srcWrapper.firstChild) srcWrapper.removeChild(srcWrapper.firstChild);
 
-  for (let i = 0; i < sources.length; i++) {
-    const s = sources[i];
+  for (let i = 0; i < session.sources.length; i++) {
+    const s = session.sources[i];
 
     const containerName = "srcCanvas" + i;
     const inputDiv = document.createElement("div");
@@ -63,18 +62,21 @@ export function updateRenderer() {
     inputDiv.appendChild(closeButton);
 
     if (s.type === "p5") {
-      sources[i]["instance"] = new p5(Function("f", s.data), containerName);
+      session.sources[i]["instance"] = new p5(
+        Function("f", s.data),
+        containerName
+      );
     } else if (s.type === "hydra") {
       const hydraDestructurer =
         "const { src, osc, gradient, shape, voronoi, noise, s0, s1, s2, s3, o0, o1, o2, o3, render } = f;";
-      sources[i]["instance"] = new Hydra({
+      session.sources[i]["instance"] = new Hydra({
         makeGlobal: false,
         canvas: document.getElementById(containerName),
         detectAudio: false,
         autoLoop: false,
       }).synth;
       const hFunc = Function("f", hydraDestructurer + s.data);
-      hFunc(sources[i].instance);
+      hFunc(session.sources[i].instance);
     }
   }
 }
@@ -84,8 +86,8 @@ function drawRenderer() {
   const outputContext = outputCanvas.getContext("2d");
   outputContext.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
 
-  for (let i = 0; i < sources.length; i++) {
-    const s = sources[i];
+  for (let i = 0; i < session.sources.length; i++) {
+    const s = session.sources[i];
     const id = "srcCanvas" + i;
     if (s.type === "video") document.getElementById(id).play();
     else if (s.type === "hydra") s.instance.tick(16);
@@ -106,7 +108,7 @@ function drawRenderer() {
       );
     }
 
-    if (session.gInvert) outputContext.filter = "invert(1)";
+    if (session.globalInvert) outputContext.filter = "invert(1)";
     else outputContext.filter = "invert(0)";
 
     outputContext.globalCompositeOperation = session.blendMode;
