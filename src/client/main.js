@@ -1,8 +1,13 @@
 import logo from "./assets/FLOMMO_LOGO.png";
 import "./style.css";
-import "./views/uiController";
+import { initRoom } from "./models/sources";
+import { resizeEditor } from "./views/panels";
+//import "./views/uiController";
 
 const versionNum = "0.4.0";
+
+initRoom();
+resizeEditor();
 
 document.querySelector("#title").innerHTML = `<img
 style="width: 300px"

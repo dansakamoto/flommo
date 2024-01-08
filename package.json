@@ -9,7 +9,8 @@
     "dev": "nodemon src/server/main.js -w src/server",
     "build": "vitest run && vite build",
     "force": "vite --force",
-    "test": "vitest"
+    "test": "vitest",
+    "lint": "eslint src --ext js --report-unused-disable-directives --max-warnings 0"
   },
   "repository": {
     "type": "git",

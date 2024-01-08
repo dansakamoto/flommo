@@ -1,8 +1,8 @@
 import { describe, test, expect, vi } from "vitest";
-import { srcList } from "../src/server/routes/srcList.js";
+import { srcList } from "../../src/server/routes/srcList.js";
 
 vi.mock(
-  "../src/server/utils/data.js",
+  "../../src/server/utils/data.js",
   vi.fn(() => {
     return {
       getSources: () => {

@@ -4,7 +4,7 @@ import {
   delSrc,
   updateSrc,
   getSources,
-} from "../src/server/utils/data.js";
+} from "../../src/server/utils/data.js";
 
 describe("Test database interactions", async () => {
   test("Test getSources", async () => {

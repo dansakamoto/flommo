@@ -1,13 +1,8 @@
-import { sources, bgUpdateSrc } from "../services/sourceManager";
-import { togglePanel } from "../views/uiController";
-
-const toggles = document.getElementById("sourceToggles");
-const blendModes = ["source-over", "screen", "multiply", "difference"];
-const filterModes = ["invert"];
-var midiActive = false;
-
-export var blendMode = "source-over";
-export var gInvert = false;
+import { sources } from "../models/sources";
+import { bgUpdateSrc } from "../services/data";
+import { togglePanel } from "./panels";
+import { blendModes, setBlendMode, toggleInvert } from "../models/mixer";
+import { midiActive, setMidiActive } from "../models/mixer";
 
 if ("requestMIDIAccess" in navigator) {
   navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
@@ -15,15 +10,13 @@ if ("requestMIDIAccess" in navigator) {
 
 for (const b of blendModes) {
   document.getElementById(b).onchange = () => {
-    toggleBlend(b);
+    setBlendMode(b);
   };
 }
 
-for (const f of filterModes) {
-  document.getElementById(f).onchange = () => {
-    toggleFilter(f);
-  };
-}
+document.getElementById("invert").onchange = () => {
+  toggleInvert();
+};
 
 document.getElementById("midion").onchange = () => {
   toggleMidi();
@@ -46,16 +39,16 @@ document.addEventListener(
         sources[event.key - 1].active;
       document.getElementById("nocursor").style.cursor = "none";
     } else if (event.key == "q" && event.ctrlKey) {
-      blendMode = "source-over";
+      setBlendMode("source-over");
       document.getElementById("source-over").checked = true;
     } else if (event.key == "w" && event.ctrlKey) {
-      blendMode = "screen";
+      setBlendMode("screen");
       document.getElementById("screen").checked = true;
     } else if (event.key == "e" && event.ctrlKey) {
-      blendMode = "multiply";
+      setBlendMode("multiply");
       document.getElementById("multiply").checked = true;
     } else if (event.key == "r" && event.ctrlKey) {
-      blendMode = "difference";
+      setBlendMode("difference");
       document.getElementById("difference").checked = true;
     } else if (event.key == "b" && event.ctrlKey) {
       document.querySelector("#welcome").style = "display:none;";
@@ -65,8 +58,7 @@ document.addEventListener(
         document.querySelector(`#on${i + 1}`).checked = false;
       }
     } else if (event.key === "i" && event.ctrlKey) {
-      gInvert = !gInvert;
-      document.getElementById("invert").checked = gInvert;
+      document.getElementById("invert").checked = toggleInvert();
     } else if (event.key == "z" && event.ctrlKey) {
       togglePanel("video");
     } else if (event.key == "x" && event.ctrlKey) {
@@ -82,49 +74,11 @@ document.addEventListener(
   false
 );
 
-export function refreshToggles() {
-  while (toggles.firstChild) toggles.removeChild(toggles.firstChild);
-
-  for (let j = 0; j < sources.length; j++) {
-    const s = sources[j];
-    const isActive = s.active ? " checked" : "";
-    const panelDiv = document.createElement("div");
-    panelDiv.classList.add("panel");
-
-    panelDiv.innerHTML = `<input type="checkbox" id="on${j + 1}" name="on${
-      j + 1
-    }" value="on${j + 1}"${isActive}><label for="on${j + 1}">Send ${
-      j + 1
-    }</label><br><input type="range" min="0" max="100" value="${
-      s.alpha * 100
-    }" class="slider" id="alpha${j + 1}"><br></br>`;
-
-    toggles.appendChild(panelDiv);
-    document.getElementById(`on${j + 1}`).onchange = () => {
-      toggleSrc(j);
-    };
-    document.getElementById(`alpha${j + 1}`).onpointermove = () => {
-      updateAlpha(j);
-    };
-  }
-}
-
-function toggleBlend(b) {
-  blendMode = b;
-}
-
-function toggleFilter(f) {
-  if (f === "invert") {
-    gInvert = !gInvert;
-    document.getElementById("#invert").checked = gInvert;
-  }
-}
-
-function updateAlpha(id) {
+export function updateAlpha(id) {
   sources[id].alpha = document.querySelector(`#alpha${id + 1}`).value / 100;
 }
 
-function toggleSrc(id) {
+export function toggleSrc(id) {
   const s = sources[id];
   s.active = document.querySelector(`#on${id + 1}`).checked ? true : false;
   document.querySelector("#welcome").style = "display:none;";
@@ -142,11 +96,11 @@ function onMIDISuccess(midiAccess) {
   }
 }
 function onMIDIFailure(e) {
-  console.log("Could not access your MIDI devices: ", e);
+  console.error("Could not access your MIDI devices: ", e);
 }
 function toggleMidi() {
   const mSwitch = document.getElementById("midion");
-  midiActive = mSwitch.checked;
+  setMidiActive(mSwitch.checked);
 }
 
 function onMIDIMessage(message) {
@@ -162,20 +116,19 @@ function onMIDIMessage(message) {
         sources[n].active = !sources[n].active;
         document.querySelector(`#on${n + 1}`).checked = sources[n].active;
       } else if (note == 70) {
-        blendMode = "source-over";
+        setBlendMode("source-over");
         document.getElementById("source-over").checked = true;
       } else if (note == 71) {
-        blendMode = "screen";
+        setBlendMode("screen");
         document.getElementById("screen").checked = true;
       } else if (note == 72) {
-        blendMode = "multiply";
+        setBlendMode("multiply");
         document.getElementById("multiply").checked = true;
       } else if (note == 73) {
-        blendMode = "difference";
+        setBlendMode("difference");
         document.getElementById("difference").checked = true;
       } else if (note == 74) {
-        gInvert = !gInvert;
-        document.getElementById("invert").checked = gInvert;
+        document.getElementById("invert").checked = toggleInvert();
       }
     }
   }
