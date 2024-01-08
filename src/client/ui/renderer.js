@@ -1,7 +1,7 @@
 import Hydra from "hydra-synth";
 import p5 from "p5";
-import { sources } from "../model";
-import * as session from "../model";
+import { sources } from "../session";
+import * as session from "../session";
 import { delSrc } from "../services/data";
 
 setInterval(drawRenderer, 16); // ~60fps

@@ -1,6 +1,6 @@
 import { updateSrc } from "../services/data";
 import { togglePanel } from "./menuListeners";
-import * as f from "../model";
+import * as f from "../session";
 
 export { updateAlpha, toggleSrc };
 

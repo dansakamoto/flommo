@@ -1,7 +1,7 @@
 import { addSrc } from "../services/data";
 import { resizeEditors } from "./editors";
 import { resizeRenderer } from "./renderer";
-import * as f from "../model";
+import * as f from "../session";
 
 export { togglePanel };
 

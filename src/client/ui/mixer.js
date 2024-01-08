@@ -1,5 +1,5 @@
 import { toggleSrc, updateAlpha } from "./mixerListeners";
-import { sources } from "../model";
+import { sources } from "../session";
 
 export function updateMixer() {
   const toggles = document.getElementById("sourceToggles");

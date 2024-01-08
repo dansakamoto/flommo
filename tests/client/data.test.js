@@ -22,7 +22,7 @@ vi.mock("socket.io-client", () => {
     },
   };
 });
-vi.mock("../../src/client/model.js", () => {
+vi.mock("../../src/client/session.js", () => {
   return {
     roomID: 1234,
     updateSources: mocks.updateSources,

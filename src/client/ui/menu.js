@@ -1,4 +1,4 @@
-import * as f from "../model";
+import * as f from "../session";
 import { togglePanel } from "./menuListeners";
 
 export function updateMenu() {

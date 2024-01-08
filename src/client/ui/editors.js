@@ -1,7 +1,7 @@
 import { togglePanel } from "./menuListeners.js";
 import { createEditorInstance } from "../utils/cmInstance.js";
 import { updateSrc } from "../services/data.js";
-import * as f from "../model.js";
+import * as f from "../session.js";
 
 export function resizeEditors() {
   const editorHeight =
