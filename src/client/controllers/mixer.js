@@ -4,24 +4,22 @@ import { togglePanel } from "./panels";
 import { blendModes, setBlendMode, toggleInvert } from "../models/mixer";
 import { midiActive, setMidiActive } from "../models/mixer";
 
+export { updateAlpha, toggleSrc };
+
 if ("requestMIDIAccess" in navigator) {
   navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
 }
-
 for (const b of blendModes) {
   document.getElementById(b).onchange = () => {
     setBlendMode(b);
   };
 }
-
 document.getElementById("invert").onchange = () => {
   toggleInvert();
 };
-
 document.getElementById("midion").onchange = () => {
   toggleMidi();
 };
-
 document.addEventListener(
   "keydown",
   (event) => {
@@ -78,11 +76,11 @@ document.addEventListener(
   false
 );
 
-export function updateAlpha(id) {
+function updateAlpha(id) {
   sources[id].alpha = document.querySelector(`#alpha${id + 1}`).value / 100;
 }
 
-export function toggleSrc(id) {
+function toggleSrc(id) {
   const s = sources[id];
   s.active = document.querySelector(`#on${id + 1}`).checked ? true : false;
   document.querySelector("#welcome").style = "display:none;";
@@ -99,9 +97,11 @@ function onMIDISuccess(midiAccess) {
     input = inputs.next();
   }
 }
+
 function onMIDIFailure(e) {
   console.error("Could not access your MIDI devices: ", e);
 }
+
 function toggleMidi() {
   const mSwitch = document.getElementById("midion");
   setMidiActive(mSwitch.checked);

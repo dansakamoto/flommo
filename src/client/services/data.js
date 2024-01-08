@@ -29,7 +29,7 @@ export function updateSrc(id, data, refreshAfter = true) {
     return obj.type === "video";
   });
 
-  if (source.type === "video" && data.src) {
+  if (source && source.type === "video" && data.src) {
     data.src = convertDropboxURL(data.src);
   }
   socket.emit("updateSrc", data, (status) => {

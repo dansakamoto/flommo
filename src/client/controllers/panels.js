@@ -5,16 +5,14 @@ import { resizeEditors } from "../views/panels";
 import { resizeRenderer } from "../views/renderer";
 import { sources } from "../models/sources";
 
+export { togglePanel };
+
 togglePanel("title");
-
-const videoUploader = document.querySelector("#videouploader");
-
-videoUploader.onsubmit = (e) => {
+document.querySelector("#videouploader").onsubmit = (e) => {
   e.preventDefault();
   addSrc("video", e.target.elements.vidUpload.value);
   document.querySelector("#vidUpload").value = "";
 };
-
 document.addEventListener(
   "keydown",
   (event) => {
@@ -24,21 +22,18 @@ document.addEventListener(
   },
   false
 );
-
 document.querySelector("#hydraeditor").addEventListener("keypress", (e) => {
   if (e.which === 13 && e.ctrlKey) {
     e.preventDefault();
     addSrc("hydra", hydraEditor.state.doc.toString());
   }
 });
-
 document.querySelector("#p5editor").addEventListener("keypress", (e) => {
   if (e.which === 13 && e.ctrlKey) {
     e.preventDefault();
     addSrc("p5", p5Editor.state.doc.toString());
   }
 });
-
 document.querySelector("#videobutton").onclick = () => {
   togglePanel("video");
 };
@@ -55,7 +50,7 @@ document.querySelector("#infobutton").onclick = () => {
   togglePanel("info");
 };
 
-export function togglePanel(active) {
+function togglePanel(active) {
   if (active === "hide") {
     const currentState = document.querySelector("#hud").style.visibility;
     document.querySelector("#hud").style =

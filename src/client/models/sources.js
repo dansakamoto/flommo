@@ -11,6 +11,6 @@ export function initRoom() {
   if (!params.get("room")) history.pushState({}, "", "?room=" + roomID);
 }
 
-export function replaceSources(newSources) {
+export function updateSources(newSources) {
   sources = newSources;
 }
