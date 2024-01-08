@@ -4,13 +4,9 @@ import { sources } from "../models/sources";
 import { gInvert, blendMode } from "../models/mixer";
 import { delSrc } from "../services/data";
 
-const srcWrapper = document.getElementById("srcPreviews");
-const outputCanvas = document.getElementById("out1");
-const outputContext = outputCanvas.getContext("2d");
-
 setInterval(drawRenderer, 16); // ~60fps
-
 window.addEventListener("resize", resizeRenderer);
+
 export function resizeRenderer() {
   document.getElementById("out1").width = window.innerWidth;
   document.getElementById("out1").height = window.innerHeight;
@@ -25,6 +21,7 @@ export function resizeRenderer() {
 }
 
 export function updateOutputs() {
+  const srcWrapper = document.getElementById("srcPreviews");
   while (srcWrapper.firstChild) srcWrapper.removeChild(srcWrapper.firstChild);
 
   for (let i = 0; i < sources.length; i++) {
@@ -83,6 +80,8 @@ export function updateOutputs() {
 }
 
 function drawRenderer() {
+  const outputCanvas = document.getElementById("out1");
+  const outputContext = outputCanvas.getContext("2d");
   outputContext.clearRect(0, 0, outputCanvas.width, outputCanvas.height);
 
   for (let i = 0; i < sources.length; i++) {

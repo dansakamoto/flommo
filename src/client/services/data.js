@@ -1,22 +1,26 @@
 import { io } from "socket.io-client";
-import { room } from "../models/sources";
+import { roomID } from "../models/sources";
 import { refreshSources } from "../controllers/editor";
 import { convertDropboxURL } from "../utils/urlConverter";
 import { sources } from "../models/sources";
 
 const socket = io();
 
-export async function fetchSources(room) {
-  const URL = "/srclist?room=" + room;
+export async function fetchSources(roomID) {
+  const URL = "/srclist?room=" + roomID;
   const response = await fetch(URL);
   return response.json();
 }
 
 export function addSrc(type, data) {
   if (type === "video") data = convertDropboxURL(data);
-  socket.emit("uploadSrc", { room: room, type: type, src: data }, (status) => {
-    if (status.message === "success") refreshSources(room);
-  });
+  socket.emit(
+    "uploadSrc",
+    { room: roomID, type: type, src: data },
+    (status) => {
+      if (status.message === "success") refreshSources(roomID);
+    }
+  );
 }
 export function updateSrc(id, data, refreshAfter = true) {
   data["id"] = id;
@@ -31,12 +35,13 @@ export function updateSrc(id, data, refreshAfter = true) {
   socket.emit("updateSrc", data, (status) => {
     if (status.message === "failure")
       console.error("error syncing source state");
-    else if (refreshAfter && status.message === "success") refreshSources(room);
+    else if (refreshAfter && status.message === "success")
+      refreshSources(roomID);
   });
 }
 
 export function delSrc(id) {
   socket.emit("delSrc", { id: id }, (status) => {
-    if (status.message === "success") refreshSources(room);
+    if (status.message === "success") refreshSources(roomID);
   });
 }

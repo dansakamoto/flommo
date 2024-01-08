@@ -1,4 +1,4 @@
-export var room;
+export var roomID;
 export var sources = [];
 
 export function clearSources() {
@@ -7,8 +7,8 @@ export function clearSources() {
 
 export function initRoom() {
   const params = new URLSearchParams(window.location.search);
-  room = params.get("room") ? params.get("room") : Date.now();
-  if (!params.get("room")) history.pushState({}, "", "?room=" + room);
+  roomID = params.get("room") ? params.get("room") : Date.now();
+  if (!params.get("room")) history.pushState({}, "", "?room=" + roomID);
 }
 
 export function replaceSources(newSources) {
