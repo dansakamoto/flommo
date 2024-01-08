@@ -28,7 +28,7 @@ export function updateSrc(id, data, refreshAfter = true) {
   data["id"] = id;
 
   const source = session.sources.find((obj) => {
-    return obj.type === "video";
+    return obj.id === id;
   });
 
   if (source && source.type === "video" && data.src) {
