@@ -1,7 +1,7 @@
 import { addSrc } from "../services/data";
 import { p5Editor, hydraEditor } from "../models/panels";
 import { activePanel, setActivePanel } from "../models/panels";
-import { resizeEditor } from "../views/panels";
+import { resizeEditors } from "../views/panels";
 import { resizeRenderer } from "../views/renderer";
 import { sources } from "../models/sources";
 
@@ -92,17 +92,17 @@ export function togglePanel(active) {
   if (activePanel === "hydra") {
     document.querySelector("#hydrabutton").classList.add("active");
     document.querySelector("#hydraeditor").style = "display:block";
-    resizeEditor();
+    resizeEditors();
     document.querySelector("#hydraeditor").querySelector(".cm-content").focus();
   } else if (activePanel === "p5") {
     document.querySelector("#p5button").classList.add("active");
     document.querySelector("#p5editor").style = "display:block";
-    resizeEditor();
+    resizeEditors();
     document.querySelector("#p5editor").querySelector(".cm-content").focus();
   } else if (activePanel === "video") {
     document.querySelector("#videobutton").classList.add("active");
     document.querySelector("#videoeditor").style = "display:flex";
-    resizeEditor();
+    resizeEditors();
     document.querySelector("#vidUpload").focus();
   } else if (activePanel === "info") {
     document.querySelector("#infobutton").classList.add("active");
@@ -122,6 +122,6 @@ export function togglePanel(active) {
     document.querySelector("#addededitors").style = "display:block";
     const sourceId = sources[activePanel].id;
     document.querySelector("#editor" + sourceId).style = "display:flex";
-    resizeEditor();
+    resizeEditors();
   }
 }

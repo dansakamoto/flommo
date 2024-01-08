@@ -4,31 +4,30 @@ import { activePanel } from "../models/panels.js";
 import { createEditorInstance } from "../utils/cmInstance.js";
 import { updateSrc } from "../services/data.js";
 
-export function resizeEditor() {
+export function resizeEditors() {
   const editorHeight =
     window.innerHeight - document.querySelector("#menu").offsetHeight;
-  const editors = document.querySelectorAll(".cm-editor");
 
-  for (const e of editors) {
+  const codeEditors = document.querySelectorAll(".cm-editor");
+  const videoEditors = document.querySelectorAll(".addedVideoEditor");
+
+  for (const e of codeEditors) {
     e.style.height = editorHeight + "px";
   }
-  document.querySelector("#videoeditor").style.height = editorHeight + "px";
-  for (const v of document.querySelectorAll(".addedVideoEditor")) {
+  for (const v of videoEditors) {
     v.style.height = editorHeight + "px";
   }
+  document.querySelector("#videoeditor").style.height = editorHeight + "px";
 }
 
-export function checkPanelReset() {
+export function updateEditors() {
   if (typeof activePanel === "number" && activePanel + 1 > sources.length) {
     togglePanel("none");
   }
-}
 
-export function refreshEditors() {
-  while (document.querySelector("#addededitors").firstChild) {
-    document
-      .querySelector("#addededitors")
-      .removeChild(document.querySelector("#addededitors").firstChild);
+  const addedEditors = document.querySelector("#addededitors");
+  while (addedEditors.firstChild) {
+    addedEditors.removeChild(addedEditors.firstChild);
   }
 
   for (let i = 0; i < sources.length; i++) {
@@ -40,7 +39,7 @@ export function refreshEditors() {
     } else {
       div.style = "display:none";
     }
-    document.querySelector("#addededitors").appendChild(div);
+    addedEditors.appendChild(div);
     if (s.type === "p5" || s.type === "hydra") {
       s.editor = createEditorInstance("editor" + s.id, s.data);
       div.addEventListener("keypress", (e) => {

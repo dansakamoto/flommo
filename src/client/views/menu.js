@@ -2,30 +2,31 @@ import { sources } from "../models/sources";
 import { activePanel } from "../models/panels";
 import { togglePanel } from "../controllers/panels";
 
-export function refreshSrcButtons() {
+export function updateMenuButtons() {
   const editLabel = document.querySelector("#editlabel");
   const buttonsDiv = document.querySelector("#srcbuttons");
 
-  editLabel.style.visibility = sources.length === 0 ? "hidden" : "visible";
+  editLabel.innerHTML = sources.length === 0 ? "" : "EDIT:";
 
   while (buttonsDiv.firstChild) buttonsDiv.removeChild(buttonsDiv.firstChild);
 
   for (let i = 0; i < sources.length; i++) {
-    const b = document.createElement("button");
-    b.id = "additionalEditor" + i;
-    if (i === activePanel) {
-      b.classList.add("active");
-    }
+    const s = sources[i];
+    const button = document.createElement("button");
 
-    b.onclick = () => {
+    button.id = "additionalEditor" + i;
+    if (i === activePanel) {
+      button.classList.add("active");
+    }
+    button.onclick = () => {
       togglePanel(i);
     };
 
-    if (sources[i].type === "p5") b.classList.add("p5button");
-    else if (sources[i].type === "hydra") b.classList.add("hydrabutton");
-    else if (sources[i].type === "video") b.classList.add("videobutton");
+    if (s.type === "p5") button.classList.add("p5button");
+    else if (s.type === "hydra") button.classList.add("hydrabutton");
+    else if (s.type === "video") button.classList.add("videobutton");
 
-    b.innerHTML = i + 1;
-    buttonsDiv.appendChild(b);
+    button.innerHTML = i + 1;
+    buttonsDiv.appendChild(button);
   }
 }
