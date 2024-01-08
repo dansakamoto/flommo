@@ -20,7 +20,10 @@ export function resizeEditors() {
 }
 
 export function updateEditors() {
-  if (typeof activePanel === "number" && f.activePanel + 1 > f.sources.length) {
+  if (
+    typeof f.activePanel === "number" &&
+    f.activePanel + 1 > f.sources.length
+  ) {
     togglePanel("none");
   }
 
