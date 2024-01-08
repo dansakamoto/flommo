@@ -1,5 +1,10 @@
 import { describe, test, expect, vi } from "vitest";
-import { addSrc, delSrc, updateSrc, getSources } from "../utils/data";
+import {
+  addSrc,
+  delSrc,
+  updateSrc,
+  getSources,
+} from "../../src/server/utils/data.js";
 
 describe("Test database interactions", async () => {
   test("Test getSources", async () => {
@@ -63,18 +68,15 @@ describe("Test database interactions", async () => {
   });
 });
 
-const mockQuery = vi.fn(() => {
+const mockQuery = vi.fn(async () => {
   return { rows: ["test"] };
 });
 
 vi.mock("pg", () => {
   class Pool {
     on = vi.fn();
-    connect = async () => {
-      return {
-        query: mockQuery,
-        release: vi.fn(),
-      };
+    query = async (input) => {
+      return await mockQuery(input);
     };
   }
   return { default: { Pool: Pool } };

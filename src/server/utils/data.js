@@ -6,20 +6,21 @@ pool.on("error", (err, client) => {
   client.release();
 });
 
+export function testDBConnection() {
+  pool.query("SELECT NOW()"); // test db connection
+}
+
 export async function getSources(room) {
-  const client = await pool.connect();
   let data;
   try {
-    data = await client.query(
+    data = await pool.query(
       `SELECT * FROM sources WHERE room = '${room}' ORDER BY id ASC`
     );
   } catch (e) {
     console.error("Error retrieving sources from database: " + e);
-    client.release();
     return [];
   }
 
-  client.release();
   return data.rows;
 }
 
@@ -27,39 +28,33 @@ export async function addSrc(file, callback) {
   const room = file.room;
   const type = file.type;
 
-  const client = await pool.connect();
   try {
-    await client.query({
+    await pool.query({
       text: `INSERT INTO sources(room, type, data) VALUES($1, $2, $3)`,
       values: [room, type, file.src],
     });
   } catch (e) {
     console.error("Error adding source to database: " + e);
-    client.release();
     callback({ message: "failure" });
   }
 
-  client.release();
   callback({ message: "success" });
 }
 
 export async function delSrc(file, callback) {
   const id = file.id;
 
-  const client = await pool.connect();
   try {
-    await client.query({
+    await pool.query({
       text: `DELETE FROM sources WHERE id = $1`,
       values: [id],
     });
   } catch (e) {
     console.error("Error deleting source to database: " + e);
-    client.release();
     callback({ message: "failure" });
     return;
   }
 
-  client.release();
   callback({ message: "success" });
 }
 
@@ -94,16 +89,13 @@ export async function updateSrc(file, callback) {
     values: queryVals,
   };
 
-  const client = await pool.connect();
   try {
-    await client.query(query);
+    await pool.query(query);
   } catch (e) {
     console.error("Error updating database: " + e);
-    client.release();
     callback({ message: "failure" });
     return;
   }
 
-  client.release();
   callback({ message: "success" });
 }

@@ -3,7 +3,9 @@ import express from "express";
 import ViteExpress from "vite-express";
 import { Server } from "socket.io";
 import { srcList } from "./routes/srcList.js";
-import { addSrc, delSrc, updateSrc } from "./utils/data.js";
+import { addSrc, delSrc, updateSrc, testDBConnection } from "./utils/data.js";
+
+testDBConnection();
 
 const app = express();
 const port = 3000;

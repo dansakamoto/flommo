@@ -1,34 +1,23 @@
-import { sources, bgUpdateSrc } from "../utils/sourceManager";
-import { togglePanel } from "../utils/uiController";
+import { updateSrc } from "../services/data";
+import { togglePanel } from "./menuListeners";
+import * as f from "../model";
 
-const toggles = document.getElementById("sourceToggles");
-const blendModes = ["source-over", "screen", "multiply", "difference"];
-const filterModes = ["invert"];
-var midiActive = false;
-
-export var blendMode = "source-over";
-export var gInvert = false;
+export { updateAlpha, toggleSrc };
 
 if ("requestMIDIAccess" in navigator) {
   navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
 }
-
-for (const b of blendModes) {
+for (const b of f.blendModes) {
   document.getElementById(b).onchange = () => {
-    toggleBlend(b);
+    f.setBlendMode(b);
   };
 }
-
-for (const f of filterModes) {
-  document.getElementById(f).onchange = () => {
-    toggleFilter(f);
-  };
-}
-
+document.getElementById("invert").onchange = () => {
+  f.toggleInvert();
+};
 document.getElementById("midion").onchange = () => {
   toggleMidi();
 };
-
 document.addEventListener(
   "keydown",
   (event) => {
@@ -40,33 +29,36 @@ document.addEventListener(
     ) {
       event.preventDefault();
 
-      sources[event.key - 1].active = !sources[event.key - 1].active;
-      bgUpdateSrc(sources[event.key - 1].id, sources[event.key - 1].active);
+      f.sources[event.key - 1].active = !f.sources[event.key - 1].active;
+      updateSrc(
+        f.sources[event.key - 1].id,
+        { active: f.sources[event.key - 1].active },
+        false
+      );
       document.querySelector(`#on${event.key}`).checked =
-        sources[event.key - 1].active;
+        f.sources[event.key - 1].active;
       document.getElementById("nocursor").style.cursor = "none";
     } else if (event.key == "q" && event.ctrlKey) {
-      blendMode = "source-over";
+      f.setBlendMode("source-over");
       document.getElementById("source-over").checked = true;
     } else if (event.key == "w" && event.ctrlKey) {
-      blendMode = "screen";
+      f.setBlendMode("screen");
       document.getElementById("screen").checked = true;
     } else if (event.key == "e" && event.ctrlKey) {
-      blendMode = "multiply";
+      f.setBlendMode("multiply");
       document.getElementById("multiply").checked = true;
     } else if (event.key == "r" && event.ctrlKey) {
-      blendMode = "difference";
+      f.setBlendMode("difference");
       document.getElementById("difference").checked = true;
     } else if (event.key == "b" && event.ctrlKey) {
       document.querySelector("#welcome").style = "display:none;";
       document.getElementById("nocursor").style.cursor = "none";
-      for (let i = 0; i < sources.count; i++) {
-        sources[i].active = false;
+      for (let i = 0; i < f.sources.count; i++) {
+        f.sources[i].active = false;
         document.querySelector(`#on${i + 1}`).checked = false;
       }
     } else if (event.key === "i" && event.ctrlKey) {
-      gInvert = !gInvert;
-      document.getElementById("invert").checked = gInvert;
+      document.getElementById("invert").checked = f.toggleInvert();
     } else if (event.key == "z" && event.ctrlKey) {
       togglePanel("video");
     } else if (event.key == "x" && event.ctrlKey) {
@@ -82,54 +74,16 @@ document.addEventListener(
   false
 );
 
-export function refreshToggles() {
-  while (toggles.firstChild) toggles.removeChild(toggles.firstChild);
-
-  for (let j = 0; j < sources.length; j++) {
-    const s = sources[j];
-    const isActive = s.active ? " checked" : "";
-    const panelDiv = document.createElement("div");
-    panelDiv.classList.add("panel");
-
-    panelDiv.innerHTML = `<input type="checkbox" id="on${j + 1}" name="on${
-      j + 1
-    }" value="on${j + 1}"${isActive}><label for="on${j + 1}">Send ${
-      j + 1
-    }</label><br><input type="range" min="0" max="100" value="${
-      s.alpha * 100
-    }" class="slider" id="alpha${j + 1}"><br></br>`;
-
-    toggles.appendChild(panelDiv);
-    document.getElementById(`on${j + 1}`).onchange = () => {
-      toggleSrc(j);
-    };
-    document.getElementById(`alpha${j + 1}`).onpointermove = () => {
-      updateAlpha(j);
-    };
-  }
-}
-
-function toggleBlend(b) {
-  blendMode = b;
-}
-
-function toggleFilter(f) {
-  if (f === "invert") {
-    gInvert = !gInvert;
-    document.getElementById("#invert").checked = gInvert;
-  }
-}
-
 function updateAlpha(id) {
-  sources[id].alpha = document.querySelector(`#alpha${id + 1}`).value / 100;
+  f.sources[id].alpha = document.querySelector(`#alpha${id + 1}`).value / 100;
 }
 
 function toggleSrc(id) {
-  const s = sources[id];
+  const s = f.sources[id];
   s.active = document.querySelector(`#on${id + 1}`).checked ? true : false;
   document.querySelector("#welcome").style = "display:none;";
   document.getElementById("nocursor").style.cursor = "none";
-  bgUpdateSrc(sources[id].id, sources[id].active);
+  updateSrc(f.sources[id].id, { active: f.sources[id].active }, false);
 }
 
 function onMIDISuccess(midiAccess) {
@@ -141,16 +95,18 @@ function onMIDISuccess(midiAccess) {
     input = inputs.next();
   }
 }
+
 function onMIDIFailure(e) {
-  console.log("Could not access your MIDI devices: ", e);
+  console.error("Could not access your MIDI devices: ", e);
 }
+
 function toggleMidi() {
   const mSwitch = document.getElementById("midion");
-  midiActive = mSwitch.checked;
+  f.setMidiActive(mSwitch.checked);
 }
 
 function onMIDIMessage(message) {
-  if (!midiActive) return;
+  if (!f.midiActive) return;
   const data = message.data; // [command/channel, note, velocity]
   if (data[0] != 248) console.log(data);
   if (data[0] != 248) {
@@ -159,23 +115,22 @@ function onMIDIMessage(message) {
     if (velocity == 127) {
       if (note >= 60 && note <= 69) {
         let n = note - 60;
-        sources[n].active = !sources[n].active;
-        document.querySelector(`#on${n + 1}`).checked = sources[n].active;
+        f.sources[n].active = !f.sources[n].active;
+        document.querySelector(`#on${n + 1}`).checked = f.sources[n].active;
       } else if (note == 70) {
-        blendMode = "source-over";
+        f.setBlendMode("source-over");
         document.getElementById("source-over").checked = true;
       } else if (note == 71) {
-        blendMode = "screen";
+        f.setBlendMode("screen");
         document.getElementById("screen").checked = true;
       } else if (note == 72) {
-        blendMode = "multiply";
+        f.setBlendMode("multiply");
         document.getElementById("multiply").checked = true;
       } else if (note == 73) {
-        blendMode = "difference";
+        f.setBlendMode("difference");
         document.getElementById("difference").checked = true;
       } else if (note == 74) {
-        gInvert = !gInvert;
-        document.getElementById("invert").checked = gInvert;
+        document.getElementById("invert").checked = f.toggleInvert();
       }
     }
   }

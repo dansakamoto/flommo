@@ -1,15 +1,8 @@
 import { describe, test, expect, vi } from "vitest";
-import { srcList } from "../routes/srcList";
-
-describe("Test Routes", () => {
-  test("Test srcList route", async () => {
-    await srcList(mockReq, mockRes);
-    expect(mockSend).toHaveBeenCalledWith("test response");
-  });
-});
+import { srcList } from "../../src/server/routes/srcList.js";
 
 vi.mock(
-  "../utils/data.js",
+  "../../src/server/utils/data.js",
   vi.fn(() => {
     return {
       getSources: () => {
@@ -18,6 +11,13 @@ vi.mock(
     };
   })
 );
+
+describe("Test Routes", () => {
+  test("Test srcList route", async () => {
+    await srcList(mockReq, mockRes);
+    expect(mockSend).toHaveBeenCalledWith("test response");
+  });
+});
 
 const mockSend = vi.fn();
 
