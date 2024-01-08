@@ -46,7 +46,7 @@ export function refreshEditors() {
       div.addEventListener("keypress", (e) => {
         if (e.which === 13 && e.ctrlKey) {
           e.preventDefault();
-          updateSrc(s.id, s.editor.state.doc.toString());
+          updateSrc(s.id, { src: s.editor.state.doc.toString() });
         }
       });
     } else {
@@ -66,7 +66,7 @@ export function refreshEditors() {
       const form = document.getElementById(`videouploader${s.id}`);
       form.onsubmit = (e) => {
         e.preventDefault();
-        updateSrc(s.id, e.target.elements[`vidUpload${s.id}`].value);
+        updateSrc(s.id, { src: e.target.elements[`vidUpload${s.id}`].value });
       };
     }
   }

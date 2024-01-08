@@ -1,5 +1,5 @@
 import { sources } from "../models/sources";
-import { bgUpdateSrc } from "../services/data";
+import { updateSrc } from "../services/data";
 import { togglePanel } from "./panels";
 import { blendModes, setBlendMode, toggleInvert } from "../models/mixer";
 import { midiActive, setMidiActive } from "../models/mixer";
@@ -34,7 +34,11 @@ document.addEventListener(
       event.preventDefault();
 
       sources[event.key - 1].active = !sources[event.key - 1].active;
-      bgUpdateSrc(sources[event.key - 1].id, sources[event.key - 1].active);
+      updateSrc(
+        sources[event.key - 1].id,
+        { active: sources[event.key - 1].active },
+        false
+      );
       document.querySelector(`#on${event.key}`).checked =
         sources[event.key - 1].active;
       document.getElementById("nocursor").style.cursor = "none";
@@ -83,7 +87,7 @@ export function toggleSrc(id) {
   s.active = document.querySelector(`#on${id + 1}`).checked ? true : false;
   document.querySelector("#welcome").style = "display:none;";
   document.getElementById("nocursor").style.cursor = "none";
-  bgUpdateSrc(sources[id].id, sources[id].active);
+  updateSrc(sources[id].id, { active: sources[id].active }, false);
 }
 
 function onMIDISuccess(midiAccess) {

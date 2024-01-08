@@ -1,4 +1,4 @@
-import { uploadVid, uploadHydra, uploadP5 } from "../services/data";
+import { addSrc } from "../services/data";
 import { p5Editor, hydraEditor } from "../models/panels";
 import { activePanel, setActivePanel } from "../models/panels";
 import { resizeEditor } from "../views/panels";
@@ -11,7 +11,7 @@ const videoUploader = document.querySelector("#videouploader");
 
 videoUploader.onsubmit = (e) => {
   e.preventDefault();
-  uploadVid(e.target.elements.vidUpload.value);
+  addSrc("video", e.target.elements.vidUpload.value);
   document.querySelector("#vidUpload").value = "";
 };
 
@@ -28,14 +28,14 @@ document.addEventListener(
 document.querySelector("#hydraeditor").addEventListener("keypress", (e) => {
   if (e.which === 13 && e.ctrlKey) {
     e.preventDefault();
-    uploadHydra(hydraEditor.state.doc.toString());
+    addSrc("hydra", hydraEditor.state.doc.toString());
   }
 });
 
 document.querySelector("#p5editor").addEventListener("keypress", (e) => {
   if (e.which === 13 && e.ctrlKey) {
     e.preventDefault();
-    uploadP5(p5Editor.state.doc.toString());
+    addSrc("p5", p5Editor.state.doc.toString());
   }
 });
 
