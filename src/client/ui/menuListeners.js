@@ -1,9 +1,7 @@
 import { addSrc } from "../services/data";
-import { p5Editor, hydraEditor } from "../models/panels";
-import { activePanel, setActivePanel } from "../models/panels";
-import { resizeEditors } from "../views/panels";
-import { resizeRenderer } from "../views/renderer";
-import { sources } from "../models/sources";
+import { resizeEditors } from "./editors";
+import { resizeRenderer } from "./renderer";
+import * as f from "../model";
 
 export { togglePanel };
 
@@ -25,13 +23,13 @@ document.addEventListener(
 document.querySelector("#hydraeditor").addEventListener("keypress", (e) => {
   if (e.which === 13 && e.ctrlKey) {
     e.preventDefault();
-    addSrc("hydra", hydraEditor.state.doc.toString());
+    addSrc("hydra", f.hydraEditor.state.doc.toString());
   }
 });
 document.querySelector("#p5editor").addEventListener("keypress", (e) => {
   if (e.which === 13 && e.ctrlKey) {
     e.preventDefault();
-    addSrc("p5", p5Editor.state.doc.toString());
+    addSrc("p5", f.p5Editor.state.doc.toString());
   }
 });
 document.querySelector("#videobutton").onclick = () => {
@@ -60,8 +58,8 @@ function togglePanel(active) {
     return;
   }
 
-  if (active !== activePanel) setActivePanel(active);
-  else setActivePanel("none");
+  if (active !== f.activePanel) f.setActivePanel(active);
+  else f.setActivePanel("none");
 
   const srcButtons = document.getElementById("srcbuttons").children;
   for (const s of srcButtons) {
@@ -84,38 +82,38 @@ function togglePanel(active) {
   document.querySelector("#empty").style = "display:none;";
   document.querySelector("#addededitors").style = "display:none";
 
-  if (activePanel === "hydra") {
+  if (f.activePanel === "hydra") {
     document.querySelector("#hydrabutton").classList.add("active");
     document.querySelector("#hydraeditor").style = "display:block";
     resizeEditors();
     document.querySelector("#hydraeditor").querySelector(".cm-content").focus();
-  } else if (activePanel === "p5") {
+  } else if (f.activePanel === "p5") {
     document.querySelector("#p5button").classList.add("active");
     document.querySelector("#p5editor").style = "display:block";
     resizeEditors();
     document.querySelector("#p5editor").querySelector(".cm-content").focus();
-  } else if (activePanel === "video") {
+  } else if (f.activePanel === "video") {
     document.querySelector("#videobutton").classList.add("active");
     document.querySelector("#videoeditor").style = "display:flex";
     resizeEditors();
     document.querySelector("#vidUpload").focus();
-  } else if (activePanel === "info") {
+  } else if (f.activePanel === "info") {
     document.querySelector("#infobutton").classList.add("active");
     document.querySelector("#manual").style = "display:flex";
     resizeRenderer();
-  } else if (activePanel === "title") {
+  } else if (f.activePanel === "title") {
     document.querySelector("#titlebutton").classList.add("active");
     document.querySelector("#nocursor").style = "display:flex";
     resizeRenderer();
-  } else if (activePanel === "none") {
+  } else if (f.activePanel === "none") {
     document.querySelector("#empty").style = "display:block";
     resizeRenderer();
   } else {
     document
-      .querySelector("#additionalEditor" + activePanel)
+      .querySelector("#additionalEditor" + f.activePanel)
       .classList.add("active");
     document.querySelector("#addededitors").style = "display:block";
-    const sourceId = sources[activePanel].id;
+    const sourceId = f.sources[f.activePanel].id;
     document.querySelector("#editor" + sourceId).style = "display:flex";
     resizeEditors();
   }

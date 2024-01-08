@@ -1,8 +1,7 @@
-import { sources } from "../models/sources.js";
-import { togglePanel } from "../controllers/panels.js";
-import { activePanel } from "../models/panels.js";
+import { togglePanel } from "./menuListeners.js";
 import { createEditorInstance } from "../utils/cmInstance.js";
 import { updateSrc } from "../services/data.js";
+import * as f from "../model.js";
 
 export function resizeEditors() {
   const editorHeight =
@@ -21,7 +20,7 @@ export function resizeEditors() {
 }
 
 export function updateEditors() {
-  if (typeof activePanel === "number" && activePanel + 1 > sources.length) {
+  if (typeof activePanel === "number" && f.activePanel + 1 > f.sources.length) {
     togglePanel("none");
   }
 
@@ -30,11 +29,11 @@ export function updateEditors() {
     addedEditors.removeChild(addedEditors.firstChild);
   }
 
-  for (let i = 0; i < sources.length; i++) {
-    const s = sources[i];
+  for (let i = 0; i < f.sources.length; i++) {
+    const s = f.sources[i];
     const div = document.createElement("div");
     div.id = "editor" + s.id;
-    if (activePanel === i) {
+    if (f.activePanel === i) {
       div.style = "display:flex";
     } else {
       div.style = "display:none";

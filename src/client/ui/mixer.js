@@ -1,7 +1,7 @@
-import { toggleSrc, updateAlpha } from "../controllers/mixer";
-import { sources } from "../models/sources";
+import { toggleSrc, updateAlpha } from "./mixerListeners";
+import { sources } from "../model";
 
-export function updateConsole() {
+export function updateMixer() {
   const toggles = document.getElementById("sourceToggles");
   while (toggles.firstChild) toggles.removeChild(toggles.firstChild);
 

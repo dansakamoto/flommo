@@ -1,21 +1,20 @@
-import { sources } from "../models/sources";
-import { activePanel } from "../models/panels";
-import { togglePanel } from "../controllers/panels";
+import * as f from "../model";
+import { togglePanel } from "./menuListeners";
 
-export function updateMenuButtons() {
+export function updateMenu() {
   const editLabel = document.querySelector("#editlabel");
   const buttonsDiv = document.querySelector("#srcbuttons");
 
-  editLabel.innerHTML = sources.length === 0 ? "" : "EDIT:";
+  editLabel.innerHTML = f.sources.length === 0 ? "" : "EDIT:";
 
   while (buttonsDiv.firstChild) buttonsDiv.removeChild(buttonsDiv.firstChild);
 
-  for (let i = 0; i < sources.length; i++) {
-    const s = sources[i];
+  for (let i = 0; i < f.sources.length; i++) {
+    const s = f.sources[i];
     const button = document.createElement("button");
 
     button.id = "additionalEditor" + i;
-    if (i === activePanel) {
+    if (i === f.activePanel) {
       button.classList.add("active");
     }
     button.onclick = () => {

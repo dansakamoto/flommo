@@ -1,21 +1,19 @@
-import { sources } from "../models/sources";
 import { updateSrc } from "../services/data";
-import { togglePanel } from "./panels";
-import { blendModes, setBlendMode, toggleInvert } from "../models/mixer";
-import { midiActive, setMidiActive } from "../models/mixer";
+import { togglePanel } from "./menuListeners";
+import * as f from "../model";
 
 export { updateAlpha, toggleSrc };
 
 if ("requestMIDIAccess" in navigator) {
   navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
 }
-for (const b of blendModes) {
+for (const b of f.blendModes) {
   document.getElementById(b).onchange = () => {
-    setBlendMode(b);
+    f.setBlendMode(b);
   };
 }
 document.getElementById("invert").onchange = () => {
-  toggleInvert();
+  f.toggleInvert();
 };
 document.getElementById("midion").onchange = () => {
   toggleMidi();
@@ -31,36 +29,36 @@ document.addEventListener(
     ) {
       event.preventDefault();
 
-      sources[event.key - 1].active = !sources[event.key - 1].active;
+      f.sources[event.key - 1].active = !f.sources[event.key - 1].active;
       updateSrc(
-        sources[event.key - 1].id,
-        { active: sources[event.key - 1].active },
+        f.sources[event.key - 1].id,
+        { active: f.sources[event.key - 1].active },
         false
       );
       document.querySelector(`#on${event.key}`).checked =
-        sources[event.key - 1].active;
+        f.sources[event.key - 1].active;
       document.getElementById("nocursor").style.cursor = "none";
     } else if (event.key == "q" && event.ctrlKey) {
-      setBlendMode("source-over");
+      f.setBlendMode("source-over");
       document.getElementById("source-over").checked = true;
     } else if (event.key == "w" && event.ctrlKey) {
-      setBlendMode("screen");
+      f.setBlendMode("screen");
       document.getElementById("screen").checked = true;
     } else if (event.key == "e" && event.ctrlKey) {
-      setBlendMode("multiply");
+      f.setBlendMode("multiply");
       document.getElementById("multiply").checked = true;
     } else if (event.key == "r" && event.ctrlKey) {
-      setBlendMode("difference");
+      f.setBlendMode("difference");
       document.getElementById("difference").checked = true;
     } else if (event.key == "b" && event.ctrlKey) {
       document.querySelector("#welcome").style = "display:none;";
       document.getElementById("nocursor").style.cursor = "none";
-      for (let i = 0; i < sources.count; i++) {
-        sources[i].active = false;
+      for (let i = 0; i < f.sources.count; i++) {
+        f.sources[i].active = false;
         document.querySelector(`#on${i + 1}`).checked = false;
       }
     } else if (event.key === "i" && event.ctrlKey) {
-      document.getElementById("invert").checked = toggleInvert();
+      document.getElementById("invert").checked = f.toggleInvert();
     } else if (event.key == "z" && event.ctrlKey) {
       togglePanel("video");
     } else if (event.key == "x" && event.ctrlKey) {
@@ -77,15 +75,15 @@ document.addEventListener(
 );
 
 function updateAlpha(id) {
-  sources[id].alpha = document.querySelector(`#alpha${id + 1}`).value / 100;
+  f.sources[id].alpha = document.querySelector(`#alpha${id + 1}`).value / 100;
 }
 
 function toggleSrc(id) {
-  const s = sources[id];
+  const s = f.sources[id];
   s.active = document.querySelector(`#on${id + 1}`).checked ? true : false;
   document.querySelector("#welcome").style = "display:none;";
   document.getElementById("nocursor").style.cursor = "none";
-  updateSrc(sources[id].id, { active: sources[id].active }, false);
+  updateSrc(f.sources[id].id, { active: f.sources[id].active }, false);
 }
 
 function onMIDISuccess(midiAccess) {
@@ -104,11 +102,11 @@ function onMIDIFailure(e) {
 
 function toggleMidi() {
   const mSwitch = document.getElementById("midion");
-  setMidiActive(mSwitch.checked);
+  f.setMidiActive(mSwitch.checked);
 }
 
 function onMIDIMessage(message) {
-  if (!midiActive) return;
+  if (!f.midiActive) return;
   const data = message.data; // [command/channel, note, velocity]
   if (data[0] != 248) console.log(data);
   if (data[0] != 248) {
@@ -117,22 +115,22 @@ function onMIDIMessage(message) {
     if (velocity == 127) {
       if (note >= 60 && note <= 69) {
         let n = note - 60;
-        sources[n].active = !sources[n].active;
-        document.querySelector(`#on${n + 1}`).checked = sources[n].active;
+        f.sources[n].active = !f.sources[n].active;
+        document.querySelector(`#on${n + 1}`).checked = f.sources[n].active;
       } else if (note == 70) {
-        setBlendMode("source-over");
+        f.setBlendMode("source-over");
         document.getElementById("source-over").checked = true;
       } else if (note == 71) {
-        setBlendMode("screen");
+        f.setBlendMode("screen");
         document.getElementById("screen").checked = true;
       } else if (note == 72) {
-        setBlendMode("multiply");
+        f.setBlendMode("multiply");
         document.getElementById("multiply").checked = true;
       } else if (note == 73) {
-        setBlendMode("difference");
+        f.setBlendMode("difference");
         document.getElementById("difference").checked = true;
       } else if (note == 74) {
-        document.getElementById("invert").checked = toggleInvert();
+        document.getElementById("invert").checked = f.toggleInvert();
       }
     }
   }

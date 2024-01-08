@@ -1,7 +1,7 @@
 import Hydra from "hydra-synth";
 import p5 from "p5";
-import { sources } from "../models/sources";
-import { gInvert, blendMode } from "../models/mixer";
+import { sources } from "../model";
+import * as session from "../model";
 import { delSrc } from "../services/data";
 
 setInterval(drawRenderer, 16); // ~60fps
@@ -20,7 +20,7 @@ export function resizeRenderer() {
   document.getElementById("empty").style.height = noCursorHeight + "px";
 }
 
-export function updateOutputs() {
+export function updateRenderer() {
   const srcWrapper = document.getElementById("srcPreviews");
   while (srcWrapper.firstChild) srcWrapper.removeChild(srcWrapper.firstChild);
 
@@ -106,9 +106,9 @@ function drawRenderer() {
       );
     }
 
-    if (gInvert) outputContext.filter = "invert(1)";
+    if (session.gInvert) outputContext.filter = "invert(1)";
     else outputContext.filter = "invert(0)";
 
-    outputContext.globalCompositeOperation = blendMode;
+    outputContext.globalCompositeOperation = session.blendMode;
   }
 }
