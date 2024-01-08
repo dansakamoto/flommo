@@ -3,7 +3,7 @@ import "./style.css";
 import * as session from "./model";
 import { loadSources } from "./services/data";
 
-const versionNum = "0.4.0";
+const versionNum = "0.5.0";
 
 session.init();
 loadSources();
