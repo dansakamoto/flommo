@@ -1,3 +1,4 @@
+import "./editors.css";
 import { togglePanel } from "./menuListeners.js";
 import { createEditorInstance } from "../utils/cmInstance.js";
 import { updateSrc } from "../services/data.js";

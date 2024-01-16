@@ -1,0 +1,73 @@
+canvas#out1 {
+  margin: 0 auto;
+  border: 0px solid black;
+  background: #000;
+  float: left;
+  clear: both;
+  position: fixed;
+  z-index: -5;
+}
+div#srcHeader {
+  width: 100%;
+  display: none;
+  background: #00000088;
+  color: #fff;
+  padding: 5px 0;
+  margin: 5px 0;
+  text-align: center;
+}
+div.inputDiv {
+  margin-bottom: 20px;
+}
+canvas.inputSrc {
+  width: 360px;
+}
+canvas.p5Canvas {
+  width: 360px !important;
+  height: 200px !important;
+}
+video.inputSrc {
+  width: 360px;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+div.srcLabel {
+  display: block;
+  z-index: 100;
+  font-size: x-large;
+}
+div.inputDiv button {
+  border: 0;
+  color: #fff;
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: #00000000;
+  padding: 5px 10px;
+}
+div.inputDiv button:hover {
+  background: #000000ff;
+}
+div#srcPreviews {
+  background: #00000088;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  padding-bottom: 20px;
+}
+div#srcPreviews .inputDiv {
+  margin: 0 15px;
+}
+
+.inputDiv {
+  position: relative;
+}
+.inputDiv .srcLabel {
+  font-family: monospace;
+  background: #00000055;
+  padding: 10px 15px;
+  position: absolute;
+  top: 0;
+  left: 0;
+}

@@ -1,3 +1,4 @@
+import "./mixer.css";
 import { toggleSrc, updateAlpha } from "./mixerListeners";
 import session from "../session";
 

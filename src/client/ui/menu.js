@@ -1,3 +1,4 @@
+import "./menu.css";
 import session from "../session";
 import { togglePanel } from "./menuListeners";
 

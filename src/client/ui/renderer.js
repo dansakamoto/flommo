@@ -1,3 +1,4 @@
+import "./renderer.css";
 import Hydra from "hydra-synth";
 import p5 from "p5";
 import session from "../session";

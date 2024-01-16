@@ -1,0 +1,91 @@
+.CodeMirror {
+  line-height: 1.4;
+  font-size: large;
+}
+
+.code {
+  font-family: monospace;
+
+  background-color: #ccc;
+  color: #333;
+  padding: 2px;
+}
+.cm-s-default,
+.CodeMirror-gutters {
+  background-color: #00000000;
+  color: white;
+  border: 0;
+}
+.cm-s-tomorrow-night-eighties .CodeMirror-gutters {
+  background-color: #00000000;
+}
+.CodeMirror-line span {
+  /*background-color:#00000099 !important;*/
+  /*padding:2px;*/
+  font-size: large;
+}
+.cm-property {
+  color: purple;
+}
+.cm-variable {
+  color: green;
+}
+.cm-comment {
+  color: #9b9b9b;
+}
+
+.cm-editor {
+  background: rgba(0, 0, 0, 0);
+  transition: background-color 0.3s ease;
+  color: #cccccc;
+  font-size: 18px;
+  display: flex;
+  height: 100%;
+  padding: 0.5em;
+}
+
+.cm-line {
+  background-color: rgba(0, 0, 0, 0.6);
+  transition: background-color 0.3s ease;
+  color: #cccccc;
+  width: fit-content;
+  padding-left: 0 !important;
+  margin-bottom: 0.25em;
+}
+
+.cm-line span:first-child {
+  padding-left: 6px;
+}
+
+.cm-activeLine {
+  background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+.em-editor .cm-cursor {
+  border: 1px solid red;
+}
+
+.ͼ1.cm-focused {
+  outline: 0vh;
+}
+
+div#videoeditor,
+.addedVideoEditor {
+  font-family: monospace;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+}
+div#videoeditor input,
+.addedVideoEditor input {
+  background: #00000066;
+  border: 1px solid #aaaaaa66;
+  padding: 20px;
+  color: white;
+  font-family: monospace;
+  font-size: 16px;
+}
+
+#vidUpload:focus {
+  outline: 0;
+}

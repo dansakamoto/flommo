@@ -1,0 +1,74 @@
+#menu {
+  font-family: monospace;
+  font-size: 16px;
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+#menu div,
+#menu div.label {
+  display: flex;
+}
+#menu button,
+#menu div.label {
+  padding: 10px;
+  justify-self: flex-end;
+  display: flex;
+  background: #00000066;
+}
+#menu button {
+  background-color: inherit;
+  color: inherit;
+  font-family: inherit;
+  border: inherit;
+  font-size: inherit;
+  background: #00000066;
+  cursor: pointer;
+}
+.submitButton {
+  cursor: pointer;
+}
+
+#menu .p5button:hover {
+  color: #ed225d;
+}
+#menu .p5button.active {
+  color: #ffffff;
+  background: #ed225d33;
+}
+#menu .hydrabutton:hover {
+  color: #69beef;
+}
+#menu .hydrabutton.active {
+  color: #ffffff;
+  background: #69beef33;
+}
+#menu .videobutton:hover {
+  color: #ff00ff;
+}
+#menu .videobutton.active {
+  color: #ffffff;
+  background: #ff00ff33;
+}
+
+#infobutton:hover {
+  color: #009900;
+}
+#infobutton.active {
+  color: #ffffff;
+  background: #00990033;
+}
+#titlebutton:hover {
+  color: #ffff00;
+}
+#titlebutton.active {
+  color: #ffffff;
+  background: #ffff0033;
+}
+#infobutton {
+  justify-self: flex-end;
+}
+
+#editlabel {
+  margin-left: 2em;
+}

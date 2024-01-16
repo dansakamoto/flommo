@@ -1,0 +1,29 @@
+div#controls {
+  padding: 20px;
+  display: block;
+  background: #00000088;
+  font-size: larger;
+}
+div#controls div#blends {
+  display: block;
+  margin-top: 20px;
+}
+div#controls div#filters {
+  display: block;
+  margin-top: 20px;
+}
+div#controls div#midi {
+  display: block;
+  margin-top: 20px;
+}
+div#midi input {
+  width: 50px;
+}
+div#controls {
+  font-family: monospace;
+}
+div#sourceToggles {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+}
