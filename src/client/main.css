@@ -4,6 +4,19 @@
     url("assets/Dosis-VariableFont_wght.ttf") format("TrueType");
 }
 
+:root {
+  --p5: #ed225d;
+  --p5-bg: #ed225d33;
+  --hydra: #69beef;
+  --hydra-bg: #69beef33;
+  --video: #ff00ff;
+  --video-bg: #ff00ff33;
+  --info: #009900;
+  --info-bg: #00990033;
+  --title: #ffff00;
+  --title-bg: #ffff0033;
+}
+
 html,
 body {
   margin: 0;

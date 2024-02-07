@@ -30,40 +30,40 @@
 }
 
 #menu .p5button:hover {
-  color: #ed225d;
+  color: var(--p5);
 }
 #menu .p5button.active {
   color: #ffffff;
-  background: #ed225d33;
+  background: var(--p5-bg);
 }
 #menu .hydrabutton:hover {
-  color: #69beef;
+  color: var(--hydra);
 }
 #menu .hydrabutton.active {
   color: #ffffff;
-  background: #69beef33;
+  background: var(--hydra-bg);
 }
 #menu .videobutton:hover {
-  color: #ff00ff;
+  color: var(--video);
 }
 #menu .videobutton.active {
   color: #ffffff;
-  background: #ff00ff33;
+  background: var(--video-bg);
 }
 
 #infobutton:hover {
-  color: #009900;
+  color: var(--info);
 }
 #infobutton.active {
   color: #ffffff;
-  background: #00990033;
+  background: var(--info-bg);
 }
 #titlebutton:hover {
-  color: #ffff00;
+  color: var(--title);
 }
 #titlebutton.active {
   color: #ffffff;
-  background: #ffff0033;
+  background: var(--title-bg);
 }
 #infobutton {
   justify-self: flex-end;
