@@ -51,13 +51,6 @@ document.addEventListener(
     } else if (event.key == "r" && event.ctrlKey) {
       session.setBlendMode("difference");
       document.getElementById("difference").checked = true;
-    } else if (event.key == "b" && event.ctrlKey) {
-      document.querySelector("#welcome").style = "display:none;";
-      document.getElementById("nocursor").style.cursor = "none";
-      for (let i = 0; i < session.sources.count; i++) {
-        session.sources[i].active = false;
-        document.querySelector(`#on${i + 1}`).checked = false;
-      }
     } else if (event.key === "i" && event.ctrlKey) {
       document.getElementById("invert").checked = session.toggleInvert();
     } else if (event.key == "z" && event.ctrlKey) {
@@ -83,8 +76,6 @@ function updateAlpha(id) {
 function toggleSrc(id) {
   const s = session.sources[id];
   s.active = document.querySelector(`#on${id + 1}`).checked ? true : false;
-  document.querySelector("#welcome").style = "display:none;";
-  document.getElementById("nocursor").style.cursor = "none";
   updateSrc(
     session.sources[id].id,
     { active: session.sources[id].active },
