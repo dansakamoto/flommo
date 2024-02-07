@@ -13,7 +13,7 @@ export function resizeRenderer() {
 
   const menuHeight = document.getElementById("menu").offsetHeight;
   const noCursorHeight = window.innerHeight - menuHeight;
-  document.getElementById("nocursor").style.height = noCursorHeight + "px";
+  document.getElementById("welcome-panel").style.height = noCursorHeight + "px";
   document.getElementById("manual").style.height = noCursorHeight + "px";
   document.getElementById("welcome").style.top = "-" + menuHeight + "px";
   document.getElementById("m2").style.top = "-" + menuHeight + "px";

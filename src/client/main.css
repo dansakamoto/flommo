@@ -49,7 +49,7 @@ a#ghlink:hover {
   color: #fff;
 }
 
-div#nocursor {
+div#welcome-panel {
   width: 100%;
   display: flex;
   justify-content: center;

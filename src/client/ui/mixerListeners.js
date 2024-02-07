@@ -38,7 +38,7 @@ document.addEventListener(
       );
       document.querySelector(`#on${event.key}`).checked =
         session.sources[event.key - 1].active;
-      document.getElementById("nocursor").style.cursor = "none";
+      document.getElementById("welcome-panel").style.cursor = "none";
     } else if (event.key == "q" && event.ctrlKey) {
       session.setBlendMode("source-over");
       document.getElementById("source-over").checked = true;

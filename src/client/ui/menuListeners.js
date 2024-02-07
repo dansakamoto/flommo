@@ -77,7 +77,7 @@ function togglePanel(active) {
   document.querySelector("#hydraeditor").style = "display:none;";
   document.querySelector("#p5editor").style = "display:none;";
   document.querySelector("#videoeditor").style = "display:none;";
-  document.querySelector("#nocursor").style = "display:none;";
+  document.querySelector("#welcome-panel").style = "display:none;";
   document.querySelector("#manual").style = "display:none;";
   document.querySelector("#empty").style = "display:none;";
   document.querySelector("#addededitors").style = "display:none";
@@ -103,7 +103,7 @@ function togglePanel(active) {
     resizeRenderer();
   } else if (session.activePanel === "title") {
     document.querySelector("#titlebutton").classList.add("active");
-    document.querySelector("#nocursor").style = "display:flex";
+    document.querySelector("#welcome-panel").style = "display:flex";
     resizeRenderer();
   } else if (session.activePanel === "none") {
     document.querySelector("#empty").style = "display:block";
