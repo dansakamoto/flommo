@@ -12,6 +12,11 @@ export function dbConnect() {
 }
 
 export async function getSources(room) {
+  if (!room) {
+    console.error("Error retrieving sources from database: invalide room ID");
+    return [];
+  }
+
   let data;
   try {
     data = await pool.query(
@@ -26,6 +31,12 @@ export async function getSources(room) {
 }
 
 export async function addSrc(file, callback) {
+  if (!file.room || !file.type || !file.src) {
+    console.error("Error adding source to database: invalid input received");
+    callback({ message: "failure " });
+    return;
+  }
+
   const room = file.room;
   const type = file.type;
 
@@ -43,6 +54,12 @@ export async function addSrc(file, callback) {
 }
 
 export async function delSrc(file, callback) {
+  if (!file.id) {
+    console.error("Error deleting source from database: invalid ID");
+    callback({ message: "failure " });
+    return;
+  }
+
   const id = file.id;
 
   try {
@@ -51,7 +68,7 @@ export async function delSrc(file, callback) {
       values: [id],
     });
   } catch (e) {
-    console.error("Error deleting source to database: " + e);
+    console.error("Error deleting source from database: " + e);
     callback({ message: "failure" });
     return;
   }
@@ -60,6 +77,12 @@ export async function delSrc(file, callback) {
 }
 
 export async function updateSrc(file, callback) {
+  if (!file.id) {
+    console.error("Error updating database: invalid ID");
+    callback({ message: "failure" });
+    return;
+  }
+
   let setQ = "";
   const queryVals = [];
   let delineator = "";
@@ -80,6 +103,7 @@ export async function updateSrc(file, callback) {
   }
 
   if (queryVals.length === 0) {
+    console.error("Error updating database: invalid values");
     callback({ message: "failure" });
     return;
   }
