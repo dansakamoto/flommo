@@ -6,14 +6,17 @@ import { setupUI } from "../ui/setupUI";
 const socket = io();
 
 export async function loadSources() {
-  const URL = "/srclist?room=" + session.roomID;
-  const result = await fetch(URL);
-  const newSources = await result.json();
-  session.updateSources(newSources);
+  if (session.roomID) {
+    const URL = "/srclist?room=" + session.roomID;
+    const result = await fetch(URL);
+    const newSources = await result.json();
+    session.updateSources(newSources);
+  }
   setupUI();
 }
 
 export function addSrc(type, data) {
+  session.verifyInit();
   if (type === "video") data = convertDropboxURL(data);
   socket.emit(
     "uploadSrc",
@@ -25,6 +28,7 @@ export function addSrc(type, data) {
 }
 
 export function updateSrc(id, data, refreshAfter = true) {
+  session.verifyInit();
   data["id"] = id;
 
   const source = session.sources.find((obj) => {
@@ -45,4 +49,5 @@ export function delSrc(id) {
   socket.emit("delSrc", { id: id }, (status) => {
     if (status.message === "success") loadSources();
   });
+  session.verifyInit();
 }
