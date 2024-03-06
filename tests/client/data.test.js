@@ -27,6 +27,7 @@ vi.mock("../../src/client/session.js", () => {
     default: {
       roomID: 1234,
       updateSources: mocks.updateSources,
+      verifyInit: vi.fn(),
       sources: [
         { id: 123, type: "hydra" },
         { id: 456, type: "video" },

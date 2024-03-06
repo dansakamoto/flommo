@@ -5,14 +5,26 @@ const p5Default =
   "// running in instance mode - functions must start with f.\n\nf.setup = () => " +
   "{\n\tf.createCanvas(720,400)\n}\n\nf.draw = () => {\n\tf.background(f.sin(f.millis()/1000)*255,100,150)\n}";
 
-function init() {
+function initFromURL() {
   const params = new URLSearchParams(window.location.search);
-  session.roomID = params.get("room") ? params.get("room") : Date.now();
-  if (!params.get("room")) history.pushState({}, "", "?room=" + session.roomID);
+  if (params.get("room")) session.roomID = params.get("room");
 }
 
-function clearSources() {
+function initNewRoom() {
   session.sources.length = 0;
+  initRoomID();
+}
+
+function initRoomID() {
+  session.roomID = Date.now();
+  history.pushState({}, "", "?room=" + session.roomID);
+}
+
+function verifyInit() {
+  if (!session.roomID) {
+    initRoomID();
+    // TO DO: check for existing demo sources + add to DB
+  }
 }
 
 function updateSources(newSources) {
@@ -47,10 +59,11 @@ const session = {
   allBlendModes: ["source-over", "screen", "multiply", "difference"],
   newHydraEditor: createEditorInstance("hydraeditor", hydraDefault),
   newP5Editor: createEditorInstance("p5editor", p5Default),
-  init,
+  initFromURL,
+  initNewRoom,
+  verifyInit,
   setBlendMode,
   updateSources,
-  clearSources,
   toggleInvert,
   setMidiActive,
   setActivePanel,

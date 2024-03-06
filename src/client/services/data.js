@@ -46,8 +46,8 @@ export function updateSrc(id, data, refreshAfter = true) {
 }
 
 export function delSrc(id) {
+  session.verifyInit();
   socket.emit("delSrc", { id: id }, (status) => {
     if (status.message === "success") loadSources();
   });
-  session.verifyInit();
 }

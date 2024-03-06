@@ -3,9 +3,9 @@ import "./main.css";
 import session from "./session";
 import { loadSources } from "./services/data";
 
-const versionNum = "0.5.0";
+const versionNum = "0.6.0";
 
-session.init();
+session.initFromURL();
 loadSources();
 
 document.querySelector("#title").innerHTML = `<img
