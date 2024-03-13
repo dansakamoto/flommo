@@ -2,6 +2,7 @@ import { addSrc } from "../services/data";
 import { resizeEditors } from "./editors";
 import { resizeRenderer } from "./renderer";
 import session from "../session";
+import { loadSources } from "../services/data";
 
 export { togglePanel };
 
@@ -46,6 +47,17 @@ document.querySelector("#titlebutton").onclick = () => {
 };
 document.querySelector("#infobutton").onclick = () => {
   togglePanel("info");
+};
+
+document.querySelector("#manual-link").onclick = (e) => {
+  e.preventDefault();
+  togglePanel("info");
+};
+document.querySelector("#init-link").onclick = (e) => {
+  e.preventDefault();
+  session.initNewRoom();
+  togglePanel(session.activePanel);
+  loadSources();
 };
 
 function togglePanel(active) {

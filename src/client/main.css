@@ -54,11 +54,11 @@ div#archive a {
 div#archive a:hover {
   color: #fff;
 }
-a#ghlink {
+div#welcome a {
   text-decoration: none;
   color: #aaa;
 }
-a#ghlink:hover {
+div#welcome a:hover {
   color: #fff;
 }
 
