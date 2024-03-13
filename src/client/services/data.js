@@ -49,8 +49,18 @@ export function delSrc(id) {
   session.verifyInit();
   socket.emit("delSrc", { id: id }, (status) => {
     if (status.message === "success") {
-      if (typeof session.activePanel === "number" && session.activePanel > id) {
-      	session.setActivePanel(session.activePanel-1);
+      let panelNum;
+      for (let i = 0; i < session.sources.length; i++) {
+        if (session.sources[i].id === id) {
+          panelNum = i;
+          break;
+        }
+      }
+      if (
+        typeof session.activePanel === "number" &&
+        session.activePanel > panelNum
+      ) {
+        session.setActivePanel(session.activePanel - 1);
       }
       loadSources();
     }
