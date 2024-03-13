@@ -48,6 +48,11 @@ export function updateSrc(id, data, refreshAfter = true) {
 export function delSrc(id) {
   session.verifyInit();
   socket.emit("delSrc", { id: id }, (status) => {
-    if (status.message === "success") loadSources();
+    if (status.message === "success") {
+      if (typeof session.activePanel === "number" && session.activePanel > id) {
+      	session.activePanel--;
+      }
+      loadSources();
+    }
   });
 }
