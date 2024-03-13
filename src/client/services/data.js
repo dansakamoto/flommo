@@ -50,7 +50,7 @@ export function delSrc(id) {
   socket.emit("delSrc", { id: id }, (status) => {
     if (status.message === "success") {
       if (typeof session.activePanel === "number" && session.activePanel > id) {
-      	session.activePanel--;
+      	session.setActivePanel(session.activePanel-1);
       }
       loadSources();
     }
