@@ -54,12 +54,20 @@ div#archive a {
 div#archive a:hover {
   color: #fff;
 }
+div#welcome {
+  font-family: monospace;
+}
 div#welcome a {
+  font-size: 16px;
   text-decoration: none;
   color: #aaa;
 }
 div#welcome a:hover {
   color: #fff;
+}
+div#browser-warning {
+  color: red;
+  display: none;
 }
 
 div#welcome-panel {
