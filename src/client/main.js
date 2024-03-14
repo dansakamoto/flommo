@@ -3,7 +3,7 @@ import "./main.css";
 import session from "./session";
 import { loadSources } from "./services/data";
 
-const versionNum = "0.7.0";
+const versionNum = "0.8.0";
 
 session.initFromURL();
 loadSources();
