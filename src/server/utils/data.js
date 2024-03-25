@@ -124,3 +124,16 @@ export async function updateSrc(file, callback) {
 
   callback({ message: "success" });
 }
+
+export async function updateMixer(file, callback) {
+  // validate: expected - file.room
+  // check for existing record
+  // if doesn't exist:
+  // set up model object with default values
+  // check for received data, update model object
+  // add new entry using model object
+  // else (if does exist):
+  // update record with received data
+  // send response via callback
+  // ADDITIONAL: update getSources() above to include mixer in api
+}
