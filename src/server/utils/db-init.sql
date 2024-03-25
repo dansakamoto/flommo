@@ -30,5 +30,3 @@ CREATE TABLE "mixers" (
   "blend" blend,
   "invert" boolean
 );
-
-ALTER TABLE "sources" ADD FOREIGN KEY ("room") REFERENCES "mixers" ("room");
