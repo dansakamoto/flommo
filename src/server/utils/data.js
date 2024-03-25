@@ -135,5 +135,11 @@ export async function updateMixer(file, callback) {
   // else (if does exist):
   // update record with received data
   // send response via callback
+  //
   // ADDITIONAL: update getSources() above to include mixer in api
+  //
+  // ADDITIONAL: modify client loadSources() to take in and apply mixer state
+  // -- inside data.js and session.js
+  // add updateMixer() to data.js
+  // call updateMixer() from anywhere blends and filters are adjusted
 }
