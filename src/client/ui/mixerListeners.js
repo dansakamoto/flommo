@@ -69,8 +69,9 @@ document.addEventListener(
 );
 
 function updateAlpha(id) {
-  session.sources[id].alpha =
-    document.querySelector(`#alpha${id + 1}`).value / 100;
+  let newAlpha = document.querySelector(`#alpha${id + 1}`).value / 100;
+  session.sources[id].alpha = newAlpha;
+  updateSrc(session.sources[id].id, { alpha: newAlpha }, false);
 }
 
 function toggleSrc(id) {
