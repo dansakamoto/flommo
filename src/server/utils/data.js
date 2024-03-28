@@ -17,17 +17,32 @@ export async function getSources(room) {
     return [];
   }
 
-  let data;
+  let allData = {},
+    sourcesData,
+    mixerData;
+
   try {
-    data = await pool.query(
+    sourcesData = await pool.query(
       `SELECT * FROM sources WHERE room = '${room}' ORDER BY id ASC`
     );
   } catch (e) {
     console.error("Error retrieving sources from database: " + e);
-    return [];
+    return {};
   }
 
-  return data.rows;
+  try {
+    mixerData = await pool.query(
+      `SELECT * FROM mixers WHERE room = '${room}' ORDER BY id ASC`
+    );
+  } catch (e) {
+    console.error("Error retrieving mixers from database: " + e);
+    return {};
+  }
+
+  allData["sources"] = sourcesData.rows;
+  allData["mixerState"] = mixerData.rows[0];
+
+  return allData;
 }
 
 export async function addSrc(file, callback) {
@@ -126,20 +141,72 @@ export async function updateSrc(file, callback) {
 }
 
 export async function updateMixer(file, callback) {
-  // validate: expected - file.room
-  // check for existing record
-  // if doesn't exist:
-  // set up model object with default values
-  // check for received data, update model object
-  // add new entry using model object
-  // else (if does exist):
-  // update record with received data
-  // send response via callback
-  //
-  // ADDITIONAL: update getSources() above to include mixer in api
-  //
-  // ADDITIONAL: modify client loadSources() to take in and apply mixer state
-  // -- inside data.js and session.js
-  // add updateMixer() to data.js
-  // call updateMixer() from anywhere blends and filters are adjusted
+  if (!file.room) {
+    console.error("Error updating mixer: invalid input received");
+    callback({ message: "failure" });
+    return;
+  }
+
+  let room = file.room;
+
+  let data;
+  try {
+    data = await pool.query(
+      `SELECT * FROM mixers WHERE room = '${room}' ORDER BY id ASC`
+    );
+  } catch (e) {
+    console.error("Error retrieving mixers from database: " + e);
+    callback({ message: "failure" });
+    return;
+  }
+
+  if (data.length == 0) {
+    let blend = file.blend ? file.blend : "sourceOver";
+    let invert = file.invert == true;
+    try {
+      await pool.query({
+        text: `INSERT INTO mixer(room, blend, invert) VALUES($1, $2, $3)`,
+        values: [room, blend, invert],
+      });
+    } catch (e) {
+      console.error("Error adding mixer to database: " + e);
+      callback({ message: "failure" });
+    }
+  } else {
+    let setQ = "";
+    const queryVals = [];
+    let delineator = "";
+    if (file.blend !== undefined) {
+      queryVals.push(file.blend);
+      setQ += `${delineator}blend = $${queryVals.length}`;
+      delineator = ", ";
+    }
+    if (file.invert !== undefined) {
+      queryVals.push(file.invert);
+      setQ += `${delineator}invert = $${queryVals.length}`;
+      delineator = ", ";
+    }
+
+    if (queryVals.length === 0) {
+      console.error("Error updating database: invalid values");
+      callback({ message: "failure" });
+      return;
+    }
+
+    queryVals.push(file.room);
+    const query = {
+      text: `UPDATE mixers SET ${setQ} WHERE room = $${queryVals.length}`,
+      values: queryVals,
+    };
+
+    try {
+      await pool.query(query);
+    } catch (e) {
+      console.error("Error updating database: " + e);
+      callback({ message: "failure" });
+      return;
+    }
+
+    callback({ message: "success" });
+  }
 }
