@@ -5,12 +5,13 @@ import { setupUI } from "../ui/setupUI";
 
 const socket = io();
 
-export async function loadSources() {
+export async function loadRoomData() {
   if (session.roomID) {
     const URL = "/srclist?room=" + session.roomID;
     const result = await fetch(URL);
-    const newSources = await result.json();
-    session.updateSources(newSources);
+    const roomData = await result.json();
+    session.updateSources(roomData.sources);
+    session.applyMixerState(roomData.mixerState);
   }
   setupUI();
 }
@@ -22,7 +23,7 @@ export function addSrc(type, data) {
     "uploadSrc",
     { room: session.roomID, type: type, src: data },
     (status) => {
-      if (status.message === "success") loadSources();
+      if (status.message === "success") loadRoomData();
     }
   );
 }
@@ -41,7 +42,7 @@ export function updateSrc(id, data, refreshAfter = true) {
   socket.emit("updateSrc", data, (status) => {
     if (status.message === "failure")
       console.error("error syncing source state");
-    else if (refreshAfter && status.message === "success") loadSources();
+    else if (refreshAfter && status.message === "success") loadRoomData();
   });
 }
 
@@ -62,7 +63,51 @@ export function delSrc(id) {
       ) {
         session.setActivePanel(session.activePanel - 1);
       }
-      loadSources();
+      loadRoomData();
     }
   });
 }
+
+export function setBlendMode(blendMode) {
+  if (session.allBlendModes.includes(blendMode)) {
+    session.applyBlendMode(blendMode);
+    if (session.roomID) {
+      socket.emit(
+        "updateMixer",
+        { room: session.roomID, blend: blendMode },
+        (status) => {
+          if (status.message === "failure")
+            console.error("error syncing mixer state");
+        }
+      );
+    }
+  }
+}
+
+export function toggleInvert() {
+  session.setFilter("invert", !session.globalInvert);
+  if (session.roomID) {
+    socket.emit(
+      "updateMixer",
+      { room: session.roomID, invert: session.globalInvert },
+      (status) => {
+        if (status.message === "failure")
+          console.error("error syncing source state");
+      }
+    );
+  }
+
+  return session.globalInvert;
+}
+
+/*
+export function saveMixerState(room) {
+  if (!room) return;
+  session.verifyInit();
+
+  socket.emit("updateMixer", room, (status) => {
+    if (status.message === "failure")
+      console.error("error syncing source state");
+  });
+}
+*/

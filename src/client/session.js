@@ -31,14 +31,17 @@ function updateSources(newSources) {
   session.sources = newSources;
 }
 
-function setBlendMode(mode) {
-  if (session.allBlendModes.includes(mode)) session.blendMode = mode;
-  else console.error("setBlendMode() error - mode not in list");
+function applyBlendMode(mode) {
+  session.blendMode = mode;
 }
 
-function toggleInvert() {
-  session.globalInvert = !session.globalInvert;
-  return session.globalInvert;
+function setFilter(filter, active) {
+  if (filter === "invert") session.globalInvert = active;
+}
+
+function applyMixerState(mixerState) {
+  if (mixerState.blend !== undefined) applyBlendMode(mixerState.blend);
+  if (mixerState.invert !== undefined) setFilter("invert", mixerState.invert);
 }
 
 function setMidiActive(val) {
@@ -62,9 +65,10 @@ const session = {
   initFromURL,
   initNewRoom,
   verifyInit,
-  setBlendMode,
   updateSources,
-  toggleInvert,
+  applyBlendMode,
+  setFilter,
+  applyMixerState,
   setMidiActive,
   setActivePanel,
 };

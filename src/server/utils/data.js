@@ -17,17 +17,32 @@ export async function getSources(room) {
     return [];
   }
 
-  let data;
+  let allData = {},
+    sourcesData,
+    mixerData;
+
   try {
-    data = await pool.query(
+    sourcesData = await pool.query(
       `SELECT * FROM sources WHERE room = '${room}' ORDER BY id ASC`
     );
   } catch (e) {
     console.error("Error retrieving sources from database: " + e);
-    return [];
+    return {};
   }
 
-  return data.rows;
+  try {
+    mixerData = await pool.query(
+      `SELECT * FROM mixers WHERE room = '${room}' ORDER BY room ASC`
+    );
+  } catch (e) {
+    console.error("Error retrieving mixers from database: " + e);
+    return {};
+  }
+
+  allData["sources"] = sourcesData.rows;
+  allData["mixerState"] = mixerData.rows[0] ? mixerData.rows[0] : {};
+
+  return allData;
 }
 
 export async function addSrc(file, callback) {
@@ -123,4 +138,75 @@ export async function updateSrc(file, callback) {
   }
 
   callback({ message: "success" });
+}
+
+export async function updateMixer(file, callback) {
+  if (!file.room) {
+    console.error("Error updating mixer: invalid input received");
+    callback({ message: "failure" });
+    return;
+  }
+
+  let room = file.room;
+
+  let data;
+  try {
+    data = await pool.query(
+      `SELECT * FROM mixers WHERE room = '${room}' ORDER BY room ASC`
+    );
+  } catch (e) {
+    console.error("Error retrieving mixers from database: " + e);
+    callback({ message: "failure" });
+    return;
+  }
+
+  if (data.rows.length == 0) {
+    let blend = file.blend ? file.blend : "source-over";
+    let invert = file.invert == true;
+    try {
+      await pool.query({
+        text: `INSERT INTO mixers(room, blend, invert) VALUES($1, $2, $3)`,
+        values: [room, blend, invert],
+      });
+    } catch (e) {
+      console.error("Error adding mixer to database: " + e);
+      callback({ message: "failure" });
+    }
+  } else {
+    let setQ = "";
+    const queryVals = [];
+    let delineator = "";
+    if (file.blend !== undefined) {
+      queryVals.push(file.blend);
+      setQ += `${delineator}blend = $${queryVals.length}`;
+      delineator = ", ";
+    }
+    if (file.invert !== undefined) {
+      queryVals.push(file.invert);
+      setQ += `${delineator}invert = $${queryVals.length}`;
+      delineator = ", ";
+    }
+
+    if (queryVals.length === 0) {
+      console.error("Error updating database: invalid values");
+      callback({ message: "failure" });
+      return;
+    }
+
+    queryVals.push(file.room);
+    const query = {
+      text: `UPDATE mixers SET ${setQ} WHERE room = $${queryVals.length}`,
+      values: queryVals,
+    };
+
+    try {
+      await pool.query(query);
+    } catch (e) {
+      console.error("Error updating mixer in database: " + e);
+      callback({ message: "failure" });
+      return;
+    }
+
+    callback({ message: "success" });
+  }
 }

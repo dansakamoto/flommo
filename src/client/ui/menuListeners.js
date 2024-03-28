@@ -2,7 +2,7 @@ import { addSrc } from "../services/data";
 import { resizeEditors } from "./editors";
 import { resizeRenderer } from "./renderer";
 import session from "../session";
-import { loadSources } from "../services/data";
+import { loadRoomData } from "../services/data";
 
 export { togglePanel };
 
@@ -57,7 +57,7 @@ document.querySelector("#init-link").onclick = (e) => {
   e.preventDefault();
   session.initNewRoom();
   togglePanel(session.activePanel);
-  loadSources();
+  loadRoomData();
 };
 
 function togglePanel(active) {

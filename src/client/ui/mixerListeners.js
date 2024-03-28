@@ -1,4 +1,4 @@
-import { updateSrc } from "../services/data";
+import { updateSrc, toggleInvert, setBlendMode } from "../services/data";
 import { togglePanel } from "./menuListeners";
 import session from "../session";
 
@@ -9,11 +9,11 @@ if ("requestMIDIAccess" in navigator) {
 }
 for (const b of session.allBlendModes) {
   document.getElementById(b).onchange = () => {
-    session.setBlendMode(b);
+    setBlendMode(b);
   };
 }
 document.getElementById("invert").onchange = () => {
-  session.toggleInvert();
+  toggleInvert();
 };
 document.getElementById("midion").onchange = () => {
   toggleMidi();
@@ -40,19 +40,19 @@ document.addEventListener(
         session.sources[event.key - 1].active;
       document.getElementById("welcome-panel").style.cursor = "none";
     } else if (event.key == "q" && event.ctrlKey) {
-      session.setBlendMode("source-over");
+      setBlendMode("source-over");
       document.getElementById("source-over").checked = true;
     } else if (event.key == "w" && event.ctrlKey) {
-      session.setBlendMode("screen");
+      setBlendMode("screen");
       document.getElementById("screen").checked = true;
     } else if (event.key == "e" && event.ctrlKey) {
-      session.setBlendMode("multiply");
+      setBlendMode("multiply");
       document.getElementById("multiply").checked = true;
     } else if (event.key == "r" && event.ctrlKey) {
-      session.setBlendMode("difference");
+      setBlendMode("difference");
       document.getElementById("difference").checked = true;
     } else if (event.key === "i" && event.ctrlKey) {
-      document.getElementById("invert").checked = session.toggleInvert();
+      document.getElementById("invert").checked = toggleInvert();
     } else if (event.key == "z" && event.ctrlKey) {
       togglePanel("video");
     } else if (event.key == "x" && event.ctrlKey) {
@@ -69,8 +69,9 @@ document.addEventListener(
 );
 
 function updateAlpha(id) {
-  session.sources[id].alpha =
-    document.querySelector(`#alpha${id + 1}`).value / 100;
+  let newAlpha = document.querySelector(`#alpha${id + 1}`).value / 100;
+  session.sources[id].alpha = newAlpha;
+  updateSrc(session.sources[id].id, { alpha: newAlpha }, false);
 }
 
 function toggleSrc(id) {
@@ -116,19 +117,19 @@ function onMIDIMessage(message) {
         document.querySelector(`#on${n + 1}`).checked =
           session.sources[n].active;
       } else if (note == 70) {
-        session.setBlendMode("source-over");
+        setBlendMode("source-over");
         document.getElementById("source-over").checked = true;
       } else if (note == 71) {
-        session.setBlendMode("screen");
+        setBlendMode("screen");
         document.getElementById("screen").checked = true;
       } else if (note == 72) {
-        session.setBlendMode("multiply");
+        setBlendMode("multiply");
         document.getElementById("multiply").checked = true;
       } else if (note == 73) {
-        session.setBlendMode("difference");
+        setBlendMode("difference");
         document.getElementById("difference").checked = true;
       } else if (note == 74) {
-        document.getElementById("invert").checked = session.toggleInvert();
+        document.getElementById("invert").checked = toggleInvert();
       }
     }
   }

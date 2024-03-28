@@ -1,6 +1,6 @@
 import { describe, test, expect, vi } from "vitest";
 import {
-  loadSources,
+  loadRoomData,
   addSrc,
   updateSrc,
   delSrc,
@@ -9,6 +9,7 @@ import {
 const mocks = vi.hoisted(() => {
   return {
     updateSources: vi.fn(),
+    applyMixerState: vi.fn(),
     emit: vi.fn(),
   };
 });
@@ -27,6 +28,7 @@ vi.mock("../../src/client/session.js", () => {
     default: {
       roomID: 1234,
       updateSources: mocks.updateSources,
+      applyMixerState: mocks.applyMixerState,
       verifyInit: vi.fn(),
       sources: [
         { id: 123, type: "hydra" },
@@ -41,16 +43,17 @@ vi.mock("../../src/client/ui/setupUI", () => {
 global.fetch = vi.fn(() => {
   return {
     json: () => {
-      return "test json response";
+      return { sources: "test sources", mixerState: "test mixerState" };
     },
   };
 });
 
 describe("Test client data functions", () => {
-  test("loadSources()", async () => {
-    await loadSources();
+  test("loadRoomData()", async () => {
+    await loadRoomData();
     expect(global.fetch).toHaveBeenLastCalledWith("/srclist?room=1234");
-    expect(mocks.updateSources).toHaveBeenLastCalledWith("test json response");
+    expect(mocks.updateSources).toHaveBeenLastCalledWith("test sources");
+    expect(mocks.applyMixerState).toHaveBeenLastCalledWith("test mixerState");
   });
 
   test("addSrc() non video type", () => {
