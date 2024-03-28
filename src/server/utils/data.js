@@ -32,7 +32,7 @@ export async function getSources(room) {
 
   try {
     mixerData = await pool.query(
-      `SELECT * FROM mixers WHERE room = '${room}' ORDER BY id ASC`
+      `SELECT * FROM mixers WHERE room = '${room}' ORDER BY room ASC`
     );
   } catch (e) {
     console.error("Error retrieving mixers from database: " + e);
@@ -40,7 +40,7 @@ export async function getSources(room) {
   }
 
   allData["sources"] = sourcesData.rows;
-  allData["mixerState"] = mixerData.rows[0];
+  allData["mixerState"] = mixerData.rows[0] ? mixerData.rows[0] : {};
 
   return allData;
 }
@@ -152,7 +152,7 @@ export async function updateMixer(file, callback) {
   let data;
   try {
     data = await pool.query(
-      `SELECT * FROM mixers WHERE room = '${room}' ORDER BY id ASC`
+      `SELECT * FROM mixers WHERE room = '${room}' ORDER BY room ASC`
     );
   } catch (e) {
     console.error("Error retrieving mixers from database: " + e);
@@ -160,12 +160,12 @@ export async function updateMixer(file, callback) {
     return;
   }
 
-  if (data.length == 0) {
-    let blend = file.blend ? file.blend : "sourceOver";
+  if (data.rows.length == 0) {
+    let blend = file.blend ? file.blend : "source-over";
     let invert = file.invert == true;
     try {
       await pool.query({
-        text: `INSERT INTO mixer(room, blend, invert) VALUES($1, $2, $3)`,
+        text: `INSERT INTO mixers(room, blend, invert) VALUES($1, $2, $3)`,
         values: [room, blend, invert],
       });
     } catch (e) {
@@ -202,7 +202,7 @@ export async function updateMixer(file, callback) {
     try {
       await pool.query(query);
     } catch (e) {
-      console.error("Error updating database: " + e);
+      console.error("Error updating mixer in database: " + e);
       callback({ message: "failure" });
       return;
     }

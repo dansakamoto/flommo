@@ -6,7 +6,7 @@ CREATE TYPE "type" AS ENUM (
 );
 
 CREATE TYPE "blend" AS ENUM (
-  'sourceOver',
+  'source-over',
   'screen',
   'multiply',
   'difference'

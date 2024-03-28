@@ -29,7 +29,7 @@ describe("Test database interactions", async () => {
   test("Test getSources", async () => {
     const result = await getSources(1234);
     expect(mockQuery).toHaveBeenLastCalledWith(
-      "SELECT * FROM mixers WHERE room = '1234' ORDER BY id ASC"
+      "SELECT * FROM mixers WHERE room = '1234' ORDER BY room ASC"
     );
     expect(result).toEqual({ mixerState: "test", sources: ["test"] });
   });

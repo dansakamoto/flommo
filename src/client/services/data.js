@@ -68,6 +68,39 @@ export function delSrc(id) {
   });
 }
 
+export function setBlendMode(blendMode) {
+  if (session.allBlendModes.includes(blendMode)) {
+    session.applyBlendMode(blendMode);
+    if (session.roomID) {
+      socket.emit(
+        "updateMixer",
+        { room: session.roomID, blend: blendMode },
+        (status) => {
+          if (status.message === "failure")
+            console.error("error syncing mixer state");
+        }
+      );
+    }
+  }
+}
+
+export function toggleInvert() {
+  session.setFilter("invert", !session.globalInvert);
+  if (session.roomID) {
+    socket.emit(
+      "updateMixer",
+      { room: session.roomID, invert: session.globalInvert },
+      (status) => {
+        if (status.message === "failure")
+          console.error("error syncing source state");
+      }
+    );
+  }
+
+  return session.globalInvert;
+}
+
+/*
 export function saveMixerState(room) {
   if (!room) return;
   session.verifyInit();
@@ -77,3 +110,4 @@ export function saveMixerState(room) {
       console.error("error syncing source state");
   });
 }
+*/

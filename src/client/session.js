@@ -1,5 +1,4 @@
 import { createEditorInstance } from "./utils/cmInstance";
-import { saveMixerState } from "./services/data";
 
 const hydraDefault = "osc().out()";
 const p5Default =
@@ -32,23 +31,17 @@ function updateSources(newSources) {
   session.sources = newSources;
 }
 
+function applyBlendMode(mode) {
+  session.blendMode = mode;
+}
+
+function setFilter(filter, active) {
+  if (filter === "invert") session.globalInvert = active;
+}
+
 function applyMixerState(mixerState) {
-  if (mixerState.blendMode !== undefined)
-    setBlendMode(mixerState.blendMode, false);
-  if (mixerState.invert !== undefined) session.globalInvert = mixerState.invert;
-}
-
-function setBlendMode(mode, updateDB = true) {
-  if (session.allBlendModes.includes(mode)) {
-    session.blendMode = mode;
-    if (updateDB) saveMixerState({ blend: mode });
-  } else console.error("setBlendMode() error - mode not in list");
-}
-
-function toggleInvert(updateDB = true) {
-  session.globalInvert = !session.globalInvert;
-  if (updateDB) saveMixerState({ invert: session.globalInvert });
-  return session.globalInvert;
+  if (mixerState.blend !== undefined) applyBlendMode(mixerState.blend);
+  if (mixerState.invert !== undefined) setFilter("invert", mixerState.invert);
 }
 
 function setMidiActive(val) {
@@ -72,10 +65,10 @@ const session = {
   initFromURL,
   initNewRoom,
   verifyInit,
-  setBlendMode,
   updateSources,
+  applyBlendMode,
+  setFilter,
   applyMixerState,
-  toggleInvert,
   setMidiActive,
   setActivePanel,
 };

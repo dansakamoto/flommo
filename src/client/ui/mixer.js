@@ -31,4 +31,10 @@ export function updateMixer() {
       updateAlpha(i);
     };
   }
+
+  const activeBlendmode = document.getElementById(session.blendMode);
+  activeBlendmode.checked = true;
+
+  const invertButton = document.getElementById("invert");
+  invertButton.checked = session.globalInvert;
 }
