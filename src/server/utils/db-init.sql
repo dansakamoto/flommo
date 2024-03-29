@@ -9,7 +9,19 @@ CREATE TYPE "blend" AS ENUM (
   'source-over',
   'screen',
   'multiply',
-  'difference'
+  'difference',
+  'overlay',
+  'darken',
+  'lighten',
+  'color-dodge',
+  'color-burn',
+  'hard-light',
+  'soft-light',
+  'exclusion',
+  'hue',
+  'saturation',
+  'color',
+  'luminosity'
 );
 
 CREATE TABLE "sources" (

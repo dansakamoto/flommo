@@ -87,46 +87,25 @@
         </div>
         <div id="controls">
           <div id="sourceToggles"></div>
-          <div id="blends">
-            BLENDS:
-            <input
-              type="radio"
-              id="source-over"
-              name="blendInput"
-              value="source-over"
-              checked="true"
-            />
-            <label for="source-over">|q| source-over</label>
-            <input type="radio" id="screen" name="blendInput" value="screen" />
-            <label for="screen">|w| screen</label>
-            <input
-              type="radio"
-              id="multiply"
-              name="blendInput"
-              value="multiply"
-            />
-            <label for="multiply">|e| multiply</label>
-            <input
-              type="radio"
-              id="difference"
-              name="blendInput"
-              value="difference"
-            />
-            <label for="difference">|r| difference</label>
-          </div>
+          <div id="blends">BLENDS:</div>
           <div id="filters">
             FILTERS:
-            <input
-              type="checkbox"
-              id="invert"
-              name="filterInput"
-              value="invert"
-            />
-            <label for="invert">|i| invert</label>
+            <div>
+              <input
+                type="checkbox"
+                id="invert"
+                name="filterInput"
+                value="invert"
+              />
+              <label for="invert">|[| invert</label>
+            </div>
           </div>
           <div id="midi">
-            <label for="midion">MIDI listen:</label>
-            <input type="checkbox" id="midion" name="midion" value="midion" />
+            ADDITIONAL INPUTS:
+            <div>
+              <input type="checkbox" id="midion" name="midion" value="midion" />
+              <label for="midion">MIDI listen</label>
+            </div>
           </div>
         </div>
         <div id="srcHeader">SOURCES</div>

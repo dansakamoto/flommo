@@ -16,9 +16,6 @@ div#controls div#midi {
   display: block;
   margin-top: 20px;
 }
-div#midi input {
-  width: 50px;
-}
 div#controls {
   font-family: monospace;
 }
@@ -26,4 +23,10 @@ div#sourceToggles {
   display: flex;
   justify-content: flex-start;
   flex-wrap: wrap;
+}
+div#blends label {
+  margin-right: 1em;
+}
+div#blends {
+  display: flex;
 }

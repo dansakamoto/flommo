@@ -71,7 +71,7 @@ export async function addSrc(file, callback) {
 export async function delSrc(file, callback) {
   if (!file.id) {
     console.error("Error deleting source from database: invalid ID");
-    callback({ message: "failure " });
+    callback({ message: "failure" });
     return;
   }
 

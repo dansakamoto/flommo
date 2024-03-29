@@ -69,17 +69,20 @@ export function delSrc(id) {
 }
 
 export function setBlendMode(blendMode) {
-  if (session.allBlendModes.includes(blendMode)) {
-    session.applyBlendMode(blendMode);
-    if (session.roomID) {
-      socket.emit(
-        "updateMixer",
-        { room: session.roomID, blend: blendMode },
-        (status) => {
-          if (status.message === "failure")
-            console.error("error syncing mixer state");
-        }
-      );
+  for (let b of session.allBlendModes) {
+    if (blendMode === b[0]) {
+      session.applyBlendMode(blendMode);
+      if (session.roomID) {
+        socket.emit(
+          "updateMixer",
+          { room: session.roomID, blend: blendMode },
+          (status) => {
+            if (status.message === "failure")
+              console.error("error syncing mixer state");
+          }
+        );
+      }
+      break;
     }
   }
 }

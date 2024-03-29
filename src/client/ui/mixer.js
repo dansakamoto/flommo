@@ -1,5 +1,5 @@
 import "./mixer.css";
-import { toggleSrc, updateAlpha } from "./mixerListeners";
+import { toggleSrc, updateAlpha, initMixerListeners } from "./mixerListeners";
 import session from "../session";
 
 export function updateMixer() {
@@ -32,9 +32,40 @@ export function updateMixer() {
     };
   }
 
+  initMixer();
+
   const activeBlendmode = document.getElementById(session.blendMode);
   activeBlendmode.checked = true;
 
   const invertButton = document.getElementById("invert");
   invertButton.checked = session.globalInvert;
+}
+
+function initMixer() {
+  if (session.mixerInitialized) return;
+
+  const blendContainer = document.getElementById("blends");
+  for (let b of session.allBlendModes) {
+    const blendModeName = b[0];
+    const keyMap = b[1];
+
+    const container = document.createElement("div");
+
+    const input = document.createElement("input");
+    input.type = "radio";
+    input.name = "blendInput";
+    input.id = blendModeName;
+    input.value = blendModeName;
+    container.appendChild(input);
+
+    const label = document.createElement("label");
+    label.htmlFor = blendModeName;
+    label.innerHTML = `|${keyMap}| ${blendModeName}`;
+    container.appendChild(label);
+
+    blendContainer.appendChild(container);
+  }
+
+  initMixerListeners();
+  session.setMixerActive();
 }

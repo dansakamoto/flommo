@@ -52,14 +52,36 @@ function setActivePanel(val) {
   session.activePanel = val;
 }
 
+function setMixerActive() {
+  session.mixerInitialized = true;
+}
+
 const session = {
   roomID: null,
+  mixerInitialized: false,
   sources: [],
   activePanel: "none",
   midiActive: false,
   blendMode: "source-over",
   globalInvert: false,
-  allBlendModes: ["source-over", "screen", "multiply", "difference"],
+  allBlendModes: [
+    ["source-over", "q"],
+    ["screen", "w"],
+    ["multiply", "e"],
+    ["difference", "r"],
+    ["overlay", "t"],
+    ["darken", "y"],
+    ["lighten", "u"],
+    ["color-dodge", "i"],
+    ["color-burn", "o"],
+    ["hard-light", "p"],
+    ["soft-light", "a"],
+    ["exclusion", "s"],
+    ["hue", "d"],
+    ["saturation", "f"],
+    ["color", "g"],
+    ["luminosity", "h"],
+  ],
   newHydraEditor: createEditorInstance("hydraeditor", hydraDefault),
   newP5Editor: createEditorInstance("p5editor", p5Default),
   initFromURL,
@@ -71,5 +93,6 @@ const session = {
   applyMixerState,
   setMidiActive,
   setActivePanel,
+  setMixerActive,
 };
 export default session;

@@ -4,69 +4,69 @@ import session from "../session";
 
 export { updateAlpha, toggleSrc };
 
-if ("requestMIDIAccess" in navigator) {
-  navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
-}
-for (const b of session.allBlendModes) {
-  document.getElementById(b).onchange = () => {
-    setBlendMode(b);
+export function initMixerListeners() {
+  if ("requestMIDIAccess" in navigator) {
+    navigator.requestMIDIAccess().then(onMIDISuccess, onMIDIFailure);
+  }
+  for (const b of session.allBlendModes) {
+    document.getElementById(b[0]).onchange = () => {
+      setBlendMode(b[0]);
+    };
+  }
+  document.getElementById("invert").onchange = () => {
+    toggleInvert();
   };
-}
-document.getElementById("invert").onchange = () => {
-  toggleInvert();
-};
-document.getElementById("midion").onchange = () => {
-  toggleMidi();
-};
-document.addEventListener(
-  "keydown",
-  (event) => {
-    if (
-      event.code !== "Space" &&
-      event.ctrlKey &&
-      event.key >= 0 &&
-      event.key <= 9
-    ) {
-      event.preventDefault();
+  document.getElementById("midion").onchange = () => {
+    toggleMidi();
+  };
+  document.addEventListener(
+    "keydown",
+    (event) => {
+      if (
+        event.code !== "Space" &&
+        event.ctrlKey &&
+        event.key >= 0 &&
+        event.key <= 9
+      ) {
+        event.preventDefault();
 
-      session.sources[event.key - 1].active =
-        !session.sources[event.key - 1].active;
-      updateSrc(
-        session.sources[event.key - 1].id,
-        { active: session.sources[event.key - 1].active },
-        false
-      );
-      document.querySelector(`#on${event.key}`).checked =
-        session.sources[event.key - 1].active;
-      document.getElementById("welcome-panel").style.cursor = "none";
-    } else if (event.key == "q" && event.ctrlKey) {
-      setBlendMode("source-over");
-      document.getElementById("source-over").checked = true;
-    } else if (event.key == "w" && event.ctrlKey) {
-      setBlendMode("screen");
-      document.getElementById("screen").checked = true;
-    } else if (event.key == "e" && event.ctrlKey) {
-      setBlendMode("multiply");
-      document.getElementById("multiply").checked = true;
-    } else if (event.key == "r" && event.ctrlKey) {
-      setBlendMode("difference");
-      document.getElementById("difference").checked = true;
-    } else if (event.key === "i" && event.ctrlKey) {
-      document.getElementById("invert").checked = toggleInvert();
-    } else if (event.key == "z" && event.ctrlKey) {
-      togglePanel("video");
-    } else if (event.key == "x" && event.ctrlKey) {
-      togglePanel("hydra");
-    } else if (event.key == "c" && event.ctrlKey) {
-      togglePanel("p5");
-    } else if (event.key == "/" && event.ctrlKey) {
-      togglePanel("info");
-    } else if (event.key == "." && event.ctrlKey) {
-      togglePanel("title");
-    }
-  },
-  false
-);
+        session.sources[event.key - 1].active =
+          !session.sources[event.key - 1].active;
+        updateSrc(
+          session.sources[event.key - 1].id,
+          { active: session.sources[event.key - 1].active },
+          false
+        );
+        document.querySelector(`#on${event.key}`).checked =
+          session.sources[event.key - 1].active;
+        document.getElementById("welcome-panel").style.cursor = "none";
+      } else if (event.ctrlKey) {
+        if (event.key === "[") {
+          document.getElementById("invert").checked = toggleInvert();
+        } else if (event.key == "z") {
+          togglePanel("video");
+        } else if (event.key == "x") {
+          togglePanel("hydra");
+        } else if (event.key == "c") {
+          togglePanel("p5");
+        } else if (event.key == "/") {
+          togglePanel("info");
+        } else if (event.key == ".") {
+          togglePanel("title");
+        } else {
+          for (let b of session.allBlendModes) {
+            if (event.key === b[1]) {
+              setBlendMode(b[0]);
+              document.getElementById(b[0]).checked = true;
+              break;
+            }
+          }
+        }
+      }
+    },
+    false
+  );
+}
 
 function updateAlpha(id) {
   let newAlpha = document.querySelector(`#alpha${id + 1}`).value / 100;
@@ -117,19 +117,15 @@ function onMIDIMessage(message) {
         document.querySelector(`#on${n + 1}`).checked =
           session.sources[n].active;
       } else if (note == 70) {
-        setBlendMode("source-over");
-        document.getElementById("source-over").checked = true;
-      } else if (note == 71) {
-        setBlendMode("screen");
-        document.getElementById("screen").checked = true;
-      } else if (note == 72) {
-        setBlendMode("multiply");
-        document.getElementById("multiply").checked = true;
-      } else if (note == 73) {
-        setBlendMode("difference");
-        document.getElementById("difference").checked = true;
-      } else if (note == 74) {
         document.getElementById("invert").checked = toggleInvert();
+      } else {
+        const base = 71;
+        const offset = note - base;
+        if (offset >= 0 && offset < session.allBlendModes.length) {
+          const blendName = session.allBlendModes[offset][0];
+          setBlendMode(blendName);
+          document.getElementById(blendName).checked = true;
+        }
       }
     }
   }
