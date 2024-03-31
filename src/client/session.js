@@ -23,7 +23,7 @@ function initRoomID() {
 function verifyInit() {
   if (!session.roomID) {
     initRoomID();
-    // TO DO: check for existing demo sources + add to DB
+    // TO DO (4 of 7): call init from demo data function
   }
 }
 

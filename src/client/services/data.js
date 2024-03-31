@@ -17,6 +17,7 @@ export async function loadRoomData() {
 }
 
 export function addSrc(type, data) {
+  // TO DO (5 of 7): update to take demo init into account
   session.verifyInit();
   if (type === "video") data = convertDropboxURL(data);
   socket.emit(
@@ -29,6 +30,7 @@ export function addSrc(type, data) {
 }
 
 export function updateSrc(id, data, refreshAfter = true) {
+  // TO DO (6 of 7): update to take demo init into account
   session.verifyInit();
   data["id"] = id;
 
@@ -47,6 +49,7 @@ export function updateSrc(id, data, refreshAfter = true) {
 }
 
 export function delSrc(id) {
+  // TO DO (7 of 7): update to take  demo init into account
   session.verifyInit();
   socket.emit("delSrc", { id: id }, (status) => {
     if (status.message === "success") {
@@ -103,14 +106,9 @@ export function toggleInvert() {
   return session.globalInvert;
 }
 
-/*
-export function saveMixerState(room) {
-  if (!room) return;
-  session.verifyInit();
-
-  socket.emit("updateMixer", room, (status) => {
-    if (status.message === "failure")
-      console.error("error syncing source state");
-  });
-}
-*/
+// TO DO (3 of 7): initialize room from demo - function
+// get all sources and mixer state
+// package into object containing:
+//   array of sources
+//   object for mixer settings
+// send via socket

@@ -210,3 +210,9 @@ export async function updateMixer(file, callback) {
     callback({ message: "success" });
   }
 }
+
+// To do (1 of 7): initialize from demo function
+// expects an object containing:
+//    an array of objects, each representing a source to be added
+//    an object defining the mixer state
+// validate input, and then insert all as multiple rows in sources table
