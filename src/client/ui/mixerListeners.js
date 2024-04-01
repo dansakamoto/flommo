@@ -71,17 +71,19 @@ export function initMixerListeners() {
 function updateAlpha(id) {
   let newAlpha = document.querySelector(`#alpha${id + 1}`).value / 100;
   session.sources[id].alpha = newAlpha;
-  updateSrc(session.sources[id].id, { alpha: newAlpha }, false);
+  if (session.roomID)
+    updateSrc(session.sources[id].id, { alpha: newAlpha }, false);
 }
 
 function toggleSrc(id) {
   const s = session.sources[id];
   s.active = document.querySelector(`#on${id + 1}`).checked ? true : false;
-  updateSrc(
-    session.sources[id].id,
-    { active: session.sources[id].active },
-    false
-  );
+  if (session.roomID)
+    updateSrc(
+      session.sources[id].id,
+      { active: session.sources[id].active },
+      false
+    );
 }
 
 function onMIDISuccess(midiAccess) {

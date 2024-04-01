@@ -63,8 +63,10 @@ export async function addSrc(file, callback) {
   } catch (e) {
     console.error("Error adding source to database: " + e);
     callback({ message: "failure" });
+    return;
   }
 
+  console.log("addSrc() run successfully");
   callback({ message: "success" });
 }
 
@@ -88,6 +90,7 @@ export async function delSrc(file, callback) {
     return;
   }
 
+  console.log("delSrc() run successfully");
   callback({ message: "success" });
 }
 
@@ -137,6 +140,7 @@ export async function updateSrc(file, callback) {
     return;
   }
 
+  console.log("updateSrc() run successfully");
   callback({ message: "success" });
 }
 
@@ -207,12 +211,67 @@ export async function updateMixer(file, callback) {
       return;
     }
 
+    console.log("updateMixer() run successfully");
     callback({ message: "success" });
   }
 }
 
-// To do (1 of 7): initialize from demo function
-// expects an object containing:
-//    an array of objects, each representing a source to be added
-//    an object defining the mixer state
-// validate input, and then insert all as multiple rows in sources table
+export async function initFromDemo(file, callback) {
+  if (
+    !file.sources ||
+    file.sources.length === 0 ||
+    !file.mixerState ||
+    !file.mixerState.room
+  ) {
+    console.error("Error initializing from demo: invalid data received");
+    callback({ message: "failure" });
+    return;
+  }
+
+  const sources = file.sources;
+  const mixerState = file.mixerState;
+
+  let queryText = "INSERT INTO sources (room, type, data) VALUES ";
+  let queryVals = [];
+  let separator = "";
+  for (let s of sources) {
+    if (!s.room || !s.type || !s.src) {
+      console.error("Error initializing from demo: invalid source data");
+      callback({ message: "failure " });
+      return;
+    }
+
+    queryVals.push(s.room, s.type, s.src);
+    queryText += `${separator}($${queryVals.length - 2}, $${
+      queryVals.length - 1
+    }, $${queryVals.length})`;
+    separator = ", ";
+  }
+
+  try {
+    await pool.query({
+      text: queryText,
+      values: queryVals,
+    });
+  } catch (e) {
+    console.error("Error initializing from demo: " + e);
+    callback({ message: "failure" });
+    return;
+  }
+
+  const room = mixerState.room;
+  const blend = mixerState.blend ? mixerState.blend : "source-over";
+  const invert = mixerState.invert == true;
+  try {
+    await pool.query({
+      text: `INSERT INTO mixers(room, blend, invert) VALUES($1, $2, $3)`,
+      values: [room, blend, invert],
+    });
+  } catch (e) {
+    console.error("Error initializing mixer from demo: " + e);
+    callback({ message: "failure" });
+  }
+
+  console.log("initFromDemo() run successfully");
+  callback({ message: "success" });
+}

@@ -2,6 +2,7 @@ import { io } from "socket.io-client";
 import { convertDropboxURL } from "../utils/urlConverter";
 import session from "../session";
 import { setupUI } from "../ui/setupUI";
+import demoData from "./demos";
 
 const socket = io();
 
@@ -12,13 +13,17 @@ export async function loadRoomData() {
     const roomData = await result.json();
     session.updateSources(roomData.sources);
     session.applyMixerState(roomData.mixerState);
+  } else {
+    session.updateSources(demoData.sources);
+    session.applyMixerState(demoData.mixerState);
   }
   setupUI();
 }
 
 export function addSrc(type, data) {
-  // TO DO (5 of 7): update to take demo init into account
-  session.verifyInit();
+  console.log("addSrc() run");
+  if (!session.verifyInit()) initFromDemo();
+
   if (type === "video") data = convertDropboxURL(data);
   socket.emit(
     "uploadSrc",
@@ -30,8 +35,9 @@ export function addSrc(type, data) {
 }
 
 export function updateSrc(id, data, refreshAfter = true) {
-  // TO DO (6 of 7): update to take demo init into account
-  session.verifyInit();
+  console.log("updateSrc() run");
+  if (!session.verifyInit()) initFromDemo();
+
   data["id"] = id;
 
   const source = session.sources.find((obj) => {
@@ -49,8 +55,9 @@ export function updateSrc(id, data, refreshAfter = true) {
 }
 
 export function delSrc(id) {
-  // TO DO (7 of 7): update to take  demo init into account
-  session.verifyInit();
+  console.log("delSrc() run");
+  if (!session.verifyInit()) initFromDemo();
+
   socket.emit("delSrc", { id: id }, (status) => {
     if (status.message === "success") {
       let panelNum;
@@ -106,9 +113,20 @@ export function toggleInvert() {
   return session.globalInvert;
 }
 
-// TO DO (3 of 7): initialize room from demo - function
-// get all sources and mixer state
-// package into object containing:
-//   array of sources
-//   object for mixer settings
-// send via socket
+export function initFromDemo() {
+  console.log("initFromDemo() called");
+  if (session.sources.length === 0) return;
+
+  const sources = session.sources;
+  const mixerState = {
+    room: session.roomID,
+    blend: session.blendMode,
+    invert: session.invert,
+  };
+  const roomState = { sources: sources, mixerState: mixerState };
+
+  socket.emit("initFromDemo", roomState, (status) => {
+    if (status.message === "failure")
+      console.error("error initializing from demo");
+  });
+}

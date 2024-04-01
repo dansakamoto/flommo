@@ -9,6 +9,7 @@ import {
   updateSrc,
   dbConnect,
   updateMixer,
+  initFromDemo,
 } from "./utils/data.js";
 
 dbConnect();
@@ -34,5 +35,5 @@ io.on("connection", (socket) => {
   socket.on("delSrc", delSrc);
   socket.on("updateSrc", updateSrc);
   socket.on("updateMixer", updateMixer);
-  // TO DO (2 of 7): include init from demo
+  socket.on("initFromDemo", initFromDemo);
 });

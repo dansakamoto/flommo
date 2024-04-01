@@ -23,8 +23,9 @@ function initRoomID() {
 function verifyInit() {
   if (!session.roomID) {
     initRoomID();
-    // TO DO (4 of 7): call init from demo data function
+    return false;
   }
+  return true;
 }
 
 function updateSources(newSources) {

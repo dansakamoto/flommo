@@ -100,13 +100,15 @@ function drawRenderer() {
           ? document.getElementById(id).firstChild
           : document.getElementById(id);
 
-      outputContext.drawImage(
-        srcElement,
-        0,
-        0,
-        outputCanvas.offsetWidth,
-        outputCanvas.offsetHeight
-      );
+      if (srcElement !== null) {
+        outputContext.drawImage(
+          srcElement,
+          0,
+          0,
+          outputCanvas.offsetWidth,
+          outputCanvas.offsetHeight
+        );
+      }
     }
 
     if (session.globalInvert) outputContext.filter = "invert(1)";
