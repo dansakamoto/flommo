@@ -21,61 +21,77 @@ export async function loadRoomData() {
 }
 
 export function addSrc(type, data) {
-  console.log("addSrc() run");
-  if (!session.verifyInit()) initFromDemo();
-
   if (type === "video") data = convertDropboxURL(data);
-  socket.emit(
-    "uploadSrc",
-    { room: session.roomID, type: type, src: data },
-    (status) => {
-      if (status.message === "success") loadRoomData();
-    }
-  );
+
+  if (!session.verifyInit()) {
+    session.addSource({
+      room: session.roomID,
+      type: type,
+      data: data,
+      alpha: 1,
+      active: true,
+    });
+    initFromDemo();
+    loadRoomData();
+  } else {
+    socket.emit(
+      "uploadSrc",
+      { room: session.roomID, type: type, src: data },
+      (status) => {
+        if (status.message === "success") loadRoomData();
+      }
+    );
+  }
 }
 
 export function updateSrc(id, data, refreshAfter = true) {
-  console.log("updateSrc() run");
-  if (!session.verifyInit()) initFromDemo();
+  if (!session.verifyInit()) {
+    session.updateSource(id, data.src);
+    initFromDemo();
+    loadRoomData();
+  } else {
+    data["id"] = id;
 
-  data["id"] = id;
+    const source = session.sources.find((obj) => {
+      return obj.id === id;
+    });
 
-  const source = session.sources.find((obj) => {
-    return obj.id === id;
-  });
-
-  if (source && source.type === "video" && data.src) {
-    data.src = convertDropboxURL(data.src);
+    if (source && source.type === "video" && data.src) {
+      data.src = convertDropboxURL(data.src);
+    }
+    socket.emit("updateSrc", data, (status) => {
+      if (status.message === "failure")
+        console.error("error syncing source state");
+      else if (refreshAfter && status.message === "success") loadRoomData();
+    });
   }
-  socket.emit("updateSrc", data, (status) => {
-    if (status.message === "failure")
-      console.error("error syncing source state");
-    else if (refreshAfter && status.message === "success") loadRoomData();
-  });
 }
 
 export function delSrc(id) {
-  console.log("delSrc() run");
-  if (!session.verifyInit()) initFromDemo();
-
-  socket.emit("delSrc", { id: id }, (status) => {
-    if (status.message === "success") {
-      let panelNum;
-      for (let i = 0; i < session.sources.length; i++) {
-        if (session.sources[i].id === id) {
-          panelNum = i;
-          break;
+  if (!session.verifyInit()) {
+    session.deleteSource(id);
+    initFromDemo();
+    loadRoomData();
+  } else {
+    socket.emit("delSrc", { id: id }, (status) => {
+      if (status.message === "success") {
+        let panelNum;
+        for (let i = 0; i < session.sources.length; i++) {
+          if (session.sources[i].id === id) {
+            panelNum = i;
+            break;
+          }
         }
+        if (
+          typeof session.activePanel === "number" &&
+          session.activePanel > panelNum
+        ) {
+          session.setActivePanel(session.activePanel - 1);
+        }
+        loadRoomData();
       }
-      if (
-        typeof session.activePanel === "number" &&
-        session.activePanel > panelNum
-      ) {
-        session.setActivePanel(session.activePanel - 1);
-      }
-      loadRoomData();
-    }
-  });
+    });
+  }
 }
 
 export function setBlendMode(blendMode) {
@@ -114,10 +130,19 @@ export function toggleInvert() {
 }
 
 export function initFromDemo() {
-  console.log("initFromDemo() called");
   if (session.sources.length === 0) return;
 
-  const sources = session.sources;
+  const sources = [];
+  for (let s of session.sources) {
+    sources.push({
+      room: session.roomID,
+      type: s.type,
+      src: s.data,
+      active: s.active,
+      alpha: s.alpha,
+    });
+  }
+
   const mixerState = {
     room: session.roomID,
     blend: session.blendMode,

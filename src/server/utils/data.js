@@ -66,7 +66,6 @@ export async function addSrc(file, callback) {
     return;
   }
 
-  console.log("addSrc() run successfully");
   callback({ message: "success" });
 }
 
@@ -90,7 +89,6 @@ export async function delSrc(file, callback) {
     return;
   }
 
-  console.log("delSrc() run successfully");
   callback({ message: "success" });
 }
 
@@ -140,7 +138,6 @@ export async function updateSrc(file, callback) {
     return;
   }
 
-  console.log("updateSrc() run successfully");
   callback({ message: "success" });
 }
 
@@ -211,7 +208,6 @@ export async function updateMixer(file, callback) {
       return;
     }
 
-    console.log("updateMixer() run successfully");
     callback({ message: "success" });
   }
 }
@@ -231,7 +227,8 @@ export async function initFromDemo(file, callback) {
   const sources = file.sources;
   const mixerState = file.mixerState;
 
-  let queryText = "INSERT INTO sources (room, type, data) VALUES ";
+  let queryText =
+    "INSERT INTO sources (room, type, data, alpha, active) VALUES ";
   let queryVals = [];
   let separator = "";
   for (let s of sources) {
@@ -241,10 +238,12 @@ export async function initFromDemo(file, callback) {
       return;
     }
 
-    queryVals.push(s.room, s.type, s.src);
-    queryText += `${separator}($${queryVals.length - 2}, $${
-      queryVals.length - 1
-    }, $${queryVals.length})`;
+    queryVals.push(s.room, s.type, s.src, s.alpha, s.active);
+    queryText += `${separator}($${queryVals.length - 4}, $${
+      queryVals.length - 3
+    }, $${queryVals.length - 2}, $${queryVals.length - 1}, $${
+      queryVals.length
+    })`;
     separator = ", ";
   }
 
@@ -272,6 +271,5 @@ export async function initFromDemo(file, callback) {
     callback({ message: "failure" });
   }
 
-  console.log("initFromDemo() run successfully");
   callback({ message: "success" });
 }
