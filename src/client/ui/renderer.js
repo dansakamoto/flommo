@@ -91,22 +91,24 @@ function drawRenderer() {
     const s = session.sources[i];
     const id = "srcCanvas" + i;
     if (s.type === "video") document.getElementById(id).play();
-    else if (s.type === "hydra") s.instance.tick(16);
+    else if (s.type === "hydra" && s.instance) s.instance.tick(16);
 
-    if (s.active) {
+    if (s.active && document.getElementById(id) !== null) {
       outputContext.globalAlpha = s.alpha;
       const srcElement =
         s.type === "p5"
           ? document.getElementById(id).firstChild
           : document.getElementById(id);
 
-      outputContext.drawImage(
-        srcElement,
-        0,
-        0,
-        outputCanvas.offsetWidth,
-        outputCanvas.offsetHeight
-      );
+      if (srcElement !== null) {
+        outputContext.drawImage(
+          srcElement,
+          0,
+          0,
+          outputCanvas.offsetWidth,
+          outputCanvas.offsetHeight
+        );
+      }
     }
 
     if (session.globalInvert) outputContext.filter = "invert(1)";

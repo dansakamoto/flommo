@@ -23,12 +23,39 @@ function initRoomID() {
 function verifyInit() {
   if (!session.roomID) {
     initRoomID();
-    // TO DO: check for existing demo sources + add to DB
+    return false;
   }
+  return true;
 }
 
 function updateSources(newSources) {
   session.sources = newSources;
+}
+
+function addSource(source) {
+  session.sources.push(source);
+}
+
+function deleteSource(id) {
+  let index = -1;
+  for (let i = 0; i < session.sources.length; i++) {
+    if (session.sources[i].id === id) {
+      index = i;
+      break;
+    }
+  }
+  if (index !== -1) {
+    session.sources.splice(index, 1);
+  }
+}
+
+function updateSource(id, data) {
+  for (let s of session.sources) {
+    if (s.id === id) {
+      s.data = data;
+      break;
+    }
+  }
 }
 
 function applyBlendMode(mode) {
@@ -94,5 +121,8 @@ const session = {
   setMidiActive,
   setActivePanel,
   setMixerActive,
+  addSource,
+  deleteSource,
+  updateSource,
 };
 export default session;

@@ -29,7 +29,12 @@ vi.mock("../../src/client/session.js", () => {
       roomID: 1234,
       updateSources: mocks.updateSources,
       applyMixerState: mocks.applyMixerState,
-      verifyInit: vi.fn(),
+      verifyInit: () => {
+        return true;
+      },
+      addSource: vi.fn(),
+      updateSource: vi.fn(),
+      deleteSource: vi.fn(),
       sources: [
         { id: 123, type: "hydra" },
         { id: 456, type: "video" },

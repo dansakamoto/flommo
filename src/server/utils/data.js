@@ -63,6 +63,7 @@ export async function addSrc(file, callback) {
   } catch (e) {
     console.error("Error adding source to database: " + e);
     callback({ message: "failure" });
+    return;
   }
 
   callback({ message: "success" });
@@ -209,4 +210,66 @@ export async function updateMixer(file, callback) {
 
     callback({ message: "success" });
   }
+}
+
+export async function initFromDemo(file, callback) {
+  if (
+    !file.sources ||
+    file.sources.length === 0 ||
+    !file.mixerState ||
+    !file.mixerState.room
+  ) {
+    console.error("Error initializing from demo: invalid data received");
+    callback({ message: "failure" });
+    return;
+  }
+
+  const sources = file.sources;
+  const mixerState = file.mixerState;
+
+  let queryText =
+    "INSERT INTO sources (room, type, data, alpha, active) VALUES ";
+  let queryVals = [];
+  let separator = "";
+  for (let s of sources) {
+    if (!s.room || !s.type || !s.src) {
+      console.error("Error initializing from demo: invalid source data");
+      callback({ message: "failure " });
+      return;
+    }
+
+    queryVals.push(s.room, s.type, s.src, s.alpha, s.active);
+    queryText += `${separator}($${queryVals.length - 4}, $${
+      queryVals.length - 3
+    }, $${queryVals.length - 2}, $${queryVals.length - 1}, $${
+      queryVals.length
+    })`;
+    separator = ", ";
+  }
+
+  try {
+    await pool.query({
+      text: queryText,
+      values: queryVals,
+    });
+  } catch (e) {
+    console.error("Error initializing from demo: " + e);
+    callback({ message: "failure" });
+    return;
+  }
+
+  const room = mixerState.room;
+  const blend = mixerState.blend ? mixerState.blend : "source-over";
+  const invert = mixerState.invert == true;
+  try {
+    await pool.query({
+      text: `INSERT INTO mixers(room, blend, invert) VALUES($1, $2, $3)`,
+      values: [room, blend, invert],
+    });
+  } catch (e) {
+    console.error("Error initializing mixer from demo: " + e);
+    callback({ message: "failure" });
+  }
+
+  callback({ message: "success" });
 }
