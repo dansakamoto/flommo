@@ -1,8 +1,7 @@
 div#controls {
   padding: 20px;
   display: block;
-  background: #00000088;
-  font-size: larger;
+  /*background: #00000088;*/
 }
 div#controls div#blends {
   display: block;
@@ -19,14 +18,34 @@ div#controls div#midi {
 div#controls {
   font-family: monospace;
 }
-div#sourceToggles {
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
-}
 div#blends label {
   margin-right: 1em;
 }
 div#blends {
   display: flex;
+}
+div#mixer {
+  display: flex;
+  justify-content: space-around;
+  font-size: large;
+}
+div#mixer > div {
+  width: 50%;
+  padding: 0 1em 1em 1em;
+  display: flex;
+}
+div#mixer > div > div > div {
+  background: #000000;
+}
+div#mixer input {
+  background: #000000;
+  padding: 4em;
+}
+div#mixer label {
+  background: #000000;
+  border: 2px solid black;
+}
+span.mixerLabel {
+  background: #000000;
+  padding: 2px;
 }

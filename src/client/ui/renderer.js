@@ -30,6 +30,7 @@ export function updateRenderer() {
     const containerName = "srcCanvas" + i;
     const inputDiv = document.createElement("div");
     inputDiv.classList.add("inputDiv");
+    inputDiv.id = "inputDiv" + i;
     const srcLabel = document.createElement("div");
     srcLabel.classList.add("srcLabel");
     srcLabel.innerHTML = i + 1;

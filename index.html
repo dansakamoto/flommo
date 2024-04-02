@@ -85,30 +85,37 @@
           <div id="empty"></div>
         </div>
         <div id="controls">
+          <div id="srcHeader"><span class="mixerLabel">SOURCES</span></div>
+          <div id="srcPreviews"></div>
           <div id="sourceToggles"></div>
-          <div id="blends">BLENDS:</div>
-          <div id="filters">
-            FILTERS:
-            <div>
-              <input
-                type="checkbox"
-                id="invert"
-                name="filterInput"
-                value="invert"
-              />
-              <label for="invert">|[| invert</label>
+          <div id="mixer">
+            <div id="blends"><span class="mixerLabel">BLENDS:</span></div>
+            <div id="filters">
+              <span class="mixerLabel">FILTERS:</span>
+              <div>
+                <input
+                  type="checkbox"
+                  id="invert"
+                  name="filterInput"
+                  value="invert"
+                />
+                <label for="invert">|[| invert</label>
+              </div>
             </div>
-          </div>
-          <div id="midi">
-            ADDITIONAL INPUTS:
-            <div>
-              <input type="checkbox" id="midion" name="midion" value="midion" />
-              <label for="midion">MIDI listen</label>
+            <div id="midi">
+              <span class="mixerLabel">ADDITIONAL INPUTS:</span>
+              <div>
+                <input
+                  type="checkbox"
+                  id="midion"
+                  name="midion"
+                  value="midion"
+                />
+                <label for="midion">MIDI listen</label>
+              </div>
             </div>
           </div>
         </div>
-        <div id="srcHeader">SOURCES</div>
-        <div id="srcPreviews"></div>
       </div>
     </main>
     <script type="module" src="src/client/main.js"></script>

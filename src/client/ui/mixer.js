@@ -3,11 +3,9 @@ import { toggleSrc, updateAlpha, initMixerListeners } from "./mixerListeners";
 import session from "../session";
 
 export function updateMixer() {
-  const toggles = document.getElementById("sourceToggles");
-  while (toggles.firstChild) toggles.removeChild(toggles.firstChild);
-
   for (let i = 0; i < session.sources.length; i++) {
     const s = session.sources[i];
+    const container = document.getElementById("inputDiv" + i);
 
     const toggleDiv = document.createElement("div");
     toggleDiv.classList.add("panel");
@@ -22,7 +20,7 @@ export function updateMixer() {
       s.alpha * 100
     }" class="slider" id="alpha${i + 1}"><br></br>`;
 
-    toggles.appendChild(toggleDiv);
+    container.appendChild(toggleDiv);
 
     document.getElementById(`on${i + 1}`).onchange = () => {
       toggleSrc(i);
