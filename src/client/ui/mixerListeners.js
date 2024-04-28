@@ -22,40 +22,39 @@ export function initMixerListeners() {
   document.addEventListener(
     "keydown",
     (event) => {
-      if (
-        event.code !== "Space" &&
-        event.ctrlKey &&
-        event.key >= 0 &&
-        event.key <= 9
-      ) {
-        event.preventDefault();
-
-        session.sources[event.key - 1].active =
-          !session.sources[event.key - 1].active;
-        updateSrc(
-          session.sources[event.key - 1].id,
-          { active: session.sources[event.key - 1].active },
-          false
-        );
-        document.querySelector(`#on${event.key}`).checked =
-          session.sources[event.key - 1].active;
-        document.getElementById("welcome-panel").style.cursor = "none";
-      } else if (event.ctrlKey) {
-        if (event.key === "[") {
-          document.getElementById("invert").checked = toggleInvert();
-        } else if (event.key == "z") {
+      if (event.ctrlKey && event.shiftKey) {
+        if (event.key === "Z") {
           togglePanel("video");
-        } else if (event.key == "x") {
+        } else if (event.key === "X") {
           togglePanel("hydra");
-        } else if (event.key == "c") {
+        } else if (event.key === "C") {
           togglePanel("p5");
-        } else if (event.key == "/") {
+        } else if (event.key === "/") {
           togglePanel("info");
-        } else if (event.key == ".") {
+        } else if (event.key === ".") {
           togglePanel("title");
+        }
+      } else if (event.getModifierState("CapsLock")) {
+        if (event.code !== "Space" && event.key >= 0 && event.key <= 9) {
+          event.preventDefault();
+
+          session.sources[event.key - 1].active =
+            !session.sources[event.key - 1].active;
+          updateSrc(
+            session.sources[event.key - 1].id,
+            { active: session.sources[event.key - 1].active },
+            false
+          );
+          document.querySelector(`#on${event.key}`).checked =
+            session.sources[event.key - 1].active;
+          document.getElementById("welcome-panel").style.cursor = "none";
+        } else if (event.key === "[") {
+          event.preventDefault();
+          document.getElementById("invert").checked = toggleInvert();
         } else {
           for (let b of session.allBlendModes) {
             if (event.key === b[1]) {
+              event.preventDefault();
               setBlendMode(b[0]);
               document.getElementById(b[0]).checked = true;
               break;

@@ -15,20 +15,26 @@ document.querySelector("#videouploader").onsubmit = (e) => {
 document.addEventListener(
   "keydown",
   (event) => {
-    if (event.code == "Space" && event.ctrlKey) {
-      togglePanel("hide");
+    if (event.ctrlKey) {
+      if (event.code == "Space") {
+        togglePanel("hide");
+      } else if (event.key >= 0 && event.key <= 9) {
+        let newPanel = event.key - 1;
+        if (newPanel === -1) newPanel = 9;
+        togglePanel(newPanel);
+      }
     }
   },
   false
 );
 document.querySelector("#hydraeditor").addEventListener("keypress", (e) => {
-  if (e.which === 13 && e.ctrlKey) {
+  if (e.which === 13 && e.ctrlKey && e.shiftKey) {
     e.preventDefault();
     addSrc("hydra", session.newHydraEditor.state.doc.toString());
   }
 });
 document.querySelector("#p5editor").addEventListener("keypress", (e) => {
-  if (e.which === 13 && e.ctrlKey) {
+  if (e.which === 13 && e.ctrlKey && e.shiftKey) {
     e.preventDefault();
     addSrc("p5", session.newP5Editor.state.doc.toString());
   }
@@ -61,6 +67,8 @@ document.querySelector("#init-link").onclick = (e) => {
 };
 
 function togglePanel(active) {
+  if (typeof active === "number" && active >= session.sources.length) return;
+
   if (active === "hide") {
     const currentState = document.querySelector("#hud").style.visibility;
     document.querySelector("#hud").style =
