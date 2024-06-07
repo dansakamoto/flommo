@@ -15,14 +15,8 @@ document.querySelector("#videouploader").onsubmit = (e) => {
 document.addEventListener(
   "keydown",
   (event) => {
-    if (event.ctrlKey) {
-      if (event.code == "Space") {
-        togglePanel("hide");
-      } else if (event.key >= 0 && event.key <= 9) {
-        let newPanel = event.key - 1;
-        if (newPanel === -1) newPanel = 9;
-        togglePanel(newPanel);
-      }
+    if (event.ctrlKey && event.code === "Space") {
+      togglePanel("hide");
     }
   },
   false

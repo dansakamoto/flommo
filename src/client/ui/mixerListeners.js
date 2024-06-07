@@ -1,5 +1,4 @@
 import { updateSrc, toggleInvert, setBlendMode } from "../services/data";
-import { togglePanel } from "./menuListeners";
 import session from "../session";
 
 export { updateAlpha, toggleSrc };
@@ -22,19 +21,7 @@ export function initMixerListeners() {
   document.addEventListener(
     "keydown",
     (event) => {
-      if (event.ctrlKey && event.shiftKey) {
-        if (event.key === "Z") {
-          togglePanel("video");
-        } else if (event.key === "X") {
-          togglePanel("hydra");
-        } else if (event.key === "C") {
-          togglePanel("p5");
-        } else if (event.key === "/") {
-          togglePanel("info");
-        } else if (event.key === ".") {
-          togglePanel("title");
-        }
-      } else if (event.getModifierState("CapsLock")) {
+      if (event.getModifierState("CapsLock")) {
         if (event.code !== "Space" && event.key >= 0 && event.key <= 9) {
           event.preventDefault();
 
