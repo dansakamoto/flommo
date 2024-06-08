@@ -22,13 +22,13 @@ document.addEventListener(
   false
 );
 document.querySelector("#hydraeditor").addEventListener("keypress", (e) => {
-  if (e.which === 13 && e.ctrlKey && e.shiftKey) {
+  if (e.key === "Enter" && e.ctrlKey && e.shiftKey) {
     e.preventDefault();
     addSrc("hydra", session.newHydraEditor.state.doc.toString());
   }
 });
 document.querySelector("#p5editor").addEventListener("keypress", (e) => {
-  if (e.which === 13 && e.ctrlKey && e.shiftKey) {
+  if (e.key === "Enter" && e.ctrlKey && e.shiftKey) {
     e.preventDefault();
     addSrc("p5", session.newP5Editor.state.doc.toString());
   }
