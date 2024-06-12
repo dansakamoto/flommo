@@ -64,12 +64,12 @@ function updateAlpha(id) {
 function toggleSrc(id) {
   const s = session.sources[id];
   s.active = document.querySelector(`#on${id + 1}`).checked ? true : false;
-  if (session.roomID)
-    updateSrc(
-      session.sources[id].id,
-      { active: session.sources[id].active },
-      false
-    );
+
+  updateSrc(
+    session.sources[id].id,
+    { active: session.sources[id].active },
+    false
+  );
 }
 
 function onMIDISuccess(midiAccess) {

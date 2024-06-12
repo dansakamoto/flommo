@@ -46,7 +46,6 @@ export function addSrc(type, data) {
 
 export function updateSrc(id, data, refreshAfter = true) {
   if (!session.verifyInit()) {
-    session.updateSource(id, data.src);
     initFromDemo();
     loadRoomData();
   } else {
