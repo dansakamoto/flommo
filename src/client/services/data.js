@@ -2,21 +2,18 @@ import { io } from "socket.io-client";
 import { convertDropboxURL } from "../utils/urlConverter";
 import session from "../session";
 import { setupUI } from "../ui/setupUI";
-import demoData from "./demos";
 
 const socket = io();
 
 export async function loadRoomData() {
-  if (session.roomID) {
-    const URL = "/srclist?room=" + session.roomID;
-    const result = await fetch(URL);
-    const roomData = await result.json();
-    session.updateSources(roomData.sources);
-    session.applyMixerState(roomData.mixerState);
-  } else {
-    session.updateSources(demoData.sources);
-    session.applyMixerState(demoData.mixerState);
-  }
+  let URL = "/srclist";
+  if (session.roomID) URL += "?room=" + session.roomID;
+
+  const result = await fetch(URL);
+  const roomData = await result.json();
+  session.updateSources(roomData.sources);
+  session.applyMixerState(roomData.mixerState);
+
   setupUI();
 }
 
