@@ -3,7 +3,7 @@ import "./main.css";
 import session from "./session";
 import { loadRoomData } from "./services/data";
 
-const versionNum = "0.13.3";
+const versionNum = "0.14.0";
 
 session.initFromURL();
 loadRoomData();
