@@ -46,7 +46,7 @@ export function updateEditors() {
     if (s.type === "p5" || s.type === "hydra") {
       s.editor = createEditorInstance("editor" + s.id, s.data);
       div.addEventListener("keypress", (e) => {
-        if (e.which === 13 && e.ctrlKey) {
+        if (e.key === "Enter" && e.ctrlKey && e.shiftKey) {
           e.preventDefault();
           updateSrc(s.id, { src: s.editor.state.doc.toString() });
         }

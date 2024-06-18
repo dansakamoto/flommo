@@ -42,19 +42,21 @@ export function addSrc(type, data) {
 }
 
 export function updateSrc(id, data, refreshAfter = true) {
+  data["id"] = id;
+
+  const source = session.sources.find((obj) => {
+    return obj.id === id;
+  });
+
+  if (source && source.type === "video" && data.src) {
+    data.src = convertDropboxURL(data.src);
+  }
+
   if (!session.verifyInit()) {
+    source.data = data.src;
     initFromDemo();
     loadRoomData();
   } else {
-    data["id"] = id;
-
-    const source = session.sources.find((obj) => {
-      return obj.id === id;
-    });
-
-    if (source && source.type === "video" && data.src) {
-      data.src = convertDropboxURL(data.src);
-    }
     socket.emit("updateSrc", data, (status) => {
       if (status.message === "failure")
         console.error("error syncing source state");
