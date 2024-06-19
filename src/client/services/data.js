@@ -29,7 +29,7 @@ export function addSrc(type, data) {
       active: true,
     });
     initFromDemo();
-    loadRoomData();
+    loadRoomData(); // is this necessary?
   } else {
     socket.emit(
       "uploadSrc",
