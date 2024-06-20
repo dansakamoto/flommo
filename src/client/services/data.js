@@ -17,25 +17,30 @@ export async function loadRoomData() {
   setupUI();
 }
 
-export function addSrc(type, data) {
+export function addSrc(type, data, active = true) {
   if (type === "video") data = convertDropboxURL(data);
 
+  const newSource = {
+    room: session.roomID,
+    type: type,
+    data: data,
+    alpha: 1,
+    active: active,
+  };
+
+  session.addSource(newSource);
+
   if (!session.verifyInit()) {
-    session.addSource({
-      room: session.roomID,
-      type: type,
-      data: data,
-      alpha: 1,
-      active: true,
-    });
     initFromDemo();
-    loadRoomData();
   } else {
+    setupUI();
     socket.emit(
       "uploadSrc",
-      { room: session.roomID, type: type, src: data },
+      { room: session.roomID, type: type, src: data, active: active },
       (status) => {
-        if (status.message === "success") loadRoomData();
+        if (status.message === "success") {
+          newSource.id = status.id;
+        } else console.error("Error adding source to database");
       }
     );
   }
@@ -52,13 +57,14 @@ export function updateSrc(id, data, refreshAfter = true) {
     data.src = convertDropboxURL(data.src);
   }
 
+  source.data = data.src;
+
   if (!session.verifyInit()) {
-    source.data = data.src;
     initFromDemo();
-    loadRoomData();
   } else {
+    setupUI();
     socket.emit("updateSrc", data, (status) => {
-      if (status.message === "failure")
+      if (status.message !== "success")
         console.error("error syncing source state");
       else if (refreshAfter && status.message === "success") loadRoomData();
     });
@@ -66,27 +72,29 @@ export function updateSrc(id, data, refreshAfter = true) {
 }
 
 export function delSrc(id) {
+  let panelNum;
+  for (let i = 0; i < session.sources.length; i++) {
+    if (session.sources[i].id === id) {
+      panelNum = i;
+      break;
+    }
+  }
+  if (
+    typeof session.activePanel === "number" &&
+    session.activePanel > panelNum
+  ) {
+    session.setActivePanel(session.activePanel - 1);
+  }
+
+  session.deleteSource(id);
+
   if (!session.verifyInit()) {
-    session.deleteSource(id);
     initFromDemo();
-    loadRoomData();
   } else {
+    setupUI();
     socket.emit("delSrc", { id: id }, (status) => {
-      if (status.message === "success") {
-        let panelNum;
-        for (let i = 0; i < session.sources.length; i++) {
-          if (session.sources[i].id === id) {
-            panelNum = i;
-            break;
-          }
-        }
-        if (
-          typeof session.activePanel === "number" &&
-          session.activePanel > panelNum
-        ) {
-          session.setActivePanel(session.activePanel - 1);
-        }
-        loadRoomData();
+      if (status.message !== "success") {
+        console.error("error deleting source from database");
       }
     });
   }
@@ -149,7 +157,10 @@ export function initFromDemo() {
   const roomState = { sources: sources, mixerState: mixerState };
 
   socket.emit("initFromDemo", roomState, (status) => {
-    if (status.message === "failure")
+    if (status.message === "failure") {
       console.error("error initializing from demo");
+    } else {
+      loadRoomData();
+    }
   });
 }

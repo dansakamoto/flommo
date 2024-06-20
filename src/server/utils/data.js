@@ -54,11 +54,14 @@ export async function addSrc(file, callback) {
 
   const room = file.room;
   const type = file.type;
+  const active = file.active === undefined ? false : true;
+
+  let res;
 
   try {
-    await pool.query({
-      text: `INSERT INTO sources(room, type, data) VALUES($1, $2, $3)`,
-      values: [room, type, file.src],
+    res = await pool.query({
+      text: `INSERT INTO sources(room, type, data, active) VALUES($1, $2, $3, $4) RETURNING id`,
+      values: [room, type, file.src, active],
     });
   } catch (e) {
     console.error("Error adding source to database: " + e);
@@ -66,7 +69,7 @@ export async function addSrc(file, callback) {
     return;
   }
 
-  callback({ message: "success" });
+  callback({ message: "success", id: res.rows[0].id });
 }
 
 export async function delSrc(file, callback) {
