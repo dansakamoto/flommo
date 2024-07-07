@@ -54,7 +54,7 @@ export async function addSrc(file, callback) {
 
   const room = file.room;
   const type = file.type;
-  const active = file.active === undefined ? false : true;
+  const active = file.active === undefined ? true : file.active;
 
   let res;
 

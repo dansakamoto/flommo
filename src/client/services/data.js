@@ -26,6 +26,7 @@ export function addSrc(type, data, active = true) {
     data: data,
     alpha: 1,
     active: active,
+    id: Date.now(),
   };
 
   session.addSource(newSource);
@@ -33,13 +34,13 @@ export function addSrc(type, data, active = true) {
   if (!session.verifyInit()) {
     initFromDemo();
   } else {
-    setupUI();
     socket.emit(
       "uploadSrc",
       { room: session.roomID, type: type, src: data, active: active },
       (status) => {
         if (status.message === "success") {
           newSource.id = status.id;
+          setupUI();
         } else console.error("Error adding source to database");
       }
     );
