@@ -20,11 +20,19 @@ export function resizeRenderer() {
   document.getElementById("empty").style.height = noCursorHeight + "px";
 }
 
-export function updateRenderer() {
+export function updateRenderer(type = "hard-refresh") {
   const srcWrapper = document.getElementById("srcPreviews");
-  while (srcWrapper.firstChild) srcWrapper.removeChild(srcWrapper.firstChild);
 
-  for (let i = 0; i < session.sources.length; i++) {
+  let first = 0;
+
+  if (type === "hard-refresh") {
+    while (srcWrapper.firstChild) srcWrapper.removeChild(srcWrapper.firstChild);
+    first = 0;
+  } else if (type === "add") {
+    first = session.sources.length - 1;
+  }
+
+  for (let i = first; i < session.sources.length; i++) {
     const s = session.sources[i];
 
     const containerName = "srcCanvas" + i;
@@ -81,6 +89,42 @@ export function updateRenderer() {
       hFunc(session.sources[i].instance);
     }
   }
+}
+
+export function updateSingleRenderer(id = -1) {
+  let index = -1;
+  for (let i = 0; i < session.sources.length; i++) {
+    if (session.sources[i].id === id) {
+      index = i;
+      break;
+    }
+  }
+  const s = session.sources[index];
+  const containerName = "srcCanvas" + index;
+
+  if (s.type === "p5") {
+    s["instance"] = new p5(Function("f", s.data), containerName);
+  } else if (s.type === "hydra") {
+    const hydraDestructurer =
+      "const { src, osc, gradient, shape, voronoi, noise, s0, s1, s2, s3, o0, o1, o2, o3, render } = f;";
+    s["instance"] = new Hydra({
+      makeGlobal: false,
+      canvas: document.getElementById(containerName),
+      detectAudio: false,
+      autoLoop: false,
+    }).synth;
+    const hFunc = Function("f", hydraDestructurer + s.data);
+    hFunc(s.instance);
+  } else if (s.type === "video") {
+    document.getElementById(containerName).src = s.data;
+  }
+}
+
+export function deleteSingleRenderer(panelNum = -1) {
+  const srcWrapper = document.getElementById("srcPreviews");
+  var target = srcWrapper.children.item(panelNum);
+  console.log("type of target: " + typeof target);
+  srcWrapper.removeChild(target);
 }
 
 function drawRenderer() {

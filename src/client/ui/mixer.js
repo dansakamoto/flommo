@@ -2,8 +2,15 @@ import "./mixer.css";
 import { toggleSrc, updateAlpha, initMixerListeners } from "./mixerListeners";
 import session from "../session";
 
-export function updateMixer() {
-  for (let i = 0; i < session.sources.length; i++) {
+export function updateMixer(type = "hard-refresh") {
+  let first = 0;
+  if (type === "hard-refresh") {
+    first = 0;
+  } else if (type === "add") {
+    first = session.sources.length - 1;
+  }
+
+  for (let i = first; i < session.sources.length; i++) {
     const s = session.sources[i];
     const container = document.getElementById("inputDiv" + i);
 

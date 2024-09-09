@@ -3,6 +3,16 @@ import { convertDropboxURL } from "../utils/urlConverter";
 import session from "../session";
 import { setupUI } from "../ui/setupUI";
 
+import { updateMixer } from "../ui/mixer";
+import { updateMenu } from "../ui/menu";
+import { updateEditors, resizeEditors } from "../ui/editors";
+import {
+  updateRenderer,
+  updateSingleRenderer,
+  resizeRenderer,
+  deleteSingleRenderer,
+} from "../ui/renderer";
+
 const socket = io();
 
 export async function loadRoomData() {
@@ -40,7 +50,15 @@ export function addSrc(type, data, active = true) {
       (status) => {
         if (status.message === "success") {
           newSource.id = status.id;
-          setupUI();
+          //setupUI();
+          // ----
+          updateRenderer("add");
+          updateMixer("add");
+          updateEditors();
+          updateMenu();
+          resizeRenderer();
+          resizeEditors();
+          // ------
         } else console.error("Error adding source to database");
       }
     );
@@ -63,11 +81,12 @@ export function updateSrc(id, data, refreshAfter = true) {
   if (!session.verifyInit()) {
     initFromDemo();
   } else {
-    setupUI();
+    if (refreshAfter) {
+      updateSingleRenderer(id);
+    }
     socket.emit("updateSrc", data, (status) => {
       if (status.message !== "success")
         console.error("error syncing source state");
-      else if (refreshAfter && status.message === "success") loadRoomData();
     });
   }
 }
@@ -92,7 +111,22 @@ export function delSrc(id) {
   if (!session.verifyInit()) {
     initFromDemo();
   } else {
-    setupUI();
+    //setupUI();
+    // ----
+    deleteSingleRenderer(panelNum);
+    // TO DO: adjust remaining panels/ids to match new positions
+    //updateMixer();
+    updateEditors();
+    updateMenu();
+    resizeRenderer();
+    resizeEditors();
+    console.log("---------");
+    for (const [k, v] of Object.entries(session.sources)) {
+      for (const [a, b] of Object.entries(v)) {
+        console.log(`${k}: ${a}: ${b}`);
+      }
+    }
+    // ------
     socket.emit("delSrc", { id: id }, (status) => {
       if (status.message !== "success") {
         console.error("error deleting source from database");
