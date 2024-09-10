@@ -108,25 +108,23 @@ export function delSrc(id) {
 
   session.deleteSource(id);
 
-  if (!session.verifyInit()) {
-    initFromDemo();
-  } else {
-    //setupUI();
-    // ----
-    deleteSingleRenderer(panelNum);
-    // TO DO: adjust remaining panels/ids to match new positions
-    //updateMixer();
-    updateEditors();
-    updateMenu();
-    resizeRenderer();
-    resizeEditors();
-    console.log("---------");
-    for (const [k, v] of Object.entries(session.sources)) {
-      for (const [a, b] of Object.entries(v)) {
-        console.log(`${k}: ${a}: ${b}`);
-      }
+  //setupUI();
+  // ----
+  deleteSingleRenderer(panelNum);
+  // TO DO: adjust remaining panels/ids to match new positions
+  //updateMixer();
+  updateEditors();
+  updateMenu();
+  resizeRenderer();
+  resizeEditors();
+  console.log("---------");
+  for (const [k, v] of Object.entries(session.sources)) {
+    for (const [a, b] of Object.entries(v)) {
+      console.log(`${k}: ${a}: ${b}`);
     }
-    // ------
+  }
+  // ------
+  if (session.roomID) {
     socket.emit("delSrc", { id: id }, (status) => {
       if (status.message !== "success") {
         console.error("error deleting source from database");
