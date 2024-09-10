@@ -103,17 +103,12 @@ export function updateSingleRenderer(id = -1) {
   const containerName = "srcCanvas" + index;
 
   if (s.type === "p5") {
+    const container = document.getElementById(containerName);
+    container.removeChild(container.firstChild);
     s["instance"] = new p5(Function("f", s.data), containerName);
   } else if (s.type === "hydra") {
     const hydraDestructurer =
       "const { src, osc, gradient, shape, voronoi, noise, s0, s1, s2, s3, o0, o1, o2, o3, render } = f;";
-
-    /*  s["instance"] = new Hydra({
-      makeGlobal: false,
-      canvas: document.getElementById(containerName),
-      detectAudio: false,
-      autoLoop: false,
-    }).synth; */
     const hFunc = Function("f", hydraDestructurer + s.data);
     hFunc(s.instance);
   } else if (s.type === "video") {
