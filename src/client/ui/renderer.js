@@ -107,12 +107,13 @@ export function updateSingleRenderer(id = -1) {
   } else if (s.type === "hydra") {
     const hydraDestructurer =
       "const { src, osc, gradient, shape, voronoi, noise, s0, s1, s2, s3, o0, o1, o2, o3, render } = f;";
-    s["instance"] = new Hydra({
+
+    /*  s["instance"] = new Hydra({
       makeGlobal: false,
       canvas: document.getElementById(containerName),
       detectAudio: false,
       autoLoop: false,
-    }).synth;
+    }).synth; */
     const hFunc = Function("f", hydraDestructurer + s.data);
     hFunc(s.instance);
   } else if (s.type === "video") {
