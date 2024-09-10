@@ -78,16 +78,18 @@ export function updateSrc(id, data, refreshAfter = true) {
 
   source.data = data.src;
 
-  if (!session.verifyInit()) {
+  if (refreshAfter && !session.verifyInit()) {
     initFromDemo();
   } else {
     if (refreshAfter) {
       updateSingleRenderer(id);
     }
-    socket.emit("updateSrc", data, (status) => {
-      if (status.message !== "success")
-        console.error("error syncing source state");
-    });
+    if (session.roomID) {
+      socket.emit("updateSrc", data, (status) => {
+        if (status.message !== "success")
+          console.error("error syncing source state");
+      });
+    }
   }
 }
 
