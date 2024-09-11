@@ -120,11 +120,16 @@ export function delSrc(id) {
   resizeRenderer();
   resizeEditors();
   console.log("---------");
+  /*
   for (const [k, v] of Object.entries(session.sources)) {
     for (const [a, b] of Object.entries(v)) {
       console.log(`${k}: ${a}: ${b}`);
     }
+    for (const [c, d] of Object.entries(v.editor)) {
+      console.log(`${k}: editor: ${c}: ${d}`);
+    }
   }
+    */
   // ------
   if (session.roomID) {
     socket.emit("delSrc", { id: id }, (status) => {

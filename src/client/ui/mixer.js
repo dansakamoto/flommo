@@ -19,9 +19,11 @@ export function updateMixer(type = "hard-refresh") {
 
     const isChecked = s.active ? " checked" : "";
 
-    toggleDiv.innerHTML = `<input type="checkbox" id="on${i + 1}" name="on${
+    toggleDiv.innerHTML = `<input type="checkbox" class="srcToggle" id="on${
       i + 1
-    }" value="on${i + 1}"${isChecked}><label for="on${i + 1}">Send ${
+    }" name="on${i + 1}" value="on${
+      i + 1
+    }"${isChecked}><label class="label" for="on${i + 1}">Send ${
       i + 1
     }</label><br><input type="range" min="0" max="100" value="${
       s.alpha * 100

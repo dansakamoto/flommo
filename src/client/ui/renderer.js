@@ -121,6 +121,38 @@ export function deleteSingleRenderer(panelNum = -1) {
   var target = srcWrapper.children.item(panelNum);
   console.log("type of target: " + typeof target);
   srcWrapper.removeChild(target);
+  shiftRendererIDs();
+}
+
+function shiftRendererIDs() {
+  const srcWrapper = document.getElementById("srcPreviews");
+  let i = 0;
+  srcWrapper.childNodes.forEach((child) => {
+    child.id = "inputDiv" + i;
+    const inputSrc = child.querySelector(".inputSrc");
+    inputSrc.id = "inputSrc" + i;
+    const srcLabel = child.querySelector(".srcLabel");
+    srcLabel.innerHTML = `${i + 1}`;
+    const panel = child.querySelector(".panel");
+    const srcToggle = panel.querySelector(".srcToggle");
+    console.log("id: " + srcToggle.id);
+    srcToggle.id = `on${i + 1}`;
+    console.log("new id: " + srcToggle.id);
+    srcToggle.setAttribute("name", `on${i + 1}`);
+    srcToggle.setAttribute("value", `on${i + 1}`);
+    const label = panel.querySelector(".label");
+    label.setAttribute("for", `on${i + 1}`);
+    label.innerHTML = `Send ${i + 1}`;
+    const slider = panel.querySelector(".slider");
+    slider.id = `alpha${i + 1}`;
+
+    i++;
+  });
+
+  // inside div id=srcPreviews
+  //    each child gets new sequential id=inputDiv[n]
+  //      canvas OR div OR video of class=inputSrc inside gets new id=srcCanvas[n]
+  //      div of class=srcLabel inside gets new inner text [n+1]
 }
 
 function drawRenderer() {
