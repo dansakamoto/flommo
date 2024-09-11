@@ -3,6 +3,7 @@ import Hydra from "hydra-synth";
 import p5 from "p5";
 import session from "../session";
 import { delSrc } from "../services/data";
+import { toggleSrc, updateAlpha } from "./mixerListeners";
 
 setInterval(drawRenderer, 16); // ~60fps
 window.addEventListener("resize", resizeRenderer);
@@ -20,14 +21,24 @@ export function resizeRenderer() {
   document.getElementById("empty").style.height = noCursorHeight + "px";
 }
 
-export function updateRenderer() {
+export function updateRenderer(type = "hard-refresh") {
   const srcWrapper = document.getElementById("srcPreviews");
-  while (srcWrapper.firstChild) srcWrapper.removeChild(srcWrapper.firstChild);
 
-  for (let i = 0; i < session.sources.length; i++) {
+  let first = 0;
+
+  if (type === "hard-refresh") {
+    while (srcWrapper.firstChild) srcWrapper.removeChild(srcWrapper.firstChild);
+    first = 0;
+  } else if (type === "add") {
+    first = session.sources.length - 1;
+  }
+
+  for (let i = first; i < session.sources.length; i++) {
     const s = session.sources[i];
 
-    const containerName = "srcCanvas" + i;
+    //const containerName = "srcCanvas" + i;
+    const containerName = "srcCanvas" + s.id;
+
     const inputDiv = document.createElement("div");
     inputDiv.classList.add("inputDiv");
     inputDiv.id = "inputDiv" + i;
@@ -83,6 +94,79 @@ export function updateRenderer() {
   }
 }
 
+export function updateSingleRenderer(id = -1) {
+  let index = -1;
+  for (let i = 0; i < session.sources.length; i++) {
+    if (session.sources[i].id === id) {
+      index = i;
+      break;
+    }
+  }
+  const s = session.sources[index];
+  //const containerName = "srcCanvas" + index;
+  const containerName = "srcCanvas" + id;
+
+  if (s.type === "p5") {
+    const container = document.getElementById(containerName);
+    container.removeChild(container.firstChild);
+    s["instance"] = new p5(Function("f", s.data), containerName);
+  } else if (s.type === "hydra") {
+    const hydraDestructurer =
+      "const { src, osc, gradient, shape, voronoi, noise, s0, s1, s2, s3, o0, o1, o2, o3, render } = f;";
+    const hFunc = Function("f", hydraDestructurer + s.data);
+    hFunc(s.instance);
+  } else if (s.type === "video") {
+    document.getElementById(containerName).src = s.data;
+  }
+}
+
+export function deleteSingleRenderer(panelNum = -1) {
+  const srcWrapper = document.getElementById("srcPreviews");
+  var target = srcWrapper.children.item(panelNum);
+  console.log("type of target: " + typeof target);
+  srcWrapper.removeChild(target);
+  shiftRendererIDs();
+}
+
+function shiftRendererIDs() {
+  const srcWrapper = document.getElementById("srcPreviews");
+  let i = 0;
+  srcWrapper.childNodes.forEach((child) => {
+    child.id = "inputDiv" + i;
+    //const inputSrc = child.querySelector(".inputSrc");
+    //inputSrc.id = "inputSrc" + i;
+    const srcLabel = child.querySelector(".srcLabel");
+    srcLabel.innerHTML = `${i + 1}`;
+    const panel = child.querySelector(".panel");
+    const srcToggle = panel.querySelector(".srcToggle");
+    console.log("id: " + srcToggle.id);
+    srcToggle.id = `on${i + 1}`;
+    console.log("new id: " + srcToggle.id);
+    srcToggle.setAttribute("name", `on${i + 1}`);
+    srcToggle.setAttribute("value", `on${i + 1}`);
+    const label = panel.querySelector(".label");
+    label.setAttribute("for", `on${i + 1}`);
+    label.innerHTML = `Send ${i + 1}`;
+    const slider = panel.querySelector(".slider");
+    slider.id = `alpha${i + 1}`;
+
+    srcToggle.i = i;
+    srcToggle.onchange = () => {
+      toggleSrc(srcToggle.i);
+    };
+    slider.onpointermove = () => {
+      updateAlpha(srcToggle.i);
+    };
+
+    i++;
+  });
+
+  // inside div id=srcPreviews
+  //    each child gets new sequential id=inputDiv[n]
+  //      canvas OR div OR video of class=inputSrc inside gets new id=srcCanvas[n]
+  //      div of class=srcLabel inside gets new inner text [n+1]
+}
+
 function drawRenderer() {
   const outputCanvas = document.getElementById("out1");
   const outputContext = outputCanvas.getContext("2d");
@@ -90,7 +174,10 @@ function drawRenderer() {
 
   for (let i = 0; i < session.sources.length; i++) {
     const s = session.sources[i];
-    const id = "srcCanvas" + i;
+
+    //const id = "srcCanvas" + i;
+    const id = "srcCanvas" + s.id;
+
     if (s.type === "video") document.getElementById(id).play();
     else if (s.type === "hydra" && s.instance) s.instance.tick(16);
 
