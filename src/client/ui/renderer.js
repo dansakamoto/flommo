@@ -3,6 +3,7 @@ import Hydra from "hydra-synth";
 import p5 from "p5";
 import session from "../session";
 import { delSrc } from "../services/data";
+import { toggleSrc, updateAlpha } from "./mixerListeners";
 
 setInterval(drawRenderer, 16); // ~60fps
 window.addEventListener("resize", resizeRenderer);
@@ -35,7 +36,9 @@ export function updateRenderer(type = "hard-refresh") {
   for (let i = first; i < session.sources.length; i++) {
     const s = session.sources[i];
 
-    const containerName = "srcCanvas" + i;
+    //const containerName = "srcCanvas" + i;
+    const containerName = "srcCanvas" + s.id;
+
     const inputDiv = document.createElement("div");
     inputDiv.classList.add("inputDiv");
     inputDiv.id = "inputDiv" + i;
@@ -100,7 +103,8 @@ export function updateSingleRenderer(id = -1) {
     }
   }
   const s = session.sources[index];
-  const containerName = "srcCanvas" + index;
+  //const containerName = "srcCanvas" + index;
+  const containerName = "srcCanvas" + id;
 
   if (s.type === "p5") {
     const container = document.getElementById(containerName);
@@ -129,8 +133,8 @@ function shiftRendererIDs() {
   let i = 0;
   srcWrapper.childNodes.forEach((child) => {
     child.id = "inputDiv" + i;
-    const inputSrc = child.querySelector(".inputSrc");
-    inputSrc.id = "inputSrc" + i;
+    //const inputSrc = child.querySelector(".inputSrc");
+    //inputSrc.id = "inputSrc" + i;
     const srcLabel = child.querySelector(".srcLabel");
     srcLabel.innerHTML = `${i + 1}`;
     const panel = child.querySelector(".panel");
@@ -145,6 +149,14 @@ function shiftRendererIDs() {
     label.innerHTML = `Send ${i + 1}`;
     const slider = panel.querySelector(".slider");
     slider.id = `alpha${i + 1}`;
+
+    srcToggle.i = i;
+    srcToggle.onchange = () => {
+      toggleSrc(srcToggle.i);
+    };
+    slider.onpointermove = () => {
+      updateAlpha(srcToggle.i);
+    };
 
     i++;
   });
@@ -162,7 +174,10 @@ function drawRenderer() {
 
   for (let i = 0; i < session.sources.length; i++) {
     const s = session.sources[i];
-    const id = "srcCanvas" + i;
+
+    //const id = "srcCanvas" + i;
+    const id = "srcCanvas" + s.id;
+
     if (s.type === "video") document.getElementById(id).play();
     else if (s.type === "hydra" && s.instance) s.instance.tick(16);
 
