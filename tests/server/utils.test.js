@@ -44,8 +44,8 @@ describe("Test database interactions", async () => {
       mockCallback
     );
     expect(mockQuery).toHaveBeenLastCalledWith({
-      text: `INSERT INTO sources(room, type, data) VALUES($1, $2, $3)`,
-      values: [1234, "testType", "test source"],
+      text: `INSERT INTO sources(room, type, data, active) VALUES($1, $2, $3, $4) RETURNING id`,
+      values: [1234, "testType", "test source", true],
     });
     expect(mockCallback).toHaveBeenLastCalledWith({ message: "success" });
   });
