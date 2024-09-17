@@ -123,7 +123,6 @@ export function updateSingleRenderer(id = -1) {
 export function deleteSingleRenderer(panelNum = -1) {
   const srcWrapper = document.getElementById("srcPreviews");
   var target = srcWrapper.children.item(panelNum);
-  console.log("type of target: " + typeof target);
   srcWrapper.removeChild(target);
   shiftRendererIDs();
 }
@@ -139,9 +138,7 @@ function shiftRendererIDs() {
     srcLabel.innerHTML = `${i + 1}`;
     const panel = child.querySelector(".panel");
     const srcToggle = panel.querySelector(".srcToggle");
-    console.log("id: " + srcToggle.id);
     srcToggle.id = `on${i + 1}`;
-    console.log("new id: " + srcToggle.id);
     srcToggle.setAttribute("name", `on${i + 1}`);
     srcToggle.setAttribute("value", `on${i + 1}`);
     const label = panel.querySelector(".label");

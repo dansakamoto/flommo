@@ -30,6 +30,17 @@ export async function loadRoomData() {
 export function addSrc(type, data, active = true) {
   if (type === "video") data = convertDropboxURL(data);
 
+  if (type !== "video") {
+    try {
+      new Function(data);
+    } catch {
+      console.error(
+        "Failed to add source: Input does not appear to be valid javascript"
+      );
+      return;
+    }
+  }
+
   const newSource = {
     room: session.roomID,
     type: type,
@@ -50,15 +61,13 @@ export function addSrc(type, data, active = true) {
       (status) => {
         if (status.message === "success") {
           newSource.id = status.id;
-          //setupUI();
-          // ----
+
           updateRenderer("add");
           updateMixer("add");
           updateEditors();
           updateMenu();
           resizeRenderer();
           resizeEditors();
-          // ------
         } else console.error("Error adding source to database");
       }
     );
@@ -74,6 +83,17 @@ export function updateSrc(id, data, refreshAfter = true) {
 
   if (source && source.type === "video" && data.src) {
     data.src = convertDropboxURL(data.src);
+  }
+
+  if (source && source.type !== "video" && data.src) {
+    try {
+      new Function(data.src);
+    } catch {
+      console.error(
+        "Failed to updated source: Input does not appear to be valid javascript"
+      );
+      return;
+    }
   }
 
   source.data = data.src;
@@ -110,27 +130,12 @@ export function delSrc(id) {
 
   session.deleteSource(id);
 
-  //setupUI();
-  // ----
   deleteSingleRenderer(panelNum);
-  // TO DO: adjust remaining panels/ids to match new positions
-  //updateMixer();
   updateEditors();
   updateMenu();
   resizeRenderer();
   resizeEditors();
-  console.log("---------");
-  /*
-  for (const [k, v] of Object.entries(session.sources)) {
-    for (const [a, b] of Object.entries(v)) {
-      console.log(`${k}: ${a}: ${b}`);
-    }
-    for (const [c, d] of Object.entries(v.editor)) {
-      console.log(`${k}: editor: ${c}: ${d}`);
-    }
-  }
-    */
-  // ------
+
   if (session.roomID) {
     socket.emit("delSrc", { id: id }, (status) => {
       if (status.message !== "success") {
