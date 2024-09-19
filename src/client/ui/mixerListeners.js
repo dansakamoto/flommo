@@ -55,8 +55,6 @@ export function initMixerListeners() {
 }
 
 function updateAlpha(id) {
-  console.log("id to update: " + id);
-  console.log(`querySelctor: #alpha${id + 1}`);
   let newAlpha = document.querySelector(`#alpha${id + 1}`).value / 100;
   session.sources[id].alpha = newAlpha;
   if (session.roomID)
