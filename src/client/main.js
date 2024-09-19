@@ -18,4 +18,4 @@ alt="Flommo"
 >${versionNum}</span
 >`;
 
-document.querySelector("#interface").style.opacity = 1;
+document.querySelector("#interface").style.opacity = 1; // fade in

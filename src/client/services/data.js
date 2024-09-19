@@ -2,7 +2,6 @@ import { io } from "socket.io-client";
 import { convertDropboxURL } from "../utils/urlConverter";
 import session from "../session";
 import { setupUI } from "../ui/setupUI";
-
 import { updateMixer } from "../ui/mixer";
 import { updateMenu } from "../ui/menu";
 import { updateEditors, resizeEditors } from "../ui/editors";
@@ -29,7 +28,6 @@ export async function loadRoomData() {
 
 export function addSrc(type, data, active = true) {
   if (type === "video") data = convertDropboxURL(data);
-
   if (type !== "video") {
     try {
       new Function(data);
@@ -47,7 +45,7 @@ export function addSrc(type, data, active = true) {
     data: data,
     alpha: 1,
     active: active,
-    id: Date.now(),
+    id: Date.now(), // placeholder until server response
   };
 
   session.addSource(newSource);
