@@ -19,7 +19,7 @@ document.addEventListener(
       togglePanel("hide");
     }
   },
-  false
+  false,
 );
 document.querySelector("#hydraeditor").addEventListener("keydown", (e) => {
   if (e.key === "Enter" && e.ctrlKey && e.shiftKey) {
