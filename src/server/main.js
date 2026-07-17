@@ -20,9 +20,13 @@ var server = app.listen(port, () => {
   console.log(`FLOMMO @ http://localhost:${port}`);
 });
 
-//app.use(express.static("public"));
-
-ViteExpress.bind(app, server);
+if (process.env.NODE_ENV == "production") {
+  app.use("/", express.static("dist"));
+  console.log("Running in production mode");
+} else {
+  ViteExpress.bind(app, server);
+  console.log("Running in development mode");
+}
 
 app.get("/srclist", srcList);
 
